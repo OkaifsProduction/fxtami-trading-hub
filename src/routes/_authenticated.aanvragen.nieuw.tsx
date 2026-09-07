@@ -1,6 +1,6 @@
-import { createRoute, useNavigate } from "@tanstack/react-router";
+import { createRoute, Link, useNavigate } from "@tanstack/react-router";
 import { authenticatedRoute } from "./_authenticated";
-import { useCreateRequest } from "@/lib/queries";
+import { useCreateRequest, useDossierOptions } from "@/lib/queries";
 import { RequestForm } from "@/components/RequestForm";
 import { usePageTitle } from "@/lib/usePageTitle";
 
@@ -14,6 +14,7 @@ function NieuweAanvraagPage() {
   usePageTitle("Nieuwe aanvraag");
   const navigate = useNavigate();
   const createRequest = useCreateRequest();
+  const { data: dossierOptions, isLoading: dossiersLoading } = useDossierOptions();
 
   return (
     <div className="page">
@@ -25,16 +26,29 @@ function NieuweAanvraagPage() {
       </div>
 
       <div className="card card-padded" style={{ maxWidth: 560 }}>
-        <RequestForm
-          submitLabel="Aanvraag opslaan"
-          submitting={createRequest.isPending}
-          onCancel={() => navigate({ to: "/aanvragen" })}
-          onSubmit={(values) => {
-            createRequest.mutate(values, {
-              onSuccess: (row) => navigate({ to: "/aanvragen/$id", params: { id: row.id } }),
-            });
-          }}
-        />
+        {!dossiersLoading && (dossierOptions ?? []).length === 0 ? (
+          <div className="stack">
+            <p className="text-secondary">
+              Er zijn nog geen dossiers. Maak eerst een klant en dossier aan voordat je een
+              aanvraag registreert.
+            </p>
+            <Link to="/klanten/nieuw" className="btn btn-primary">
+              + Nieuwe klant
+            </Link>
+          </div>
+        ) : (
+          <RequestForm
+            dossierOptions={dossierOptions}
+            submitLabel="Aanvraag opslaan"
+            submitting={createRequest.isPending}
+            onCancel={() => navigate({ to: "/aanvragen" })}
+            onSubmit={(values) => {
+              createRequest.mutate(values, {
+                onSuccess: (row) => navigate({ to: "/aanvragen/$id", params: { id: row.id } }),
+              });
+            }}
+          />
+        )}
         {createRequest.isError && (
           <div className="form-error mt-24">
             Opslaan mislukt. Probeer het opnieuw.

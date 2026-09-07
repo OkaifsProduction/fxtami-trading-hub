@@ -1,20 +1,32 @@
 import { useState } from "react";
 import { requestFormSchema, type RequestFormValues } from "@/lib/schema";
 import type { RequestRow } from "@/lib/database.types";
+import type { DossierOption } from "@/lib/queries";
 
 type FieldErrors = Partial<Record<keyof RequestFormValues, string>>;
 
 interface RequestFormProps {
   initial?: RequestRow;
+  /** Dossiers to choose from. Not shown when `lockedDossier` is set. */
+  dossierOptions?: DossierOption[];
+  /** When creating an aanvraag from within a dossier, lock it instead of showing a picker. */
+  lockedDossier?: { id: string; label: string };
   submitLabel: string;
   submitting: boolean;
   onSubmit: (values: RequestFormValues) => void;
   onCancel?: () => void;
 }
 
-export function RequestForm({ initial, submitLabel, submitting, onSubmit, onCancel }: RequestFormProps) {
-  const [name, setName] = useState(initial?.name ?? "");
-  const [purpose, setPurpose] = useState(initial?.purpose ?? "");
+export function RequestForm({
+  initial,
+  dossierOptions,
+  lockedDossier,
+  submitLabel,
+  submitting,
+  onSubmit,
+  onCancel,
+}: RequestFormProps) {
+  const [dossierId, setDossierId] = useState(initial?.dossier_id ?? lockedDossier?.id ?? "");
   const [requestedAmount, setRequestedAmount] = useState(
     initial ? String(initial.requested_amount) : "",
   );
@@ -32,8 +44,7 @@ export function RequestForm({ initial, submitLabel, submitting, onSubmit, onCanc
     const parsedGranted = grantedAmount.trim() === "" ? null : Number.parseFloat(grantedAmount);
 
     const result = requestFormSchema.safeParse({
-      name,
-      purpose,
+      dossierId: dossierId || undefined,
       requestedAmount: parsedRequested,
       grantedAmount: parsedGranted,
       status,
@@ -57,31 +68,32 @@ export function RequestForm({ initial, submitLabel, submitting, onSubmit, onCanc
   return (
     <form onSubmit={handleSubmit} noValidate>
       <div className="field">
-        <label className="field-label" htmlFor="name">
-          Naam
-        </label>
-        <input
-          id="name"
-          className="input"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Naam van de persoon"
-        />
-        {errors.name && <span className="field-error">{errors.name}</span>}
-      </div>
-
-      <div className="field">
-        <label className="field-label" htmlFor="purpose">
-          Waarvoor
-        </label>
-        <input
-          id="purpose"
-          className="input"
-          value={purpose}
-          onChange={(e) => setPurpose(e.target.value)}
-          placeholder="Bv. hondenvoeding"
-        />
-        {errors.purpose && <span className="field-error">{errors.purpose}</span>}
+        <span className="field-label">Dossier</span>
+        {lockedDossier ? (
+          <div className="dossier-context-pill">{lockedDossier.label}</div>
+        ) : (
+          <>
+            <select
+              id="dossierId"
+              className="select"
+              value={dossierId}
+              onChange={(e) => setDossierId(e.target.value)}
+            >
+              <option value="">Kies een dossier…</option>
+              {(dossierOptions ?? []).map((d) => (
+                <option key={d.id} value={d.id}>
+                  {d.klantNaam} — {d.titel}
+                </option>
+              ))}
+            </select>
+            {(dossierOptions ?? []).length === 0 && (
+              <span className="field-hint">
+                Nog geen dossiers. Maak eerst een klant en dossier aan.
+              </span>
+            )}
+          </>
+        )}
+        {errors.dossierId && <span className="field-error">{errors.dossierId}</span>}
       </div>
 
       <div className="field-row">

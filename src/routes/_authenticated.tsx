@@ -35,6 +35,9 @@ function AuthenticatedLayout() {
           <Link to="/" activeOptions={{ exact: true }} activeProps={{ className: "active" }}>
             Dashboard
           </Link>
+          <Link to="/klanten" activeProps={{ className: "active" }}>
+            Klanten
+          </Link>
           <Link to="/aanvragen" activeProps={{ className: "active" }}>
             Aanvragen
           </Link>

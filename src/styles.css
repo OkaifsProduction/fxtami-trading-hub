@@ -468,6 +468,55 @@ p {
   font-size: 14px;
 }
 
+/* ============ Generic list rows (klanten, dossiers) ============ */
+.list-row {
+  display: grid;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+}
+
+.list-row + .list-row {
+  border-top: 1px solid var(--border);
+}
+
+.list-row-primary {
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.list-row-secondary {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+/* ============ Breadcrumb ============ */
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-tertiary);
+  margin-bottom: 12px;
+}
+
+.breadcrumb a {
+  color: var(--text-secondary);
+}
+
+.breadcrumb a:hover {
+  color: var(--text-primary);
+}
+
+.dossier-context-pill {
+  background: var(--surface-raised);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  font-size: 15px;
+  color: var(--text-primary);
+}
+
 .amount {
   font-variant-numeric: tabular-nums;
   font-weight: 700;

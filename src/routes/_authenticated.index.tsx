@@ -1,6 +1,6 @@
 import { createRoute, Link } from "@tanstack/react-router";
 import { authenticatedRoute } from "./_authenticated";
-import { useRequests, computeStats } from "@/lib/queries";
+import { useRequestsWithContext, computeStats } from "@/lib/queries";
 import { StatTile } from "@/components/StatTile";
 import { StatusBadge } from "@/components/StatusBadge";
 import { EmptyState } from "@/components/EmptyState";
@@ -15,7 +15,7 @@ export const dashboardRoute = createRoute({
 
 function DashboardPage() {
   usePageTitle("Dashboard");
-  const { data: requests, isLoading } = useRequests();
+  const { data: requests, isLoading } = useRequestsWithContext();
   const stats = computeStats(requests ?? []);
   const recent = (requests ?? []).slice(0, 6);
 
@@ -61,8 +61,8 @@ function DashboardPage() {
               className="request-row card-interactive"
             >
               <div>
-                <div className="request-name">{r.name}</div>
-                <div className="request-purpose">{r.purpose}</div>
+                <div className="request-name">{r.klantNaam ?? "Onbekende klant"}</div>
+                <div className="request-purpose">{r.dossierTitel ?? "Geen dossier"}</div>
               </div>
               <div className="text-secondary">{formatDate(r.created_at)}</div>
               <div className="amount">

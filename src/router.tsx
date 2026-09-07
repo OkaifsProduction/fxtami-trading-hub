@@ -6,11 +6,23 @@ import { dashboardRoute } from "./routes/_authenticated.index";
 import { aanvragenListRoute } from "./routes/_authenticated.aanvragen.index";
 import { aanvragenNieuwRoute } from "./routes/_authenticated.aanvragen.nieuw";
 import { aanvraagDetailRoute } from "./routes/_authenticated.aanvragen.$id";
+import { klantenListRoute } from "./routes/_authenticated.klanten.index";
+import { klantNieuwRoute } from "./routes/_authenticated.klanten.nieuw";
+import { klantDetailRoute } from "./routes/_authenticated.klanten.$id";
+import { dossierNieuwRoute } from "./routes/_authenticated.klanten.$id.dossiers.nieuw";
+import { dossierDetailRoute } from "./routes/_authenticated.dossiers.$id";
+import { dossierAanvraagNieuwRoute } from "./routes/_authenticated.dossiers.$id.aanvragen.nieuw";
 
 const routeTree = rootRoute.addChildren([
   authRoute,
   authenticatedRoute.addChildren([
     dashboardRoute,
+    klantenListRoute,
+    klantNieuwRoute,
+    klantDetailRoute,
+    dossierNieuwRoute,
+    dossierDetailRoute,
+    dossierAanvraagNieuwRoute,
     aanvragenListRoute,
     aanvragenNieuwRoute,
     aanvraagDetailRoute,
