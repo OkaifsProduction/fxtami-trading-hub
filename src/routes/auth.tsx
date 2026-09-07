@@ -5,6 +5,7 @@ import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth";
 import { authFormSchema } from "@/lib/schema";
 import { usePageTitle } from "@/lib/usePageTitle";
+import { checkBegeleiderProfiel } from "@/lib/begeleiderQueries";
 import amiLegalLogoFull from "@/assets/ami-legal-logo-full.png";
 
 export const authRoute = createRoute({
@@ -46,12 +47,16 @@ function AuthPage() {
     setFieldErrors({});
     setSubmitting(true);
     const { error } = await signIn(result.data.email, result.data.password);
-    setSubmitting(false);
     if (error) {
+      setSubmitting(false);
       setFormError("Aanmelden mislukt. Controleer e-mail en wachtwoord.");
       return;
     }
-    navigate({ to: "/" });
+    const { data: userData } = await supabase.auth.getUser();
+    const userId = userData.user?.id;
+    const isBegeleider = userId ? await checkBegeleiderProfiel(userId) : false;
+    setSubmitting(false);
+    navigate({ to: isBegeleider ? "/begeleider" : "/" });
   }
 
   return (
