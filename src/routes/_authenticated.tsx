@@ -26,12 +26,12 @@ function AuthenticatedLayout() {
 
   return (
     <div className="app-shell">
-      <header className="topbar">
-        <div className="topbar-brand">
-          <div className="topbar-mark">A</div>
+      <aside className="sidebar">
+        <div className="sidebar-brand">
+          <div className="brand-mark">A</div>
           Ami Legal
         </div>
-        <nav className="topbar-nav">
+        <nav className="sidebar-nav">
           <Link to="/" activeOptions={{ exact: true }} activeProps={{ className: "active" }}>
             Dashboard
           </Link>
@@ -42,14 +42,16 @@ function AuthenticatedLayout() {
             Aanvragen
           </Link>
         </nav>
-        <div className="topbar-actions">
-          {user?.email && <span className="text-secondary">{user.email}</span>}
+        <div className="sidebar-footer">
+          {user?.email && <span className="sidebar-user">{user.email}</span>}
           <button className="btn btn-ghost btn-sm" onClick={handleSignOut}>
             Afmelden
           </button>
         </div>
-      </header>
-      <Outlet />
+      </aside>
+      <main className="main-content">
+        <Outlet />
+      </main>
     </div>
   );
 }
