@@ -57,7 +57,7 @@ function KlantenListPage() {
           </p>
         </div>
         <Link to="/klanten/nieuw" className="btn btn-primary">
-          + Nieuwe klant
+          <span className="btn-icon">+</span> Nieuwe klant
         </Link>
       </div>
 

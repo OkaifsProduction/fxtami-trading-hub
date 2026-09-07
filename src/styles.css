@@ -279,15 +279,10 @@ p {
 /* ============ Stat tiles ============ */
 .stat-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 16px;
   margin-bottom: 32px;
-}
-
-@media (max-width: 900px) {
-  .stat-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+  max-width: 480px;
 }
 
 .stat-tile {
@@ -384,6 +379,13 @@ p {
 
 .btn-block {
   width: 100%;
+}
+
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
 }
 
 /* ============ Forms ============ */

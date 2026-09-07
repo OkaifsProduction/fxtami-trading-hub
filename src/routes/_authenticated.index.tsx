@@ -27,15 +27,13 @@ function DashboardPage() {
           <p className="page-subtitle">Overzicht van alle binnengekomen aanvragen</p>
         </div>
         <Link to="/aanvragen/nieuw" className="btn btn-primary">
-          + Nieuwe aanvraag
+          <span className="btn-icon">+</span> Nieuwe aanvraag
         </Link>
       </div>
 
       <div className="stat-grid">
         <StatTile label="Open aanvragen" value={String(stats.openCount)} accent />
         <StatTile label="Afgehandeld" value={String(stats.handledCount)} />
-        <StatTile label="Totaal gevraagd" value={formatAmount(stats.totalRequested)} />
-        <StatTile label="Totaal toegekend" value={formatAmount(stats.totalGranted)} />
       </div>
 
       <div className="card">

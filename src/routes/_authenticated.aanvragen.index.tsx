@@ -82,7 +82,7 @@ function AanvragenListPage() {
           <p className="page-subtitle">{filtered.length} van {requests?.length ?? 0} aanvragen</p>
         </div>
         <Link to="/aanvragen/nieuw" className="btn btn-primary">
-          + Nieuwe aanvraag
+          <span className="btn-icon">+</span> Nieuwe aanvraag
         </Link>
       </div>
 

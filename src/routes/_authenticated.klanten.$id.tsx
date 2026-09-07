@@ -138,7 +138,7 @@ function KlantDetailPage() {
         <div className="card-padded flex-between">
           <h2 style={{ fontSize: 16, fontWeight: 700 }}>Dossiers</h2>
           <Link to="/klanten/$id/dossiers/nieuw" params={{ id: klant.id }} className="btn btn-primary btn-sm">
-            + Nieuw dossier
+            <span className="btn-icon">+</span> Nieuw dossier
           </Link>
         </div>
         {dossiersLoading ? (

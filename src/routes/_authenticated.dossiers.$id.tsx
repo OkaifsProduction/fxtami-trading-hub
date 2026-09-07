@@ -125,7 +125,7 @@ function DossierDetailPage() {
             params={{ id: dossier.id }}
             className="btn btn-primary btn-sm"
           >
-            + Nieuwe aanvraag
+            <span className="btn-icon">+</span> Nieuwe aanvraag
           </Link>
         </div>
         {requestsLoading ? (
