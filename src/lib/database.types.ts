@@ -40,6 +40,30 @@ export type RequestRow = {
   created_at: string;
 };
 
+export type BegeleiderProfielRow = {
+  id: string;
+  naam: string;
+  organisatie: string | null;
+  actief: boolean;
+  created_at: string;
+};
+
+export type BegeleiderDossierOverzicht = {
+  dossier_id: string;
+  klant_naam: string;
+  dossier_titel: string;
+  dossier_status: DossierStatus;
+  dossier_aangemaakt: string;
+};
+
+export type BegeleiderAanvraag = {
+  aanvraag_id: string;
+  requested_amount: number;
+  granted_amount: number | null;
+  status: AanvraagStatus;
+  aangemaakt: string;
+};
+
 export type Database = {
   __InternalSupabase: {
     PostgrestVersion: "12";
@@ -77,8 +101,27 @@ export type Database = {
         Update: Partial<Omit<RequestRow, "id" | "user_id" | "created_at" | "name" | "purpose">>;
         Relationships: [];
       };
+      begeleider_profiles: {
+        Row: BegeleiderProfielRow;
+        Insert: never;
+        Update: never;
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
-    Functions: Record<string, never>;
+    Functions: {
+      begeleider_mijn_dossiers: {
+        Args: Record<string, never>;
+        Returns: BegeleiderDossierOverzicht[];
+      };
+      begeleider_dossier_detail: {
+        Args: { p_dossier_id: string };
+        Returns: BegeleiderDossierOverzicht[];
+      };
+      begeleider_dossier_aanvragen: {
+        Args: { p_dossier_id: string };
+        Returns: BegeleiderAanvraag[];
+      };
+    };
   };
 };

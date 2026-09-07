@@ -12,6 +12,9 @@ import { klantDetailRoute } from "./routes/_authenticated.klanten.$id";
 import { dossierNieuwRoute } from "./routes/_authenticated.klanten.$id.dossiers.nieuw";
 import { dossierDetailRoute } from "./routes/_authenticated.dossiers.$id";
 import { dossierAanvraagNieuwRoute } from "./routes/_authenticated.dossiers.$id.aanvragen.nieuw";
+import { begeleiderRoute } from "./routes/_begeleider";
+import { begeleiderDossiersListRoute } from "./routes/_begeleider.index";
+import { begeleiderDossierDetailRoute } from "./routes/_begeleider.dossiers.$id";
 
 const routeTree = rootRoute.addChildren([
   authRoute,
@@ -27,6 +30,7 @@ const routeTree = rootRoute.addChildren([
     aanvragenNieuwRoute,
     aanvraagDetailRoute,
   ]),
+  begeleiderRoute.addChildren([begeleiderDossiersListRoute, begeleiderDossierDetailRoute]),
 ]);
 
 export const router = createRouter({ routeTree });

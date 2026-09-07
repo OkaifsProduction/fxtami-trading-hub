@@ -5,26 +5,23 @@ import { useAuth } from "@/lib/auth";
 import { checkBegeleiderProfiel } from "@/lib/begeleiderQueries";
 import amiLegalLogoIcon from "@/assets/ami-legal-logo-icon.png";
 
-export const authenticatedRoute = createRoute({
+export const begeleiderRoute = createRoute({
   getParentRoute: () => rootRoute,
-  id: "_authenticated",
+  id: "_begeleider",
   beforeLoad: async () => {
     const { data } = await supabase.auth.getSession();
     if (!data.session) {
       throw redirect({ to: "/auth" });
     }
-    // Begeleiders horen in de externe portal, niet in de interne app —
-    // de echte grens ligt in de database (RLS/functies), dit is enkel
-    // een consistente doorverwijzing.
     const isBegeleider = await checkBegeleiderProfiel(data.session.user.id);
-    if (isBegeleider) {
-      throw redirect({ to: "/begeleider" });
+    if (!isBegeleider) {
+      throw redirect({ to: "/" });
     }
   },
-  component: AuthenticatedLayout,
+  component: BegeleiderLayout,
 });
 
-function AuthenticatedLayout() {
+function BegeleiderLayout() {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
 
@@ -41,14 +38,8 @@ function AuthenticatedLayout() {
           Ami Legal
         </div>
         <nav className="sidebar-nav">
-          <Link to="/" activeOptions={{ exact: true }} activeProps={{ className: "active" }}>
-            Dashboard
-          </Link>
-          <Link to="/klanten" activeProps={{ className: "active" }}>
-            Klanten
-          </Link>
-          <Link to="/aanvragen" activeProps={{ className: "active" }}>
-            Aanvragen
+          <Link to="/begeleider" activeOptions={{ exact: true }} activeProps={{ className: "active" }}>
+            Mijn dossiers
           </Link>
         </nav>
         <div className="sidebar-footer">
