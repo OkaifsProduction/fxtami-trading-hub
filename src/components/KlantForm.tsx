@@ -14,6 +14,10 @@ interface KlantFormProps {
 
 export function KlantForm({ initial, submitLabel, submitting, onSubmit, onCancel }: KlantFormProps) {
   const [naam, setNaam] = useState(initial?.naam ?? "");
+  const [klantType, setKlantType] = useState(initial?.klant_type ?? "");
+  const [identificatienummer, setIdentificatienummer] = useState(
+    initial?.identificatienummer ?? "",
+  );
   const [email, setEmail] = useState(initial?.email ?? "");
   const [telefoon, setTelefoon] = useState(initial?.telefoon ?? "");
   const [adres, setAdres] = useState(initial?.adres ?? "");
@@ -23,7 +27,15 @@ export function KlantForm({ initial, submitLabel, submitting, onSubmit, onCancel
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    const result = klantFormSchema.safeParse({ naam, email, telefoon, adres, extraInfo });
+    const result = klantFormSchema.safeParse({
+      naam,
+      klantType,
+      identificatienummer,
+      email,
+      telefoon,
+      adres,
+      extraInfo,
+    });
 
     if (!result.success) {
       const nextErrors: FieldErrors = {};
@@ -53,6 +65,41 @@ export function KlantForm({ initial, submitLabel, submitting, onSubmit, onCancel
           placeholder="Naam van de klant"
         />
         {errors.naam && <span className="field-error">{errors.naam}</span>}
+      </div>
+
+      <div className="field-row">
+        <div className="field">
+          <label className="field-label" htmlFor="klantType">
+            Type klant
+          </label>
+          <select
+            id="klantType"
+            className="select"
+            value={klantType}
+            onChange={(e) => setKlantType(e.target.value)}
+          >
+            <option value="">Onbekend</option>
+            <option value="natuurlijk_persoon">Natuurlijk persoon</option>
+            <option value="rechtspersoon">Rechtspersoon</option>
+          </select>
+          {errors.klantType && <span className="field-error">{errors.klantType}</span>}
+        </div>
+
+        <div className="field">
+          <label className="field-label" htmlFor="identificatienummer">
+            Identificatienummer
+          </label>
+          <input
+            id="identificatienummer"
+            className="input"
+            value={identificatienummer}
+            onChange={(e) => setIdentificatienummer(e.target.value)}
+            placeholder="Rijksregister- of ondernemingsnummer"
+          />
+          {errors.identificatienummer && (
+            <span className="field-error">{errors.identificatienummer}</span>
+          )}
+        </div>
       </div>
 
       <div className="field-row">

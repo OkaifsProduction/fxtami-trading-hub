@@ -1,5 +1,7 @@
 export type RequestStatus = "open" | "afgehandeld";
 
+export type KlantType = "natuurlijk_persoon" | "rechtspersoon";
+
 export type KlantRow = {
   id: string;
   user_id: string;
@@ -8,6 +10,9 @@ export type KlantRow = {
   telefoon: string | null;
   adres: string | null;
   extra_info: string | null;
+  klant_type: KlantType | null;
+  identificatienummer: string | null;
+  gearchiveerd: boolean;
   created_at: string;
 };
 
@@ -42,10 +47,11 @@ export type Database = {
     Tables: {
       klanten: {
         Row: KlantRow;
-        Insert: Omit<KlantRow, "id" | "user_id" | "created_at"> & {
+        Insert: Omit<KlantRow, "id" | "user_id" | "created_at" | "gearchiveerd"> & {
           id?: string;
           user_id?: string;
           created_at?: string;
+          gearchiveerd?: boolean;
         };
         Update: Partial<Omit<KlantRow, "id" | "user_id" | "created_at">>;
         Relationships: [];

@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { createRoute, Link } from "@tanstack/react-router";
 import { authenticatedRoute } from "./_authenticated";
-import { useRequestsWithContext } from "@/lib/queries";
+import { useRequestsWithContext, type RequestWithContext } from "@/lib/queries";
 import { StatusBadge } from "@/components/StatusBadge";
 import { EmptyState } from "@/components/EmptyState";
 import { formatAmount } from "@/lib/format";
@@ -15,22 +15,55 @@ export const aanvragenListRoute = createRoute({
 });
 
 type StatusFilter = "alle" | RequestStatus;
+type SortOption = "nieuwste" | "oudste" | "klant" | "gevraagd" | "toegekend";
+
+function sortRequests(requests: RequestWithContext[], sort: SortOption) {
+  const sorted = [...requests];
+  switch (sort) {
+    case "oudste":
+      return sorted.sort((a, b) => a.created_at.localeCompare(b.created_at));
+    case "klant":
+      return sorted.sort((a, b) => (a.klantNaam ?? "").localeCompare(b.klantNaam ?? ""));
+    case "gevraagd":
+      return sorted.sort((a, b) => b.requested_amount - a.requested_amount);
+    case "toegekend":
+      return sorted.sort((a, b) => (b.granted_amount ?? 0) - (a.granted_amount ?? 0));
+    case "nieuwste":
+    default:
+      return sorted.sort((a, b) => b.created_at.localeCompare(a.created_at));
+  }
+}
 
 function AanvragenListPage() {
   usePageTitle("Aanvragen");
   const { data: requests, isLoading } = useRequestsWithContext();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("alle");
+  const [sort, setSort] = useState<SortOption>("nieuwste");
+  const [vanDatum, setVanDatum] = useState("");
+  const [totDatum, setTotDatum] = useState("");
+  const [minBedrag, setMinBedrag] = useState("");
+  const [maxBedrag, setMaxBedrag] = useState("");
 
   const filtered = useMemo(() => {
     const term = search.trim().toLowerCase();
-    return (requests ?? []).filter((r) => {
+    const min = minBedrag.trim() === "" ? null : Number.parseFloat(minBedrag);
+    const max = maxBedrag.trim() === "" ? null : Number.parseFloat(maxBedrag);
+
+    const result = (requests ?? []).filter((r) => {
       const haystack = `${r.klantNaam ?? ""} ${r.dossierTitel ?? ""}`.toLowerCase();
       const matchesSearch = term === "" || haystack.includes(term);
       const matchesStatus = statusFilter === "alle" || r.status === statusFilter;
-      return matchesSearch && matchesStatus;
+      const datum = r.created_at.slice(0, 10);
+      const matchesVan = vanDatum === "" || datum >= vanDatum;
+      const matchesTot = totDatum === "" || datum <= totDatum;
+      const matchesMin = min === null || Number.isNaN(min) || r.requested_amount >= min;
+      const matchesMax = max === null || Number.isNaN(max) || r.requested_amount <= max;
+      return matchesSearch && matchesStatus && matchesVan && matchesTot && matchesMin && matchesMax;
     });
-  }, [requests, search, statusFilter]);
+
+    return sortRequests(result, sort);
+  }, [requests, search, statusFilter, sort, vanDatum, totDatum, minBedrag, maxBedrag]);
 
   return (
     <div className="page">
@@ -63,6 +96,63 @@ function AanvragenListPage() {
             </button>
           ))}
         </div>
+        <select
+          className="select"
+          style={{ maxWidth: 200 }}
+          value={sort}
+          onChange={(e) => setSort(e.target.value as SortOption)}
+        >
+          <option value="nieuwste">Sorteer: nieuwste eerst</option>
+          <option value="oudste">Sorteer: oudste eerst</option>
+          <option value="klant">Sorteer: klant</option>
+          <option value="gevraagd">Sorteer: gevraagd bedrag</option>
+          <option value="toegekend">Sorteer: toegekend bedrag</option>
+        </select>
+      </div>
+
+      <div className="list-toolbar">
+        <label className="field-inline">
+          Van
+          <input
+            type="date"
+            className="input"
+            value={vanDatum}
+            onChange={(e) => setVanDatum(e.target.value)}
+          />
+        </label>
+        <label className="field-inline">
+          Tot
+          <input
+            type="date"
+            className="input"
+            value={totDatum}
+            onChange={(e) => setTotDatum(e.target.value)}
+          />
+        </label>
+        <label className="field-inline">
+          Min. gevraagd
+          <input
+            type="text"
+            inputMode="decimal"
+            className="input"
+            style={{ maxWidth: 120 }}
+            placeholder="0"
+            value={minBedrag}
+            onChange={(e) => setMinBedrag(e.target.value)}
+          />
+        </label>
+        <label className="field-inline">
+          Max. gevraagd
+          <input
+            type="text"
+            inputMode="decimal"
+            className="input"
+            style={{ maxWidth: 120 }}
+            placeholder="—"
+            value={maxBedrag}
+            onChange={(e) => setMaxBedrag(e.target.value)}
+          />
+        </label>
       </div>
 
       <div className="card">
@@ -71,7 +161,7 @@ function AanvragenListPage() {
         ) : filtered.length === 0 ? (
           <EmptyState
             title="Geen aanvragen gevonden"
-            description="Pas je zoekopdracht of filter aan."
+            description="Pas je zoekopdracht of filters aan."
           />
         ) : (
           filtered.map((r) => (

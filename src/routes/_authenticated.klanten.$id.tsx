@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { createRoute, Link } from "@tanstack/react-router";
 import { authenticatedRoute } from "./_authenticated";
-import { useKlant, useUpdateKlant, useDossiersByKlant } from "@/lib/queries";
+import { useKlant, useUpdateKlant, useSetKlantArchived, useDossiersByKlant } from "@/lib/queries";
 import { KlantForm } from "@/components/KlantForm";
 import { StatusBadge } from "@/components/StatusBadge";
 import { EmptyState } from "@/components/EmptyState";
@@ -19,6 +19,7 @@ function KlantDetailPage() {
   const { data: klant, isLoading } = useKlant(id);
   const { data: dossiers, isLoading: dossiersLoading } = useDossiersByKlant(id);
   const updateKlant = useUpdateKlant(id);
+  const setArchived = useSetKlantArchived(id);
   const [isEditing, setIsEditing] = useState(false);
   usePageTitle(klant?.naam ?? "Klant");
 
@@ -74,23 +75,47 @@ function KlantDetailPage() {
 
       <div className="page-header">
         <div>
-          <h1 className="page-title">{klant.naam}</h1>
+          <h1 className="page-title">
+            {klant.naam}
+            {klant.gearchiveerd && <span className="badge badge-gearchiveerd">Gearchiveerd</span>}
+          </h1>
           <p className="page-subtitle">Klant sinds {formatDate(klant.created_at)}</p>
         </div>
-        <button className="btn btn-secondary" onClick={() => setIsEditing(true)}>
-          Bewerken
-        </button>
+        <div className="flex-between" style={{ gap: 12 }}>
+          <button
+            className="btn btn-ghost"
+            disabled={setArchived.isPending}
+            onClick={() => setArchived.mutate(!klant.gearchiveerd)}
+          >
+            {klant.gearchiveerd ? "Heractiveren" : "Archiveren"}
+          </button>
+          <button className="btn btn-secondary" onClick={() => setIsEditing(true)}>
+            Bewerken
+          </button>
+        </div>
       </div>
 
       <div className="detail-grid">
         <div className="card card-padded">
-          <div className="detail-section-label">Contactgegevens</div>
+          <div className="detail-section-label">Klantgegevens</div>
           <div className="detail-section-body">
-            {klant.email || "—"}
-            <br />
-            {klant.telefoon || "—"}
-            <br />
-            {klant.adres || "—"}
+            {klant.klant_type === "rechtspersoon"
+              ? "Rechtspersoon"
+              : klant.klant_type === "natuurlijk_persoon"
+                ? "Natuurlijk persoon"
+                : "Type onbekend"}
+            {klant.identificatienummer && ` · ${klant.identificatienummer}`}
+          </div>
+
+          <div className="detail-section">
+            <div className="detail-section-label">Contactgegevens</div>
+            <div className="detail-section-body">
+              {klant.email || "—"}
+              <br />
+              {klant.telefoon || "—"}
+              <br />
+              {klant.adres || "—"}
+            </div>
           </div>
 
           {klant.extra_info && (
