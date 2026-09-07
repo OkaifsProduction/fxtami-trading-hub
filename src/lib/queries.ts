@@ -61,6 +61,8 @@ export function useKlant(id: string) {
 function toKlantPayload(values: KlantFormValues) {
   return {
     naam: values.naam,
+    klant_type: values.klantType || null,
+    identificatienummer: values.identificatienummer || null,
     email: values.email || null,
     telefoon: values.telefoon || null,
     adres: values.adres || null,
@@ -96,6 +98,26 @@ export function useUpdateKlant(id: string) {
       const { data, error } = await supabase
         .from("klanten")
         .update(toKlantPayload(values))
+        .eq("id", id)
+        .select()
+        .single();
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: klantKeys.all });
+      queryClient.invalidateQueries({ queryKey: klantKeys.detail(id) });
+    },
+  });
+}
+
+export function useSetKlantArchived(id: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (gearchiveerd: boolean) => {
+      const { data, error } = await supabase
+        .from("klanten")
+        .update({ gearchiveerd })
         .eq("id", id)
         .select()
         .single();

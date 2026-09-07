@@ -400,9 +400,16 @@ p {
   color: var(--success);
 }
 
+.badge-gearchiveerd {
+  background: var(--surface-hover);
+  color: var(--text-tertiary);
+  margin-left: 8px;
+}
+
 /* ============ Lists ============ */
 .list-toolbar {
   display: flex;
+  align-items: center;
   gap: 12px;
   margin-bottom: 20px;
   flex-wrap: wrap;
@@ -411,6 +418,40 @@ p {
 .list-toolbar .input {
   flex: 1;
   min-width: 220px;
+}
+
+.toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.toggle-label input[type="checkbox"] {
+  accent-color: var(--accent);
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+}
+
+.field-inline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.field-inline .input {
+  width: auto;
+  padding: 8px 12px;
+  font-size: 13px;
 }
 
 .filter-group {

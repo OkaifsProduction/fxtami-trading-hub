@@ -42,12 +42,21 @@ export const authFormSchema = z.object({
 
 export type AuthFormValues = z.infer<typeof authFormSchema>;
 
+export const klantTypeSchema = z.enum(["natuurlijk_persoon", "rechtspersoon"]);
+
 export const klantFormSchema = z.object({
   naam: z
     .string()
     .trim()
     .min(1, "Naam is verplicht")
     .max(120, "Naam mag maximaal 120 tekens bevatten"),
+  klantType: klantTypeSchema.optional().or(z.literal("")),
+  identificatienummer: z
+    .string()
+    .trim()
+    .max(50, "Identificatienummer mag maximaal 50 tekens bevatten")
+    .optional()
+    .or(z.literal("")),
   email: z
     .string()
     .trim()
