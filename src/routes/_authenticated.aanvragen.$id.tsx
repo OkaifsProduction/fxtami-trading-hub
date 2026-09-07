@@ -4,6 +4,7 @@ import { authenticatedRoute } from "./_authenticated";
 import {
   useRequest,
   useUpdateRequest,
+  useSetRequestStatus,
   useDeleteRequest,
   useDossier,
   useKlant,
@@ -13,6 +14,17 @@ import { RequestForm } from "@/components/RequestForm";
 import { StatusBadge } from "@/components/StatusBadge";
 import { formatAmount, formatDate } from "@/lib/format";
 import { usePageTitle } from "@/lib/usePageTitle";
+import type { AanvraagStatus } from "@/lib/database.types";
+
+const STATUS_OPTIONS: { value: AanvraagStatus; label: string }[] = [
+  { value: "open", label: "Open" },
+  { value: "in_behandeling", label: "In behandeling" },
+  { value: "goedgekeurd", label: "Goedgekeurd" },
+  { value: "geweigerd", label: "Geweigerd" },
+  { value: "afgehandeld", label: "Afgehandeld" },
+];
+
+const BEVESTIGING_VEREIST: AanvraagStatus[] = ["geweigerd", "afgehandeld"];
 
 export const aanvraagDetailRoute = createRoute({
   getParentRoute: () => authenticatedRoute,
@@ -28,10 +40,21 @@ function AanvraagDetailPage() {
   const { data: klant } = useKlant(dossier?.klant_id ?? "");
   const { data: dossierOptions } = useDossierOptions();
   const updateRequest = useUpdateRequest(id);
+  const setRequestStatus = useSetRequestStatus(id);
   const deleteRequest = useDeleteRequest();
   const [isEditing, setIsEditing] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [pendingStatus, setPendingStatus] = useState<AanvraagStatus | null>(null);
   usePageTitle(klant?.naam ?? request?.name ?? "Aanvraag");
+
+  function handleStatusChange(next: AanvraagStatus) {
+    if (!request || next === request.status) return;
+    if (BEVESTIGING_VEREIST.includes(next)) {
+      setPendingStatus(next);
+    } else {
+      setRequestStatus.mutate(next);
+    }
+  }
 
   if (isLoading) {
     return (
@@ -138,6 +161,49 @@ function AanvraagDetailPage() {
         </div>
 
         <div className="card card-padded stack">
+          <div>
+            <div className="field-label" style={{ marginBottom: 8 }}>
+              Status wijzigen
+            </div>
+            <select
+              className="select"
+              value={pendingStatus ?? request.status}
+              onChange={(e) => handleStatusChange(e.target.value as AanvraagStatus)}
+            >
+              {STATUS_OPTIONS.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {pendingStatus && (
+            <div className="stack">
+              <p className="text-secondary" style={{ fontSize: 13 }}>
+                Weet je zeker dat je deze aanvraag als "
+                {STATUS_OPTIONS.find((o) => o.value === pendingStatus)?.label}" wil markeren?
+              </p>
+              <button
+                className="btn btn-primary btn-block"
+                disabled={setRequestStatus.isPending}
+                onClick={() => {
+                  setRequestStatus.mutate(pendingStatus, {
+                    onSuccess: () => setPendingStatus(null),
+                  });
+                }}
+              >
+                {setRequestStatus.isPending ? "Bezig met opslaan…" : "Ja, bevestigen"}
+              </button>
+              <button className="btn btn-ghost btn-block" onClick={() => setPendingStatus(null)}>
+                Annuleren
+              </button>
+            </div>
+          )}
+          {setRequestStatus.isError && !pendingStatus && (
+            <div className="form-error">Status wijzigen mislukt. Probeer het opnieuw.</div>
+          )}
+
           <button className="btn btn-secondary btn-block" onClick={() => setIsEditing(true)}>
             Bewerken
           </button>

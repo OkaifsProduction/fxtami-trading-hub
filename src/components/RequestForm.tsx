@@ -141,6 +141,9 @@ export function RequestForm({
           onChange={(e) => setStatus(e.target.value as RequestFormValues["status"])}
         >
           <option value="open">Open</option>
+          <option value="in_behandeling">In behandeling</option>
+          <option value="goedgekeurd">Goedgekeurd</option>
+          <option value="geweigerd">Geweigerd</option>
           <option value="afgehandeld">Afgehandeld</option>
         </select>
       </div>

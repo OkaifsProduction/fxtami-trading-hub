@@ -1,4 +1,5 @@
-export type RequestStatus = "open" | "afgehandeld";
+export type AanvraagStatus = "open" | "in_behandeling" | "goedgekeurd" | "geweigerd" | "afgehandeld";
+export type DossierStatus = "open" | "gesloten";
 
 export type KlantType = "natuurlijk_persoon" | "rechtspersoon";
 
@@ -22,7 +23,7 @@ export type DossierRow = {
   klant_id: string;
   titel: string;
   omschrijving: string | null;
-  status: RequestStatus;
+  status: DossierStatus;
   created_at: string;
 };
 
@@ -34,7 +35,7 @@ export type RequestRow = {
   purpose: string | null;
   requested_amount: number;
   granted_amount: number | null;
-  status: RequestStatus;
+  status: AanvraagStatus;
   extra_info: string | null;
   created_at: string;
 };
