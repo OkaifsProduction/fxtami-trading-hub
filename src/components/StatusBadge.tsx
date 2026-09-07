@@ -1,6 +1,6 @@
 import type { AanvraagStatus, DossierStatus } from "@/lib/database.types";
 
-type Status = AanvraagStatus | DossierStatus;
+type Status = AanvraagStatus | DossierStatus | "nvt";
 
 const LABELS: Record<Status, string> = {
   open: "Open",
@@ -9,6 +9,7 @@ const LABELS: Record<Status, string> = {
   geweigerd: "Geweigerd",
   afgehandeld: "Afgehandeld",
   gesloten: "Gesloten",
+  nvt: "N.v.t.",
 };
 
 export function StatusBadge({ status }: { status: Status }) {

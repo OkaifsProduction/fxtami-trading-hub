@@ -484,7 +484,8 @@ p {
 }
 
 .badge-afgehandeld,
-.badge-gesloten {
+.badge-gesloten,
+.badge-nvt {
   background: var(--color-neutral-soft);
   color: var(--color-text-secondary);
 }
@@ -575,6 +576,10 @@ p {
   align-items: center;
   gap: 16px;
   padding: 16px 20px;
+}
+
+.request-row .amount {
+  text-align: right;
 }
 
 @media (max-width: 720px) {

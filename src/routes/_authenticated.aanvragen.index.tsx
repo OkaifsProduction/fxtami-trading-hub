@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { createRoute, Link } from "@tanstack/react-router";
 import { authenticatedRoute } from "./_authenticated";
-import { useRequestsWithContext, type RequestWithContext } from "@/lib/queries";
+import { useKlantenMetAanvragen, type KlantAanvraagRow } from "@/lib/queries";
 import { StatusBadge } from "@/components/StatusBadge";
 import { EmptyState } from "@/components/EmptyState";
 import { formatAmount } from "@/lib/format";
@@ -14,7 +14,7 @@ export const aanvragenListRoute = createRoute({
   component: AanvragenListPage,
 });
 
-type StatusFilter = "alle" | AanvraagStatus;
+type StatusFilter = "alle" | AanvraagStatus | "nvt";
 type SortOption = "nieuwste" | "oudste" | "klant" | "gevraagd" | "toegekend";
 
 const STATUS_FILTER_LABELS: Record<StatusFilter, string> = {
@@ -24,28 +24,29 @@ const STATUS_FILTER_LABELS: Record<StatusFilter, string> = {
   goedgekeurd: "Goedgekeurd",
   geweigerd: "Geweigerd",
   afgehandeld: "Afgehandeld",
+  nvt: "N.v.t.",
 };
 
-function sortRequests(requests: RequestWithContext[], sort: SortOption) {
-  const sorted = [...requests];
+function sortRequests(rows: KlantAanvraagRow[], sort: SortOption) {
+  const sorted = [...rows];
   switch (sort) {
     case "oudste":
-      return sorted.sort((a, b) => a.created_at.localeCompare(b.created_at));
+      return sorted.sort((a, b) => a.createdAt.localeCompare(b.createdAt));
     case "klant":
-      return sorted.sort((a, b) => (a.klantNaam ?? "").localeCompare(b.klantNaam ?? ""));
+      return sorted.sort((a, b) => a.klantNaam.localeCompare(b.klantNaam));
     case "gevraagd":
-      return sorted.sort((a, b) => b.requested_amount - a.requested_amount);
+      return sorted.sort((a, b) => (b.requestedAmount ?? -1) - (a.requestedAmount ?? -1));
     case "toegekend":
-      return sorted.sort((a, b) => (b.granted_amount ?? 0) - (a.granted_amount ?? 0));
+      return sorted.sort((a, b) => (b.grantedAmount ?? -1) - (a.grantedAmount ?? -1));
     case "nieuwste":
     default:
-      return sorted.sort((a, b) => b.created_at.localeCompare(a.created_at));
+      return sorted.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
   }
 }
 
 function AanvragenListPage() {
   usePageTitle("Aanvragen");
-  const { data: requests, isLoading } = useRequestsWithContext();
+  const { data: rows, isLoading } = useKlantenMetAanvragen();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("alle");
   const [sort, setSort] = useState<SortOption>("nieuwste");
@@ -59,27 +60,27 @@ function AanvragenListPage() {
     const min = minBedrag.trim() === "" ? null : Number.parseFloat(minBedrag);
     const max = maxBedrag.trim() === "" ? null : Number.parseFloat(maxBedrag);
 
-    const result = (requests ?? []).filter((r) => {
-      const haystack = `${r.klantNaam ?? ""} ${r.dossierTitel ?? ""}`.toLowerCase();
+    const result = (rows ?? []).filter((r) => {
+      const haystack = `${r.klantNaam} ${r.dossierTitel ?? ""}`.toLowerCase();
       const matchesSearch = term === "" || haystack.includes(term);
       const matchesStatus = statusFilter === "alle" || r.status === statusFilter;
-      const datum = r.created_at.slice(0, 10);
+      const datum = r.createdAt.slice(0, 10);
       const matchesVan = vanDatum === "" || datum >= vanDatum;
       const matchesTot = totDatum === "" || datum <= totDatum;
-      const matchesMin = min === null || Number.isNaN(min) || r.requested_amount >= min;
-      const matchesMax = max === null || Number.isNaN(max) || r.requested_amount <= max;
+      const matchesMin = min === null || Number.isNaN(min) || r.requestedAmount === null || r.requestedAmount >= min;
+      const matchesMax = max === null || Number.isNaN(max) || r.requestedAmount === null || r.requestedAmount <= max;
       return matchesSearch && matchesStatus && matchesVan && matchesTot && matchesMin && matchesMax;
     });
 
     return sortRequests(result, sort);
-  }, [requests, search, statusFilter, sort, vanDatum, totDatum, minBedrag, maxBedrag]);
+  }, [rows, search, statusFilter, sort, vanDatum, totDatum, minBedrag, maxBedrag]);
 
   return (
     <div className="page">
       <div className="page-header">
         <div>
           <h1 className="page-title">Aanvragen</h1>
-          <p className="page-subtitle">{filtered.length} van {requests?.length ?? 0} aanvragen</p>
+          <p className="page-subtitle">{filtered.length} van {rows?.length ?? 0} klanten</p>
         </div>
         <Link to="/aanvragen/nieuw" className="btn btn-primary">
           <span className="btn-icon">+</span> Nieuwe aanvraag
@@ -174,28 +175,51 @@ function AanvragenListPage() {
             description="Pas je zoekopdracht of filters aan."
           />
         ) : (
-          filtered.map((r) => (
-            <Link
-              key={r.id}
-              to="/aanvragen/$id"
-              params={{ id: r.id }}
-              className="request-row card-interactive"
-            >
-              <div>
-                <div className="request-name">{r.klantNaam ?? "Onbekende klant"}</div>
-              </div>
-              <div className="request-purpose">{r.dossierTitel ?? "Geen dossier"}</div>
-              <div className="amount">
-                <span className="amount-label">Gevraagd</span>
-                {formatAmount(r.requested_amount)}
-              </div>
-              <div className="amount">
-                <span className="amount-label">Toegekend</span>
-                {formatAmount(r.granted_amount)}
-              </div>
-              <StatusBadge status={r.status} />
-            </Link>
-          ))
+          filtered.map((r) =>
+            r.requestId ? (
+              <Link
+                key={r.key}
+                to="/aanvragen/$id"
+                params={{ id: r.requestId }}
+                className="request-row card-interactive"
+              >
+                <div>
+                  <div className="request-name">{r.klantNaam}</div>
+                </div>
+                <div className="request-purpose">{r.dossierTitel ?? "—"}</div>
+                <div className="amount">
+                  <span className="amount-label">Gevraagd</span>
+                  {formatAmount(r.requestedAmount)}
+                </div>
+                <div className="amount">
+                  <span className="amount-label">Toegekend</span>
+                  {formatAmount(r.grantedAmount)}
+                </div>
+                <StatusBadge status={r.status} />
+              </Link>
+            ) : (
+              <Link
+                key={r.key}
+                to="/klanten/$id"
+                params={{ id: r.klantId }}
+                className="request-row card-interactive"
+              >
+                <div>
+                  <div className="request-name">{r.klantNaam}</div>
+                </div>
+                <div className="request-purpose">—</div>
+                <div className="amount">
+                  <span className="amount-label">Gevraagd</span>
+                  {formatAmount(null)}
+                </div>
+                <div className="amount">
+                  <span className="amount-label">Toegekend</span>
+                  {formatAmount(null)}
+                </div>
+                <StatusBadge status={r.status} />
+              </Link>
+            ),
+          )
         )}
       </div>
     </div>
