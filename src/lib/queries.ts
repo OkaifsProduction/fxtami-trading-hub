@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "./supabase";
-import type { DossierRow, KlantRow, RequestRow, RequestStatus } from "./database.types";
+import type { AanvraagStatus, DossierRow, DossierStatus, KlantRow, RequestRow } from "./database.types";
 import type { DossierFormValues, KlantFormValues, RequestFormValues } from "./schema";
 
 // ============ Klanten ============
@@ -257,6 +257,26 @@ export function useUpdateDossier(id: string) {
   });
 }
 
+export function useSetDossierStatus(id: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (status: DossierStatus) => {
+      const { data, error } = await supabase
+        .from("dossiers")
+        .update({ status })
+        .eq("id", id)
+        .select()
+        .single();
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: dossierKeys.all });
+      queryClient.invalidateQueries({ queryKey: dossierKeys.detail(id) });
+    },
+  });
+}
+
 // ============ Aanvragen (requests) ============
 
 export const requestKeys = {
@@ -402,6 +422,29 @@ export function useUpdateRequest(id: string) {
   });
 }
 
+export function useSetRequestStatus(id: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (status: AanvraagStatus) => {
+      const { data, error } = await supabase
+        .from("requests")
+        .update({ status })
+        .eq("id", id)
+        .select()
+        .single();
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: requestKeys.list() });
+      queryClient.invalidateQueries({ queryKey: requestKeys.detail(id) });
+      if (data.dossier_id) {
+        queryClient.invalidateQueries({ queryKey: requestKeys.byDossier(data.dossier_id) });
+      }
+    },
+  });
+}
+
 export function useDeleteRequest() {
   const queryClient = useQueryClient();
   return useMutation({
@@ -422,11 +465,15 @@ export interface DashboardStats {
   totalGranted: number;
 }
 
+// "Open" = nog actief (open of in behandeling). "Afgehandeld" = afgerond,
+// ongeacht uitkomst (goedgekeurd, geweigerd of afgehandeld). Een volledige
+// uitsplitsing per status is bewust voor een latere dashboard-fase.
+const ACTIEVE_STATUSSEN: AanvraagStatus[] = ["open", "in_behandeling"];
+
 export function computeStats(requests: RequestRow[]): DashboardStats {
   return requests.reduce<DashboardStats>(
     (acc, r) => {
-      const status: RequestStatus = r.status;
-      if (status === "open") acc.openCount += 1;
+      if (ACTIEVE_STATUSSEN.includes(r.status)) acc.openCount += 1;
       else acc.handledCount += 1;
       acc.totalRequested += r.requested_amount;
       acc.totalGranted += r.granted_amount ?? 0;

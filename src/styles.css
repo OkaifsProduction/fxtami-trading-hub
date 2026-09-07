@@ -395,9 +395,25 @@ p {
   color: var(--warning);
 }
 
-.badge-afgehandeld {
+.badge-in_behandeling {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.badge-goedgekeurd {
   background: var(--success-soft);
   color: var(--success);
+}
+
+.badge-geweigerd {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.badge-afgehandeld,
+.badge-gesloten {
+  background: var(--surface-hover);
+  color: var(--text-tertiary);
 }
 
 .badge-gearchiveerd {

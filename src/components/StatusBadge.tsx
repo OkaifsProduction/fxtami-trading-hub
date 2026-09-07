@@ -1,10 +1,16 @@
-import type { RequestStatus } from "@/lib/database.types";
+import type { AanvraagStatus, DossierStatus } from "@/lib/database.types";
 
-const LABELS: Record<RequestStatus, string> = {
+type Status = AanvraagStatus | DossierStatus;
+
+const LABELS: Record<Status, string> = {
   open: "Open",
+  in_behandeling: "In behandeling",
+  goedgekeurd: "Goedgekeurd",
+  geweigerd: "Geweigerd",
   afgehandeld: "Afgehandeld",
+  gesloten: "Gesloten",
 };
 
-export function StatusBadge({ status }: { status: RequestStatus }) {
+export function StatusBadge({ status }: { status: Status }) {
   return <span className={`badge badge-${status}`}>{LABELS[status]}</span>;
 }

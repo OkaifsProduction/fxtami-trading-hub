@@ -85,7 +85,7 @@ export function DossierForm({
           onChange={(e) => setStatus(e.target.value as DossierFormValues["status"])}
         >
           <option value="open">Open</option>
-          <option value="afgehandeld">Afgehandeld</option>
+          <option value="gesloten">Gesloten</option>
         </select>
       </div>
 

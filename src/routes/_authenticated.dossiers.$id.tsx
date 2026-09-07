@@ -1,7 +1,13 @@
 import { useState } from "react";
 import { createRoute, Link } from "@tanstack/react-router";
 import { authenticatedRoute } from "./_authenticated";
-import { useDossier, useUpdateDossier, useKlant, useRequestsByDossier } from "@/lib/queries";
+import {
+  useDossier,
+  useUpdateDossier,
+  useSetDossierStatus,
+  useKlant,
+  useRequestsByDossier,
+} from "@/lib/queries";
 import { DossierForm } from "@/components/DossierForm";
 import { StatusBadge } from "@/components/StatusBadge";
 import { EmptyState } from "@/components/EmptyState";
@@ -20,6 +26,7 @@ function DossierDetailPage() {
   const { data: klant } = useKlant(dossier?.klant_id ?? "");
   const { data: requests, isLoading: requestsLoading } = useRequestsByDossier(id);
   const updateDossier = useUpdateDossier(id);
+  const setDossierStatus = useSetDossierStatus(id);
   const [isEditing, setIsEditing] = useState(false);
   usePageTitle(dossier?.titel ?? "Dossier");
 
@@ -88,6 +95,15 @@ function DossierDetailPage() {
         </div>
         <div className="flex-between" style={{ gap: 12 }}>
           <StatusBadge status={dossier.status} />
+          <button
+            className="btn btn-ghost"
+            disabled={setDossierStatus.isPending}
+            onClick={() =>
+              setDossierStatus.mutate(dossier.status === "open" ? "gesloten" : "open")
+            }
+          >
+            {dossier.status === "open" ? "Sluiten" : "Heropenen"}
+          </button>
           <button className="btn btn-secondary" onClick={() => setIsEditing(true)}>
             Bewerken
           </button>

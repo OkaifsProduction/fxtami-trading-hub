@@ -1,6 +1,14 @@
 import { z } from "zod";
 
-export const requestStatusSchema = z.enum(["open", "afgehandeld"]);
+export const aanvraagStatusSchema = z.enum([
+  "open",
+  "in_behandeling",
+  "goedgekeurd",
+  "geweigerd",
+  "afgehandeld",
+]);
+
+export const dossierStatusSchema = z.enum(["open", "gesloten"]);
 
 export const requestFormSchema = z
   .object({
@@ -17,7 +25,7 @@ export const requestFormSchema = z
       .min(0, "Toegekend bedrag mag niet negatief zijn")
       .max(1_000_000, "Toegekend bedrag is te hoog")
       .nullable(),
-    status: requestStatusSchema,
+    status: aanvraagStatusSchema,
     extraInfo: z
       .string()
       .trim()
@@ -98,7 +106,7 @@ export const dossierFormSchema = z.object({
     .max(4000, "Omschrijving mag maximaal 4000 tekens bevatten")
     .optional()
     .or(z.literal("")),
-  status: requestStatusSchema,
+  status: dossierStatusSchema,
 });
 
 export type DossierFormValues = z.infer<typeof dossierFormSchema>;

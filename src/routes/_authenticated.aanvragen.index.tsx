@@ -6,7 +6,7 @@ import { StatusBadge } from "@/components/StatusBadge";
 import { EmptyState } from "@/components/EmptyState";
 import { formatAmount } from "@/lib/format";
 import { usePageTitle } from "@/lib/usePageTitle";
-import type { RequestStatus } from "@/lib/database.types";
+import type { AanvraagStatus } from "@/lib/database.types";
 
 export const aanvragenListRoute = createRoute({
   getParentRoute: () => authenticatedRoute,
@@ -14,8 +14,17 @@ export const aanvragenListRoute = createRoute({
   component: AanvragenListPage,
 });
 
-type StatusFilter = "alle" | RequestStatus;
+type StatusFilter = "alle" | AanvraagStatus;
 type SortOption = "nieuwste" | "oudste" | "klant" | "gevraagd" | "toegekend";
+
+const STATUS_FILTER_LABELS: Record<StatusFilter, string> = {
+  alle: "Alle statussen",
+  open: "Open",
+  in_behandeling: "In behandeling",
+  goedgekeurd: "Goedgekeurd",
+  geweigerd: "Geweigerd",
+  afgehandeld: "Afgehandeld",
+};
 
 function sortRequests(requests: RequestWithContext[], sort: SortOption) {
   const sorted = [...requests];
@@ -85,17 +94,18 @@ function AanvragenListPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-        <div className="filter-group">
-          {(["alle", "open", "afgehandeld"] as const).map((option) => (
-            <button
-              key={option}
-              className={`filter-chip${statusFilter === option ? " active" : ""}`}
-              onClick={() => setStatusFilter(option)}
-            >
-              {option === "alle" ? "Alle" : option === "open" ? "Open" : "Afgehandeld"}
-            </button>
+        <select
+          className="select"
+          style={{ maxWidth: 200 }}
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
+        >
+          {(Object.keys(STATUS_FILTER_LABELS) as StatusFilter[]).map((option) => (
+            <option key={option} value={option}>
+              {STATUS_FILTER_LABELS[option]}
+            </option>
           ))}
-        </div>
+        </select>
         <select
           className="select"
           style={{ maxWidth: 200 }}
