@@ -116,6 +116,13 @@ p {
   height: 32px;
   flex-shrink: 0;
   display: block;
+  object-fit: contain;
+}
+
+.auth-brand-mark {
+  width: 88px;
+  height: auto;
+  margin: 0 auto 16px;
 }
 
 .sidebar-nav {
@@ -730,10 +737,6 @@ p {
   margin-bottom: 28px;
 }
 
-.auth-header .brand-mark {
-  margin: 0 auto 16px;
-}
-
 .auth-title {
   font-size: 22px;
   font-weight: 800;
@@ -774,4 +777,16 @@ p {
 
 .mt-24 {
   margin-top: 24px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
