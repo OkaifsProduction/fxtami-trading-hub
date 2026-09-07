@@ -34,8 +34,8 @@ export function RequestForm({ initial, submitLabel, submitting, onSubmit, onCanc
     const result = requestFormSchema.safeParse({
       name,
       purpose,
-      requestedAmount: Number.isNaN(parsedRequested) ? undefined : parsedRequested,
-      grantedAmount: parsedGranted !== null && Number.isNaN(parsedGranted) ? undefined : parsedGranted,
+      requestedAmount: parsedRequested,
+      grantedAmount: parsedGranted,
       status,
       extraInfo,
     });

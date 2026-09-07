@@ -15,11 +15,14 @@ export const requestFormSchema = z
       .min(1, "Waarvoor is verplicht")
       .max(200, "Waarvoor mag maximaal 200 tekens bevatten"),
     requestedAmount: z
-      .number({ invalid_type_error: "Gevraagd bedrag is verplicht" })
+      .number({
+        invalid_type_error: "Gevraagd bedrag is verplicht",
+        required_error: "Gevraagd bedrag is verplicht",
+      })
       .positive("Gevraagd bedrag moet groter dan 0 zijn")
       .max(1_000_000, "Gevraagd bedrag is te hoog"),
     grantedAmount: z
-      .number()
+      .number({ invalid_type_error: "Toegekend bedrag moet een getal zijn" })
       .min(0, "Toegekend bedrag mag niet negatief zijn")
       .max(1_000_000, "Toegekend bedrag is te hoog")
       .nullable(),
