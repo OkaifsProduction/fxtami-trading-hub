@@ -5,6 +5,7 @@ import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth";
 import { authFormSchema } from "@/lib/schema";
 import { usePageTitle } from "@/lib/usePageTitle";
+import amiLegalLogo from "@/assets/ami-legal-logo.svg";
 
 export const authRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -57,7 +58,7 @@ function AuthPage() {
     <div className="auth-shell">
       <div className="card auth-card">
         <div className="auth-header">
-          <div className="topbar-mark">A</div>
+          <img src={amiLegalLogo} alt="" className="brand-mark" />
           <h1 className="auth-title">Ami Legal</h1>
           <p className="auth-subtitle">Meld je aan om aanvragen te beheren</p>
         </div>

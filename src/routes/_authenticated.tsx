@@ -2,6 +2,7 @@ import { createRoute, Link, Outlet, redirect, useNavigate } from "@tanstack/reac
 import { rootRoute } from "./__root";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth";
+import amiLegalLogo from "@/assets/ami-legal-logo.svg";
 
 export const authenticatedRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -28,7 +29,7 @@ function AuthenticatedLayout() {
     <div className="app-shell">
       <aside className="sidebar">
         <div className="sidebar-brand">
-          <div className="brand-mark">A</div>
+          <img src={amiLegalLogo} alt="" className="brand-mark" />
           Ami Legal
         </div>
         <nav className="sidebar-nav">
