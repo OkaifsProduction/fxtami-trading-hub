@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { createRoute, Link } from "@tanstack/react-router";
 import { authenticatedRoute } from "./_authenticated";
-import { useRequests } from "@/lib/queries";
+import { useRequestsWithContext } from "@/lib/queries";
 import { StatusBadge } from "@/components/StatusBadge";
 import { EmptyState } from "@/components/EmptyState";
 import { formatAmount } from "@/lib/format";
@@ -18,14 +18,15 @@ type StatusFilter = "alle" | RequestStatus;
 
 function AanvragenListPage() {
   usePageTitle("Aanvragen");
-  const { data: requests, isLoading } = useRequests();
+  const { data: requests, isLoading } = useRequestsWithContext();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("alle");
 
   const filtered = useMemo(() => {
     const term = search.trim().toLowerCase();
     return (requests ?? []).filter((r) => {
-      const matchesSearch = term === "" || r.name.toLowerCase().includes(term);
+      const haystack = `${r.klantNaam ?? ""} ${r.dossierTitel ?? ""}`.toLowerCase();
+      const matchesSearch = term === "" || haystack.includes(term);
       const matchesStatus = statusFilter === "alle" || r.status === statusFilter;
       return matchesSearch && matchesStatus;
     });
@@ -47,7 +48,7 @@ function AanvragenListPage() {
         <input
           type="text"
           className="input"
-          placeholder="Zoek op naam…"
+          placeholder="Zoek op klant of dossier…"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
@@ -81,9 +82,9 @@ function AanvragenListPage() {
               className="request-row card-interactive"
             >
               <div>
-                <div className="request-name">{r.name}</div>
+                <div className="request-name">{r.klantNaam ?? "Onbekende klant"}</div>
               </div>
-              <div className="request-purpose">{r.purpose}</div>
+              <div className="request-purpose">{r.dossierTitel ?? "Geen dossier"}</div>
               <div className="amount">
                 <span className="amount-label">Gevraagd</span>
                 {formatAmount(r.requested_amount)}

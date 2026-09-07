@@ -1,7 +1,14 @@
 import { useState } from "react";
-import { createRoute, useNavigate } from "@tanstack/react-router";
+import { createRoute, Link, useNavigate } from "@tanstack/react-router";
 import { authenticatedRoute } from "./_authenticated";
-import { useRequest, useUpdateRequest, useDeleteRequest } from "@/lib/queries";
+import {
+  useRequest,
+  useUpdateRequest,
+  useDeleteRequest,
+  useDossier,
+  useKlant,
+  useDossierOptions,
+} from "@/lib/queries";
 import { RequestForm } from "@/components/RequestForm";
 import { StatusBadge } from "@/components/StatusBadge";
 import { formatAmount, formatDate } from "@/lib/format";
@@ -17,11 +24,14 @@ function AanvraagDetailPage() {
   const { id } = aanvraagDetailRoute.useParams();
   const navigate = useNavigate();
   const { data: request, isLoading } = useRequest(id);
+  const { data: dossier } = useDossier(request?.dossier_id ?? "");
+  const { data: klant } = useKlant(dossier?.klant_id ?? "");
+  const { data: dossierOptions } = useDossierOptions();
   const updateRequest = useUpdateRequest(id);
   const deleteRequest = useDeleteRequest();
   const [isEditing, setIsEditing] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
-  usePageTitle(request?.name ?? "Aanvraag");
+  usePageTitle(klant?.naam ?? request?.name ?? "Aanvraag");
 
   if (isLoading) {
     return (
@@ -41,6 +51,9 @@ function AanvraagDetailPage() {
     );
   }
 
+  const displayName = klant?.naam ?? request.name ?? "Onbekende klant";
+  const displayPurpose = dossier?.titel ?? request.purpose ?? "Geen dossier gekoppeld";
+
   if (isEditing) {
     return (
       <div className="page">
@@ -50,6 +63,7 @@ function AanvraagDetailPage() {
         <div className="card card-padded" style={{ maxWidth: 560 }}>
           <RequestForm
             initial={request}
+            dossierOptions={dossierOptions}
             submitLabel="Wijzigingen opslaan"
             submitting={updateRequest.isPending}
             onCancel={() => setIsEditing(false)}
@@ -69,9 +83,29 @@ function AanvraagDetailPage() {
 
   return (
     <div className="page">
+      <div className="breadcrumb">
+        <Link to="/klanten">Klanten</Link>
+        <span>/</span>
+        {klant ? (
+          <Link to="/klanten/$id" params={{ id: klant.id }}>
+            {klant.naam}
+          </Link>
+        ) : (
+          <span>{displayName}</span>
+        )}
+        <span>/</span>
+        {dossier ? (
+          <Link to="/dossiers/$id" params={{ id: dossier.id }}>
+            {dossier.titel}
+          </Link>
+        ) : (
+          <span>{displayPurpose}</span>
+        )}
+      </div>
+
       <div className="page-header">
         <div>
-          <h1 className="page-title">{request.name}</h1>
+          <h1 className="page-title">{displayName}</h1>
           <p className="page-subtitle">
             Aangemaakt op {formatDate(request.created_at)}
           </p>
@@ -81,8 +115,8 @@ function AanvraagDetailPage() {
 
       <div className="detail-grid">
         <div className="card card-padded">
-          <div className="detail-section-label">Waarvoor</div>
-          <div className="detail-section-body">{request.purpose}</div>
+          <div className="detail-section-label">Dossier</div>
+          <div className="detail-section-body">{displayPurpose}</div>
 
           <div className="detail-amounts">
             <div>
