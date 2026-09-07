@@ -20,6 +20,16 @@ create index if not exists requests_dossier_id_idx on public.requests (dossier_i
 -- geen enkele bestaande aanvraag verloren gaat of per ongeluk aan de
 -- verkeerde klant gekoppeld wordt. Dit dekt o.a. de bestaande productierij
 -- "Janssen Danny" / "Terugreis van Marokko".
+--
+-- Het backfilled dossier krijgt expliciet created_at = requests.created_at
+-- (de datum van de oorspronkelijke aanvraag), niet de datum waarop deze
+-- migratie wordt uitgevoerd — dit is een juridisch dossier dat retroactief
+-- wordt aangemaakt, dus de datum moet de historische datum weerspiegelen.
+-- Dit geldt alleen voor dit eenmalige backfill-dossier: de kolom zelf houdt
+-- zijn normale "default now()" voor dossiers die de applicatie later zelf
+-- aanmaakt (die geven geen created_at mee bij insert, dus krijgen gewoon
+-- de huidige tijd). De klant.created_at blijft ongewijzigd op "nu", zoals
+-- besproken.
 do $$
 declare
   r record;
@@ -27,7 +37,7 @@ declare
   new_dossier_id uuid;
 begin
   for r in
-    select id, user_id, name, purpose, status
+    select id, user_id, name, purpose, status, created_at
     from public.requests
     where dossier_id is null
   loop
@@ -35,8 +45,8 @@ begin
     values (r.user_id, r.name)
     returning id into new_klant_id;
 
-    insert into public.dossiers (user_id, klant_id, titel, status)
-    values (r.user_id, new_klant_id, r.purpose, r.status)
+    insert into public.dossiers (user_id, klant_id, titel, status, created_at)
+    values (r.user_id, new_klant_id, r.purpose, r.status, r.created_at)
     returning id into new_dossier_id;
 
     update public.requests
