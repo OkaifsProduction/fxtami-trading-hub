@@ -580,11 +580,10 @@ p {
 .request-row {
   display: grid;
   grid-template-columns:
-    minmax(150px, 1.6fr)
-    minmax(120px, 1.6fr)
-    minmax(80px, 0.9fr)
-    minmax(80px, 0.9fr)
-    minmax(90px, 0.9fr);
+    minmax(200px, 3fr)
+    minmax(90px, 0.9fr)
+    minmax(90px, 0.9fr)
+    minmax(100px, 0.9fr);
   align-items: center;
   gap: 16px;
   padding: 16px 20px;

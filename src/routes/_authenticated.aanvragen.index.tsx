@@ -186,7 +186,6 @@ function AanvragenListPage() {
                 <div>
                   <div className="request-name">{r.klantNaam}</div>
                 </div>
-                <div className="request-purpose">{r.dossierTitel ?? "—"}</div>
                 <div className="amount">
                   <span className="amount-label">Gevraagd</span>
                   {formatAmount(r.requestedAmount)}
@@ -207,7 +206,6 @@ function AanvragenListPage() {
                 <div>
                   <div className="request-name">{r.klantNaam}</div>
                 </div>
-                <div className="request-purpose">—</div>
                 <div className="amount">
                   <span className="amount-label">Gevraagd</span>
                   {formatAmount(null)}
