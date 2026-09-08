@@ -5,77 +5,56 @@ import { restaurant } from "../data/restaurant";
 
 export function Hero() {
   return (
-    <section id="home" className="relative overflow-hidden bg-cream pt-20">
-      <Container className="grid items-center gap-14 py-16 md:py-24 lg:grid-cols-2 lg:gap-10">
-        <div className="max-w-xl animate-fadeUp">
-          <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.28em] text-burgundy">
-            <span className="h-px w-8 bg-burgundy" />
-            {restaurant.tagline} · Est. Tradition
+    <section id="home" className="relative overflow-hidden bg-paper pt-14">
+      {/* Abstract gradient mesh — stands in for literal Italian-flag iconography. */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute -top-20 left-1/2 h-[620px] w-[620px] -translate-x-[85%] rounded-full bg-burgundy/45 blur-[100px] animate-drift" />
+        <div className="absolute top-16 left-1/2 h-[520px] w-[520px] translate-x-[5%] rounded-full bg-terracotta/40 blur-[100px] animate-drift [animation-delay:-6s]" />
+        <div className="absolute top-64 left-1/2 h-[440px] w-[440px] -translate-x-[35%] rounded-full bg-gold/35 blur-[95px] animate-drift [animation-delay:-11s]" />
+      </div>
+
+      <Container className="relative pt-24 md:pt-32">
+        <div className="mx-auto max-w-4xl text-center">
+          <span className="inline-flex items-center rounded-full border border-ink/10 bg-paper/70 px-4 py-1.5 text-[13px] font-medium text-stone backdrop-blur-sm">
+            {restaurant.tagline} — Downtown
           </span>
 
-          <h1 className="mt-6 text-[2.75rem] leading-[1.05] font-extrabold tracking-[-0.02em] text-ink sm:text-6xl lg:text-[4.2rem]">
-            Authentic Italian Pizza.
+          <h1 className="mt-7 text-[3.2rem] font-bold leading-[0.98] tracking-tightest text-ink sm:text-7xl md:text-8xl lg:text-[7.5rem]">
+            Authentic
             <br />
-            <span className="font-serif italic font-normal text-burgundy">Made with Passion.</span>
+            Italian Pizza.
           </h1>
-
-          <p className="mt-7 max-w-md text-lg leading-relaxed text-stone">
-            Traditional recipes, quality ingredients and the taste of Italy — freshly prepared for
-            you.
+          <p className="mt-3 text-[3.2rem] font-bold leading-[0.98] tracking-tightest text-stone-light sm:text-7xl md:text-8xl lg:text-[7.5rem]">
+            Made with passion.
           </p>
 
-          <div className="mt-10 flex flex-wrap items-center gap-4">
+          <p className="mx-auto mt-8 max-w-md text-lg leading-relaxed text-stone">
+            Traditional recipes, quality ingredients and the taste of Italy —
+            freshly prepared for you.
+          </p>
+
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-5">
             <Button href={restaurant.orderOnlineUrl} variant="primary">
               Order Online
             </Button>
-            <Button href="#menu" variant="secondary">
+            <Button href="#menu" variant="link">
               View Menu
             </Button>
           </div>
-
-          <div className="mt-14 flex items-center gap-8 border-t border-ink/10 pt-8">
-            <div>
-              <div className="font-serif italic text-3xl text-ink">25+</div>
-              <div className="mt-1 text-xs font-semibold uppercase tracking-[0.14em] text-stone">
-                Years of craft
-              </div>
-            </div>
-            <div className="h-10 w-px bg-ink/10" />
-            <div>
-              <div className="font-serif italic text-3xl text-ink">900°F</div>
-              <div className="mt-1 text-xs font-semibold uppercase tracking-[0.14em] text-stone">
-                Wood-fired oven
-              </div>
-            </div>
-            <div className="h-10 w-px bg-ink/10" />
-            <div>
-              <div className="font-serif italic text-3xl text-ink">100%</div>
-              <div className="mt-1 text-xs font-semibold uppercase tracking-[0.14em] text-stone">
-                Italian ingredients
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="relative">
-          <div className="absolute -inset-6 -z-10 hidden rounded-[2.5rem] bg-burgundy-light md:block" />
-          <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[2rem] shadow-card-hover md:aspect-[9/11]">
-            <img
-              src={images.heroPizza}
-              srcSet={`${images.heroPizzaSmall} 800w, ${images.heroPizza} 1400w`}
-              sizes="(min-width: 1024px) 560px, 90vw"
-              alt="Close-up of a freshly baked wood-fired Margherita pizza with bubbling mozzarella and fresh basil"
-              className="h-full w-full object-cover"
-              fetchPriority="high"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-ink/40 via-transparent to-transparent" />
-          </div>
-
-          <div className="absolute -bottom-6 -left-6 hidden rounded-2xl bg-cream px-6 py-4 shadow-card md:block">
-            <p className="font-serif italic text-lg text-ink">"Every pie, hand-stretched daily."</p>
-          </div>
         </div>
       </Container>
+
+      <div className="relative mt-16 md:mt-24">
+        <div className="relative mx-auto aspect-[16/10] w-full max-w-wide overflow-hidden bg-mist md:rounded-t-[3rem]">
+          <img
+            src={images.heroPizza}
+            alt="Dramatic close-up of a wood-fired Margherita pizza with bubbling mozzarella and fresh basil"
+            className="h-full w-full object-cover"
+            fetchPriority="high"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-ink/50 via-ink/0 to-ink/0" />
+        </div>
+      </div>
     </section>
   );
 }

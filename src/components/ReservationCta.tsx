@@ -1,30 +1,27 @@
 import { Button } from "./Button";
-import { images } from "../data/images";
 import { restaurant } from "../data/restaurant";
 
 export function ReservationCta() {
   return (
-    <section id="order" className="relative overflow-hidden py-28 md:py-36">
-      <img
-        src={images.ctaBackground}
-        alt=""
-        aria-hidden="true"
-        loading="lazy"
-        className="absolute inset-0 h-full w-full object-cover"
-      />
-      <div className="absolute inset-0 bg-ink/80" />
+    <section id="order" className="relative overflow-hidden bg-ink py-32 md:py-44">
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute left-1/2 top-1/2 h-[600px] w-[900px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-burgundy/30 blur-[140px] animate-drift" />
+        <div className="absolute left-1/3 top-1/3 h-[420px] w-[420px] rounded-full bg-terracotta/20 blur-[120px] animate-drift [animation-delay:-8s]" />
+      </div>
 
       <div className="relative mx-auto max-w-2xl px-6 text-center">
-        <span className="text-xs font-bold uppercase tracking-[0.28em] text-gold">Reserve or Order</span>
-        <h2 className="mt-5 font-serif italic text-4xl leading-tight text-cream sm:text-5xl md:text-6xl">
+        <span className="text-[13px] font-semibold uppercase tracking-[0.14em] text-paper/40">
+          Reserve or Order
+        </span>
+        <h2 className="mt-5 text-5xl font-semibold tracking-tightest leading-[1.05] text-paper sm:text-6xl md:text-7xl">
           Your table is waiting.
         </h2>
-        <p className="mx-auto mt-6 max-w-md text-base leading-relaxed text-cream/70">
+        <p className="mx-auto mt-6 max-w-md text-lg leading-relaxed text-paper/50">
           Join us for an evening of authentic Italian flavors, or have your favorites delivered
           straight to your door.
         </p>
         <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-          <Button href={restaurant.phoneHref} variant="primary">
+          <Button href={restaurant.phoneHref} variant="primary-light">
             Reserve a Table
           </Button>
           <Button href={restaurant.orderOnlineUrl} variant="outline-light">

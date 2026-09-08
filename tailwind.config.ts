@@ -5,42 +5,60 @@ export default {
   theme: {
     extend: {
       colors: {
-        cream: {
-          DEFAULT: "#FAF6EE",
-          dark: "#F1E7D6",
+        paper: "#FFFFFF",
+        mist: {
+          DEFAULT: "#F5F5F7",
+          dark: "#E8E8ED",
         },
-        ink: "#1C1714",
-        charcoal: "#241E1B",
-        burgundy: {
-          DEFAULT: "#7A1930",
-          dark: "#4F1020",
-          light: "#F4E2E5",
-        },
-        gold: "#C6A468",
+        ink: "#0A0A0A",
+        graphite: "#1D1D1F",
         stone: {
-          DEFAULT: "#6E655D",
-          light: "#B8AEA3",
+          DEFAULT: "#6E6E73",
+          light: "#86868B",
         },
+        burgundy: {
+          DEFAULT: "#8C2038",
+          dark: "#5C1224",
+          light: "#F4E3E6",
+        },
+        terracotta: "#D97B4F",
+        gold: "#C9A567",
       },
       fontFamily: {
-        sans: ["Manrope", "system-ui", "sans-serif"],
-        serif: ["Instrument Serif", "Georgia", "serif"],
+        sans: [
+          "Inter",
+          "-apple-system",
+          "BlinkMacSystemFont",
+          "SF Pro Display",
+          "Segoe UI",
+          "system-ui",
+          "sans-serif",
+        ],
       },
       maxWidth: {
-        content: "1280px",
+        content: "1180px",
+        wide: "1400px",
       },
-      boxShadow: {
-        card: "0 8px 30px -12px rgba(28, 23, 20, 0.18)",
-        "card-hover": "0 20px 40px -16px rgba(28, 23, 20, 0.28)",
+      borderRadius: {
+        "4xl": "2rem",
+        "5xl": "2.75rem",
+      },
+      letterSpacing: {
+        tightest: "-0.045em",
       },
       keyframes: {
         fadeUp: {
-          "0%": { opacity: "0", transform: "translateY(24px)" },
+          "0%": { opacity: "0", transform: "translateY(28px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        drift: {
+          "0%, 100%": { transform: "translate(0, 0) scale(1)" },
+          "50%": { transform: "translate(3%, -4%) scale(1.05)" },
         },
       },
       animation: {
-        fadeUp: "fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) both",
+        fadeUp: "fadeUp 1s cubic-bezier(0.16,1,0.3,1) both",
+        drift: "drift 18s ease-in-out infinite",
       },
     },
   },

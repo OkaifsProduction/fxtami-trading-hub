@@ -1,17 +1,25 @@
 import { Container } from "./Container";
-import { SectionHeading } from "./SectionHeading";
 import { useReveal } from "../hooks/useReveal";
 import { images } from "../data/images";
 
 export function OurStory() {
+  const headingRef = useReveal<HTMLHeadingElement>();
   const imgRef = useReveal<HTMLDivElement>();
-  const textRef = useReveal<HTMLDivElement>();
 
   return (
-    <section id="story" className="bg-white py-24 md:py-32">
-      <Container className="grid items-center gap-16 lg:grid-cols-2 lg:gap-20">
-        <div ref={imgRef} className="reveal order-2 lg:order-1">
-          <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] shadow-card">
+    <section id="story" className="bg-ink py-28 md:py-40">
+      <Container>
+        <h2
+          ref={headingRef}
+          className="reveal mx-auto max-w-4xl text-center text-4xl font-semibold leading-[1.15] tracking-tightest text-paper md:text-6xl"
+        >
+          Every dough is proofed for 48 hours.
+          <span className="text-paper/40"> Every sauce is simmered slow. Every pizza is baked the
+          way our grandparents taught us.</span>
+        </h2>
+
+        <div ref={imgRef} className="reveal-scale mt-16 md:mt-24">
+          <div className="relative mx-auto aspect-[21/9] w-full max-w-wide overflow-hidden rounded-4xl bg-graphite">
             <img
               src={images.doughHands}
               alt="Hands hand-stretching fresh pizza dough, an Italian family tradition"
@@ -21,31 +29,22 @@ export function OurStory() {
           </div>
         </div>
 
-        <div ref={textRef} className="reveal order-1 lg:order-2">
-          <SectionHeading
-            eyebrow="Our Story"
-            title={
-              <>
-                Tradition, family
-                <br />& a love for <em>Italy</em>
-              </>
-            }
-          />
-          <div className="mt-7 space-y-5 max-w-lg text-base md:text-lg leading-relaxed text-stone">
-            <p>
-              Da Vinci began with a simple idea: bring the honest flavors of Italy to our
-              neighborhood, one hand-stretched pizza at a time. What started as a small family
-              kitchen has grown into a gathering place — but the recipes haven't changed.
-            </p>
-            <p>
-              Every dough is proofed for 48 hours, every sauce is simmered slowly, and every pizza
-              is baked in our wood-fired oven the way our grandparents taught us. It's not just
-              cooking — it's passion, patience, and a table always set for family.
-            </p>
+        <div className="mx-auto mt-12 grid max-w-4xl grid-cols-2 gap-8 text-center sm:grid-cols-4">
+          <div>
+            <div className="text-3xl font-bold tracking-tight text-paper">25+</div>
+            <div className="mt-1 text-sm text-paper/40">Years of craft</div>
           </div>
-          <div className="mt-8 flex items-center gap-4">
-            <span className="font-serif italic text-2xl text-burgundy">Buon Appetito</span>
-            <span className="h-px flex-1 max-w-24 bg-ink/15" />
+          <div>
+            <div className="text-3xl font-bold tracking-tight text-paper">48h</div>
+            <div className="mt-1 text-sm text-paper/40">Dough proof time</div>
+          </div>
+          <div>
+            <div className="text-3xl font-bold tracking-tight text-paper">900°F</div>
+            <div className="mt-1 text-sm text-paper/40">Wood-fired oven</div>
+          </div>
+          <div>
+            <div className="text-3xl font-bold tracking-tight text-paper">100%</div>
+            <div className="mt-1 text-sm text-paper/40">Italian ingredients</div>
           </div>
         </div>
       </Container>

@@ -8,19 +8,18 @@ export function Menu() {
   const active = menuCategories.find((c) => c.id === activeId) ?? menuCategories[0];
 
   return (
-    <section id="menu" className="bg-charcoal py-24 md:py-32">
+    <section id="menu" className="bg-mist py-28 md:py-36">
       <Container>
         <SectionHeading
-          light
-          eyebrow="La Carta"
-          title="Explore Our Menu"
+          kicker="La Carta"
+          title="Explore our menu"
           description="From wood-fired pizza to handmade pasta — browse every category of our kitchen."
         />
 
         <div
           role="tablist"
           aria-label="Menu categories"
-          className="mt-12 flex gap-2 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className="mx-auto mt-12 flex max-w-fit gap-1 overflow-x-auto rounded-full border border-ink/10 bg-paper p-1.5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
           {menuCategories.map((category) => {
             const isActive = category.id === activeId;
@@ -31,10 +30,8 @@ export function Menu() {
                 type="button"
                 aria-selected={isActive}
                 onClick={() => setActiveId(category.id)}
-                className={`shrink-0 rounded-full border px-6 py-2.5 text-xs font-bold uppercase tracking-[0.14em] transition-colors duration-300 ${
-                  isActive
-                    ? "border-gold bg-gold text-charcoal"
-                    : "border-cream/20 text-cream/60 hover:border-cream/50 hover:text-cream"
+                className={`shrink-0 rounded-full px-5 py-2.5 text-[13px] font-semibold transition-colors duration-300 ${
+                  isActive ? "bg-ink text-paper" : "text-stone hover:text-ink"
                 }`}
               >
                 {category.label}
@@ -43,23 +40,25 @@ export function Menu() {
           })}
         </div>
 
-        <div role="tabpanel" className="mt-12">
+        <div role="tabpanel" className="mx-auto mt-14 max-w-4xl">
           {active.note && (
-            <p className="mb-6 text-xs font-bold uppercase tracking-[0.2em] text-gold">{active.note}</p>
+            <p className="mb-6 text-center text-[13px] font-semibold uppercase tracking-[0.1em] text-stone-light">
+              {active.note}
+            </p>
           )}
-          <div className="grid grid-cols-1 gap-x-12 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-x-14 md:grid-cols-2">
             {active.items.map((item) => (
               <div
                 key={item.name}
-                className="flex items-baseline justify-between gap-6 border-b border-cream/10 py-5"
+                className="flex items-baseline justify-between gap-6 border-b border-ink/[0.08] py-5"
               >
                 <div className="min-w-0">
-                  <h3 className="font-serif italic text-xl text-cream">{item.name}</h3>
+                  <h3 className="text-[17px] font-semibold text-ink">{item.name}</h3>
                   {item.description && (
-                    <p className="mt-1 text-sm leading-relaxed text-cream/50">{item.description}</p>
+                    <p className="mt-1 text-[14px] leading-relaxed text-stone">{item.description}</p>
                   )}
                 </div>
-                <span className="shrink-0 font-serif text-lg text-gold">{item.price}</span>
+                <span className="shrink-0 text-[15px] font-semibold text-ink">{item.price}</span>
               </div>
             ))}
           </div>

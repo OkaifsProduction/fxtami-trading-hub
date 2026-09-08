@@ -3,36 +3,36 @@ import { restaurant } from "../data/restaurant";
 
 export function DishCard({ dish }: { dish: Dish }) {
   return (
-    <article className="group flex flex-col overflow-hidden rounded-[1.75rem] bg-white shadow-card transition-all duration-500 hover:-translate-y-1.5 hover:shadow-card-hover">
-      <div className="relative aspect-[4/3] overflow-hidden">
+    <article className="group flex flex-col overflow-hidden rounded-4xl bg-mist transition-all duration-500 hover:bg-mist-dark">
+      <div className="relative aspect-square overflow-hidden">
         <img
           src={dish.image}
           alt={dish.name}
           loading="lazy"
-          className="h-full w-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-110"
+          className="h-full w-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.06]"
         />
+      </div>
+
+      <div className="flex flex-1 flex-col p-7">
         {dish.tag && (
-          <span className="absolute left-4 top-4 rounded-full bg-cream/95 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.1em] text-burgundy backdrop-blur-sm">
+          <span className="text-[12px] font-semibold uppercase tracking-[0.1em] text-stone-light">
             {dish.tag}
           </span>
         )}
-      </div>
-
-      <div className="flex flex-1 flex-col p-6">
-        <div className="flex items-start justify-between gap-3">
-          <h3 className="font-serif italic text-2xl text-ink">{dish.name}</h3>
-          <span className="whitespace-nowrap pt-1 font-serif text-lg text-burgundy">{dish.price}</span>
+        <div className="mt-1.5 flex items-baseline justify-between gap-3">
+          <h3 className="text-xl font-semibold tracking-tight text-ink">{dish.name}</h3>
+          <span className="whitespace-nowrap text-base font-semibold text-ink">{dish.price}</span>
         </div>
-        <p className="mt-2 flex-1 text-sm leading-relaxed text-stone">{dish.description}</p>
+        <p className="mt-2 flex-1 text-[15px] leading-relaxed text-stone">{dish.description}</p>
 
         <a
           href={restaurant.orderOnlineUrl}
-          className="mt-5 inline-flex items-center gap-2 self-start text-xs font-bold uppercase tracking-[0.14em] text-ink transition-all group-hover:gap-3 group-hover:text-burgundy"
+          className="mt-5 inline-flex items-center gap-1.5 self-start text-[14px] font-medium text-ink transition-all group-hover:gap-2.5"
         >
-          Add to Order
-          <svg width="16" height="10" viewBox="0 0 16 10" fill="none" aria-hidden="true">
+          Add to order
+          <svg width="15" height="10" viewBox="0 0 15 10" fill="none" aria-hidden="true">
             <path
-              d="M1 5h13M9 1l5 4-5 4"
+              d="M1 5h12M8 1l5 4-5 4"
               stroke="currentColor"
               strokeWidth="1.4"
               strokeLinecap="round"

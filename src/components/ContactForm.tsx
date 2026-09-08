@@ -11,20 +11,18 @@ export function ContactForm() {
 
   if (status === "sent") {
     return (
-      <div className="rounded-2xl border border-burgundy/20 bg-burgundy-light p-8 text-center">
-        <p className="font-serif italic text-2xl text-burgundy">Grazie!</p>
-        <p className="mt-2 text-sm text-ink/70">
-          Thanks for reaching out — we'll get back to you shortly.
-        </p>
+      <div className="rounded-3xl bg-mist p-8 text-center">
+        <p className="text-xl font-semibold tracking-tight text-ink">Grazie!</p>
+        <p className="mt-2 text-[15px] text-stone">Thanks for reaching out — we'll get back to you shortly.</p>
       </div>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
         <div>
-          <label htmlFor="name" className="mb-1.5 block text-xs font-bold uppercase tracking-[0.1em] text-stone">
+          <label htmlFor="name" className="mb-1.5 block text-[13px] font-medium text-stone">
             Name
           </label>
           <input
@@ -33,11 +31,11 @@ export function ContactForm() {
             type="text"
             required
             autoComplete="name"
-            className="w-full rounded-xl border border-ink/15 bg-white px-4 py-3 text-sm text-ink outline-none transition-colors focus:border-burgundy"
+            className="w-full border-0 border-b border-ink/15 bg-transparent px-0 py-2.5 text-[15px] text-ink outline-none transition-colors focus:border-ink"
           />
         </div>
         <div>
-          <label htmlFor="email" className="mb-1.5 block text-xs font-bold uppercase tracking-[0.1em] text-stone">
+          <label htmlFor="email" className="mb-1.5 block text-[13px] font-medium text-stone">
             Email
           </label>
           <input
@@ -46,27 +44,27 @@ export function ContactForm() {
             type="email"
             required
             autoComplete="email"
-            className="w-full rounded-xl border border-ink/15 bg-white px-4 py-3 text-sm text-ink outline-none transition-colors focus:border-burgundy"
+            className="w-full border-0 border-b border-ink/15 bg-transparent px-0 py-2.5 text-[15px] text-ink outline-none transition-colors focus:border-ink"
           />
         </div>
       </div>
 
       <div>
-        <label htmlFor="message" className="mb-1.5 block text-xs font-bold uppercase tracking-[0.1em] text-stone">
+        <label htmlFor="message" className="mb-1.5 block text-[13px] font-medium text-stone">
           Message
         </label>
         <textarea
           id="message"
           name="message"
-          rows={4}
+          rows={3}
           required
-          className="w-full resize-none rounded-xl border border-ink/15 bg-white px-4 py-3 text-sm text-ink outline-none transition-colors focus:border-burgundy"
+          className="w-full resize-none border-0 border-b border-ink/15 bg-transparent px-0 py-2.5 text-[15px] text-ink outline-none transition-colors focus:border-ink"
         />
       </div>
 
       <button
         type="submit"
-        className="w-full rounded-full bg-burgundy px-8 py-3.5 text-sm font-bold uppercase tracking-[0.12em] text-cream transition-all hover:bg-burgundy-dark hover:-translate-y-0.5 sm:w-auto"
+        className="inline-flex items-center justify-center rounded-full bg-ink px-7 py-3 text-[15px] font-medium text-paper transition-all hover:bg-graphite hover:-translate-y-0.5"
       >
         Send Message
       </button>

@@ -1,36 +1,44 @@
 import type { ReactNode } from "react";
 
 export function SectionHeading({
-  eyebrow,
+  kicker,
   title,
   description,
-  align = "left",
+  align = "center",
   light = false,
+  size = "default",
 }: {
-  eyebrow: string;
+  kicker?: string;
   title: ReactNode;
   description?: string;
   align?: "left" | "center";
   light?: boolean;
+  size?: "default" | "large";
 }) {
   return (
-    <div className={align === "center" ? "text-center mx-auto max-w-2xl" : "max-w-xl"}>
-      <span
-        className={`block text-xs font-bold uppercase tracking-[0.28em] ${
-          light ? "text-gold" : "text-burgundy"
-        }`}
-      >
-        {eyebrow}
-      </span>
+    <div className={align === "center" ? "mx-auto max-w-3xl text-center" : "max-w-xl"}>
+      {kicker && (
+        <span
+          className={`block text-[13px] font-semibold uppercase tracking-[0.14em] ${
+            light ? "text-paper/50" : "text-stone-light"
+          }`}
+        >
+          {kicker}
+        </span>
+      )}
       <h2
-        className={`mt-4 font-serif italic text-4xl md:text-5xl lg:text-[3.4rem] leading-[1.05] ${
-          light ? "text-cream" : "text-ink"
-        }`}
+        className={`${kicker ? "mt-4" : ""} font-semibold tracking-tightest leading-[1.05] ${
+          size === "large" ? "text-5xl md:text-6xl lg:text-7xl" : "text-4xl md:text-5xl"
+        } ${light ? "text-paper" : "text-ink"}`}
       >
         {title}
       </h2>
       {description && (
-        <p className={`mt-5 text-base md:text-lg leading-relaxed ${light ? "text-cream/70" : "text-stone"}`}>
+        <p
+          className={`mx-auto mt-5 max-w-xl text-lg leading-relaxed ${
+            light ? "text-paper/60" : "text-stone"
+          }`}
+        >
           {description}
         </p>
       )}

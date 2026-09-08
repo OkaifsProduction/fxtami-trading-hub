@@ -10,20 +10,19 @@ const spanClasses: Record<NonNullable<(typeof galleryPhotos)[number]["span"]>, s
 
 export function Gallery() {
   return (
-    <section id="gallery" className="bg-white py-24 md:py-32">
-      <Container>
+    <section id="gallery" className="bg-paper py-28 md:py-36">
+      <Container wide>
         <SectionHeading
-          align="center"
-          eyebrow="The Atmosphere"
-          title="A Taste of Italy, Captured"
+          kicker="The Atmosphere"
+          title="A taste of Italy, captured"
           description="Pizza, pasta, and the people behind them — a glimpse inside Da Vinci."
         />
 
-        <div className="mt-16 grid grid-cols-2 gap-4 sm:grid-cols-4 sm:auto-rows-[220px]">
+        <div className="mt-16 grid grid-cols-2 gap-4 sm:grid-cols-4 sm:auto-rows-[240px]">
           {galleryPhotos.map((photo) => (
             <div
               key={photo.src}
-              className={`group relative overflow-hidden rounded-2xl aspect-square sm:aspect-auto ${
+              className={`group relative overflow-hidden rounded-3xl bg-mist aspect-square sm:aspect-auto ${
                 spanClasses[photo.span ?? "normal"]
               }`}
             >
@@ -31,9 +30,9 @@ export function Gallery() {
                 src={photo.src}
                 alt={photo.alt}
                 loading="lazy"
-                className="h-full w-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-110"
+                className="h-full w-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-110"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-ink/50 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+              <div className="absolute inset-0 bg-gradient-to-t from-ink/40 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
             </div>
           ))}
         </div>
