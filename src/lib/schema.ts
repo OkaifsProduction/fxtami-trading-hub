@@ -10,36 +10,53 @@ export const aanvraagStatusSchema = z.enum([
 
 export const dossierStatusSchema = z.enum(["open", "gesloten"]);
 
+const requestFieldsShape = {
+  requestedAmount: z
+    .number({
+      invalid_type_error: "Gevraagd bedrag is verplicht",
+      required_error: "Gevraagd bedrag is verplicht",
+    })
+    .positive("Gevraagd bedrag moet groter dan 0 zijn")
+    .max(1_000_000, "Gevraagd bedrag is te hoog"),
+  grantedAmount: z
+    .number({ invalid_type_error: "Toegekend bedrag moet een getal zijn" })
+    .min(0, "Toegekend bedrag mag niet negatief zijn")
+    .max(1_000_000, "Toegekend bedrag is te hoog")
+    .nullable(),
+  status: aanvraagStatusSchema,
+  extraInfo: z
+    .string()
+    .trim()
+    .max(4000, "Extra informatie mag maximaal 4000 tekens bevatten")
+    .optional()
+    .or(z.literal("")),
+};
+
+const grantedVsRequestedRefine = {
+  check: (data: { grantedAmount: number | null; requestedAmount: number }) =>
+    data.grantedAmount === null || data.grantedAmount <= data.requestedAmount * 10,
+  message: "Toegekend bedrag lijkt onwaarschijnlijk hoog t.o.v. het gevraagde bedrag",
+};
+
+// Enkel de aanvraagvelden zelf, zonder dossierkoppeling — gebruikt in de
+// "klant-eerst"-flow van "Nieuwe aanvraag", waar het dossier (bestaand of
+// nieuw aan te maken) apart en buiten dit schema om wordt afgehandeld.
+export const requestFieldsSchema = z.object(requestFieldsShape).refine(grantedVsRequestedRefine.check, {
+  message: grantedVsRequestedRefine.message,
+  path: ["grantedAmount"],
+});
+
+export type RequestFieldsValues = z.infer<typeof requestFieldsSchema>;
+
 export const requestFormSchema = z
   .object({
     dossierId: z.string({ required_error: "Dossier is verplicht" }).uuid("Kies een dossier"),
-    requestedAmount: z
-      .number({
-        invalid_type_error: "Gevraagd bedrag is verplicht",
-        required_error: "Gevraagd bedrag is verplicht",
-      })
-      .positive("Gevraagd bedrag moet groter dan 0 zijn")
-      .max(1_000_000, "Gevraagd bedrag is te hoog"),
-    grantedAmount: z
-      .number({ invalid_type_error: "Toegekend bedrag moet een getal zijn" })
-      .min(0, "Toegekend bedrag mag niet negatief zijn")
-      .max(1_000_000, "Toegekend bedrag is te hoog")
-      .nullable(),
-    status: aanvraagStatusSchema,
-    extraInfo: z
-      .string()
-      .trim()
-      .max(4000, "Extra informatie mag maximaal 4000 tekens bevatten")
-      .optional()
-      .or(z.literal("")),
+    ...requestFieldsShape,
   })
-  .refine(
-    (data) => data.grantedAmount === null || data.grantedAmount <= data.requestedAmount * 10,
-    {
-      message: "Toegekend bedrag lijkt onwaarschijnlijk hoog t.o.v. het gevraagde bedrag",
-      path: ["grantedAmount"],
-    },
-  );
+  .refine(grantedVsRequestedRefine.check, {
+    message: grantedVsRequestedRefine.message,
+    path: ["grantedAmount"],
+  });
 
 export type RequestFormValues = z.infer<typeof requestFormSchema>;
 

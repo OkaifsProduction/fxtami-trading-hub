@@ -1,7 +1,7 @@
 import { createRoute, Link, useNavigate } from "@tanstack/react-router";
 import { authenticatedRoute } from "./_authenticated";
-import { useCreateRequest, useDossierOptions } from "@/lib/queries";
-import { RequestForm } from "@/components/RequestForm";
+import { useCreateDossier, useCreateRequest, useDossierOptions, useKlanten } from "@/lib/queries";
+import { RequestForm, type NieuweAanvraagMetKlant } from "@/components/RequestForm";
 import { usePageTitle } from "@/lib/usePageTitle";
 
 export const aanvragenNieuwRoute = createRoute({
@@ -14,7 +14,24 @@ function NieuweAanvraagPage() {
   usePageTitle("Nieuwe aanvraag");
   const navigate = useNavigate();
   const createRequest = useCreateRequest();
-  const { data: dossierOptions, isLoading: dossiersLoading } = useDossierOptions();
+  const createDossier = useCreateDossier();
+  const { data: klantOptions, isLoading: klantenLoading } = useKlanten();
+  const { data: dossierOptions } = useDossierOptions();
+
+  async function handleSubmitMetKlant(payload: NieuweAanvraagMetKlant) {
+    let dossierId = payload.dossierId;
+    if (!dossierId) {
+      const dossier = await createDossier.mutateAsync({
+        klantId: payload.klantId,
+        values: { titel: payload.nieuweDossierTitel ?? "", omschrijving: "", status: "open" },
+      });
+      dossierId = dossier.id;
+    }
+    createRequest.mutate(
+      { dossierId, ...payload.fields },
+      { onSuccess: (row) => navigate({ to: "/aanvragen/$id", params: { id: row.id } }) },
+    );
+  }
 
   return (
     <div className="page">
@@ -26,11 +43,11 @@ function NieuweAanvraagPage() {
       </div>
 
       <div className="card card-padded" style={{ maxWidth: 560 }}>
-        {!dossiersLoading && (dossierOptions ?? []).length === 0 ? (
+        {!klantenLoading && (klantOptions ?? []).length === 0 ? (
           <div className="stack">
             <p className="text-secondary">
-              Er zijn nog geen dossiers. Maak eerst een klant en dossier aan voordat je een
-              aanvraag registreert.
+              Er zijn nog geen klanten. Maak eerst een klant aan voordat je een aanvraag
+              registreert.
             </p>
             <Link to="/klanten/nieuw" className="btn btn-primary">
               <span className="btn-icon">+</span> Nieuwe klant
@@ -38,18 +55,15 @@ function NieuweAanvraagPage() {
           </div>
         ) : (
           <RequestForm
+            klantOptions={klantOptions}
             dossierOptions={dossierOptions}
             submitLabel="Aanvraag opslaan"
-            submitting={createRequest.isPending}
+            submitting={createRequest.isPending || createDossier.isPending}
             onCancel={() => navigate({ to: "/aanvragen" })}
-            onSubmit={(values) => {
-              createRequest.mutate(values, {
-                onSuccess: (row) => navigate({ to: "/aanvragen/$id", params: { id: row.id } }),
-              });
-            }}
+            onSubmitMetKlant={handleSubmitMetKlant}
           />
         )}
-        {createRequest.isError && (
+        {(createRequest.isError || createDossier.isError) && (
           <div className="form-error mt-24">
             Opslaan mislukt. Probeer het opnieuw.
           </div>

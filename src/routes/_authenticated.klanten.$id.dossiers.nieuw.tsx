@@ -14,7 +14,7 @@ function NieuwDossierPage() {
   const { id } = dossierNieuwRoute.useParams();
   const { data: klant } = useKlant(id);
   const navigate = useNavigate();
-  const createDossier = useCreateDossier(id);
+  const createDossier = useCreateDossier();
   usePageTitle("Nieuw dossier");
 
   return (
@@ -34,9 +34,10 @@ function NieuwDossierPage() {
           submitting={createDossier.isPending}
           onCancel={() => navigate({ to: "/klanten/$id", params: { id } })}
           onSubmit={(values) => {
-            createDossier.mutate(values, {
-              onSuccess: (row) => navigate({ to: "/dossiers/$id", params: { id: row.id } }),
-            });
+            createDossier.mutate(
+              { klantId: id, values },
+              { onSuccess: (row) => navigate({ to: "/dossiers/$id", params: { id: row.id } }) },
+            );
           }}
         />
         {createDossier.isError && (

@@ -215,10 +215,10 @@ function toDossierPayload(values: DossierFormValues) {
   };
 }
 
-export function useCreateDossier(klantId: string) {
+export function useCreateDossier() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (values: DossierFormValues) => {
+    mutationFn: async ({ klantId, values }: { klantId: string; values: DossierFormValues }) => {
       const { data: userData } = await supabase.auth.getUser();
       const userId = userData.user?.id;
       if (!userId) throw new Error("Niet aangemeld");
@@ -230,9 +230,9 @@ export function useCreateDossier(klantId: string) {
       if (error) throw error;
       return data;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: dossierKeys.all });
-      queryClient.invalidateQueries({ queryKey: dossierKeys.byKlant(klantId) });
+      queryClient.invalidateQueries({ queryKey: dossierKeys.byKlant(data.klant_id) });
     },
   });
 }
@@ -333,6 +333,88 @@ export function useRequestsWithContext() {
           klantNaam: klantId ? (naamByKlantId.get(klantId) ?? null) : null,
         };
       });
+    },
+  });
+}
+
+export interface KlantAanvraagRow {
+  /** Unieke sleutel voor React-lijsten: aanvraag-id, of klant-id wanneer er geen aanvraag is. */
+  key: string;
+  klantId: string;
+  klantNaam: string;
+  dossierId: string | null;
+  dossierTitel: string | null;
+  requestId: string | null;
+  requestedAmount: number | null;
+  grantedAmount: number | null;
+  status: AanvraagStatus | "nvt";
+  createdAt: string;
+}
+
+/**
+ * Klant-centrisch overzicht voor het aanvragenscherm: elke klant staat er
+ * altijd in, ook zonder dossier of aanvraag (status "nvt"). Bewust een
+ * aparte hook naast useRequestsWithContext — die laatste blijft
+ * aanvraag-gedreven en voedt het dashboard, dat ongewijzigd blijft.
+ */
+export function useKlantenMetAanvragen() {
+  return useQuery({
+    queryKey: [...klantKeys.all, "metAanvragen"],
+    queryFn: async (): Promise<KlantAanvraagRow[]> => {
+      const [klantenRes, dossiersRes, requestsRes] = await Promise.all([
+        supabase.from("klanten").select("*").order("naam"),
+        supabase.from("dossiers").select("id, titel, klant_id"),
+        supabase.from("requests").select("*").order("created_at", { ascending: false }),
+      ]);
+      if (klantenRes.error) throw klantenRes.error;
+      if (dossiersRes.error) throw dossiersRes.error;
+      if (requestsRes.error) throw requestsRes.error;
+
+      const dossierById = new Map((dossiersRes.data ?? []).map((d) => [d.id, d]));
+      const requestsByKlantId = new Map<string, RequestRow[]>();
+      for (const r of requestsRes.data ?? []) {
+        const dossier = r.dossier_id ? dossierById.get(r.dossier_id) : undefined;
+        if (!dossier) continue;
+        const list = requestsByKlantId.get(dossier.klant_id) ?? [];
+        list.push(r);
+        requestsByKlantId.set(dossier.klant_id, list);
+      }
+
+      const rows: KlantAanvraagRow[] = [];
+      for (const k of klantenRes.data ?? []) {
+        const klantRequests = requestsByKlantId.get(k.id) ?? [];
+        if (klantRequests.length === 0) {
+          rows.push({
+            key: k.id,
+            klantId: k.id,
+            klantNaam: k.naam,
+            dossierId: null,
+            dossierTitel: null,
+            requestId: null,
+            requestedAmount: null,
+            grantedAmount: null,
+            status: "nvt",
+            createdAt: k.created_at,
+          });
+        } else {
+          for (const r of klantRequests) {
+            const dossier = r.dossier_id ? dossierById.get(r.dossier_id) : undefined;
+            rows.push({
+              key: r.id,
+              klantId: k.id,
+              klantNaam: k.naam,
+              dossierId: dossier?.id ?? null,
+              dossierTitel: dossier?.titel ?? null,
+              requestId: r.id,
+              requestedAmount: r.requested_amount,
+              grantedAmount: r.granted_amount,
+              status: r.status,
+              createdAt: r.created_at,
+            });
+          }
+        }
+      }
+      return rows;
     },
   });
 }

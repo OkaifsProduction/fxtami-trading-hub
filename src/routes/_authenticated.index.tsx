@@ -56,7 +56,7 @@ function DashboardPage() {
               key={r.id}
               to="/aanvragen/$id"
               params={{ id: r.id }}
-              className="request-row card-interactive"
+              className="request-row dashboard-row card-interactive"
             >
               <div>
                 <div className="request-name">{r.klantNaam ?? "Onbekende klant"}</div>
