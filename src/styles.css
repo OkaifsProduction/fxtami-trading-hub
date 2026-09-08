@@ -570,22 +570,61 @@ p {
   color: white;
 }
 
+/*
+ * Vaste kolombreedtes (minmax) i.p.v. "auto" voor de statuskolom: met "auto"
+ * werd de breedte van die kolom bepaald door de badge-tekst van de rij zelf
+ * ("Open" vs "In behandeling"), waardoor de overige kolommen per rij
+ * verschoven. Met minmax(min, fr) is de kolombreedte voor elke rij identiek,
+ * ongeacht de inhoud.
+ */
 .request-row {
   display: grid;
-  grid-template-columns: 1.6fr 1.6fr 1fr 1fr auto;
+  grid-template-columns:
+    minmax(150px, 1.6fr)
+    minmax(120px, 1.6fr)
+    minmax(80px, 0.9fr)
+    minmax(80px, 0.9fr)
+    minmax(90px, 0.9fr);
   align-items: center;
   gap: 16px;
   padding: 16px 20px;
+}
+
+.request-row > * {
+  min-width: 0;
 }
 
 .request-row .amount {
   text-align: right;
 }
 
+.request-row > .badge {
+  justify-self: end;
+}
+
+/* Dashboard "Recentste aanvragen": klant+omschrijving samen in kolom 1,
+   datum als aparte kolom 2 i.p.v. een losse dossierkolom. */
+.dashboard-row {
+  grid-template-columns:
+    minmax(160px, 2.2fr)
+    minmax(90px, 1fr)
+    minmax(80px, 0.9fr)
+    minmax(80px, 0.9fr)
+    minmax(90px, 0.9fr);
+}
+
 @media (max-width: 720px) {
   .request-row {
-    grid-template-columns: 1fr 1fr;
-    row-gap: 8px;
+    grid-template-columns: 1fr;
+    row-gap: 10px;
+  }
+
+  .request-row .amount {
+    text-align: left;
+  }
+
+  .request-row > .badge {
+    justify-self: start;
   }
 }
 
@@ -596,11 +635,17 @@ p {
 .request-name {
   font-weight: 700;
   font-size: 15px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .request-purpose {
   color: var(--color-text-secondary);
   font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* ============ Generic list rows (klanten, dossiers) ============ */
