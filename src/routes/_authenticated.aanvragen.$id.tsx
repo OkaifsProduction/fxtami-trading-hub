@@ -106,6 +106,10 @@ function AanvraagDetailPage() {
 
   return (
     <div className="page">
+      <div className="print-header">
+        <strong>Ami Legal</strong> — Aanvraag {displayName} — {formatDate(new Date().toISOString())}
+      </div>
+
       <div className="breadcrumb">
         <Link to="/klanten">Klanten</Link>
         <span>/</span>
@@ -133,7 +137,12 @@ function AanvraagDetailPage() {
             Aangemaakt op {formatDate(request.created_at)}
           </p>
         </div>
-        <StatusBadge status={request.status} />
+        <div className="flex-gap-12">
+          <button type="button" className="btn btn-secondary" onClick={() => window.print()}>
+            Afdrukken
+          </button>
+          <StatusBadge status={request.status} />
+        </div>
       </div>
 
       <div className="detail-grid">
@@ -160,7 +169,7 @@ function AanvraagDetailPage() {
           )}
         </div>
 
-        <div className="card card-padded stack">
+        <div className="card card-padded stack no-print">
           <div>
             <div className="field-label" style={{ marginBottom: 8 }}>
               Status wijzigen

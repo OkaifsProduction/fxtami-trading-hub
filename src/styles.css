@@ -818,6 +818,16 @@ p {
   justify-content: space-between;
 }
 
+.flex-gap-12 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.print-header {
+  display: none;
+}
+
 .stack {
   display: flex;
   flex-direction: column;
@@ -838,4 +848,66 @@ p {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+/* ============ Print ============ */
+/* Printen/PDF opslaan gebeurt via de native browser-printdialoog
+   (window.print()) — die geeft zelf al printerkeuze, voorbeeld en
+   "Opslaan als PDF", dus hier enkel de layout opschonen voor papier. */
+@media print {
+  .sidebar,
+  .list-toolbar,
+  .breadcrumb,
+  .btn,
+  .no-print {
+    display: none !important;
+  }
+
+  .app-shell {
+    display: block;
+    background: white;
+  }
+
+  .main-content {
+    width: 100%;
+  }
+
+  .page {
+    max-width: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .card {
+    box-shadow: none;
+    border: none;
+  }
+
+  .request-row,
+  .list-row {
+    break-inside: avoid;
+    border-bottom: 1px solid #ccc;
+  }
+
+  .detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .print-header {
+    display: block;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #7a1f2b;
+    font-size: 13px;
+    color: #444;
+  }
+
+  .print-header strong {
+    color: #7a1f2b;
+    font-size: 15px;
+  }
+
+  body {
+    background: white;
+  }
 }

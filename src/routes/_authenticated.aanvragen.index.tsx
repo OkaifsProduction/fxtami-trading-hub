@@ -4,7 +4,7 @@ import { authenticatedRoute } from "./_authenticated";
 import { useKlantenMetAanvragen, type KlantAanvraagRow } from "@/lib/queries";
 import { StatusBadge } from "@/components/StatusBadge";
 import { EmptyState } from "@/components/EmptyState";
-import { formatAmount } from "@/lib/format";
+import { formatAmount, formatDate } from "@/lib/format";
 import { usePageTitle } from "@/lib/usePageTitle";
 import type { AanvraagStatus } from "@/lib/database.types";
 
@@ -77,14 +77,23 @@ function AanvragenListPage() {
 
   return (
     <div className="page">
+      <div className="print-header">
+        <strong>Ami Legal</strong> — Aanvragenoverzicht — {formatDate(new Date().toISOString())}
+      </div>
+
       <div className="page-header">
         <div>
           <h1 className="page-title">Aanvragen</h1>
           <p className="page-subtitle">{filtered.length} van {rows?.length ?? 0} klanten</p>
         </div>
-        <Link to="/aanvragen/nieuw" className="btn btn-primary">
-          <span className="btn-icon">+</span> Nieuwe aanvraag
-        </Link>
+        <div className="flex-gap-12">
+          <button type="button" className="btn btn-secondary" onClick={() => window.print()}>
+            Afdrukken
+          </button>
+          <Link to="/aanvragen/nieuw" className="btn btn-primary">
+            <span className="btn-icon">+</span> Nieuwe aanvraag
+          </Link>
+        </div>
       </div>
 
       <div className="list-toolbar">
