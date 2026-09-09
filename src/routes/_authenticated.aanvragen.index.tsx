@@ -53,13 +53,9 @@ function AanvragenListPage() {
   const [sort, setSort] = useState<SortOption>("nieuwste");
   const [vanDatum, setVanDatum] = useState("");
   const [totDatum, setTotDatum] = useState("");
-  const [minBedrag, setMinBedrag] = useState("");
-  const [maxBedrag, setMaxBedrag] = useState("");
 
   const filtered = useMemo(() => {
     const term = search.trim().toLowerCase();
-    const min = minBedrag.trim() === "" ? null : Number.parseFloat(minBedrag);
-    const max = maxBedrag.trim() === "" ? null : Number.parseFloat(maxBedrag);
 
     const result = (rows ?? []).filter((r) => {
       const haystack = `${r.klantNaam} ${r.dossierTitel ?? ""}`.toLowerCase();
@@ -68,13 +64,11 @@ function AanvragenListPage() {
       const datum = r.createdAt.slice(0, 10);
       const matchesVan = vanDatum === "" || datum >= vanDatum;
       const matchesTot = totDatum === "" || datum <= totDatum;
-      const matchesMin = min === null || Number.isNaN(min) || r.requestedAmount === null || r.requestedAmount >= min;
-      const matchesMax = max === null || Number.isNaN(max) || r.requestedAmount === null || r.requestedAmount <= max;
-      return matchesSearch && matchesStatus && matchesVan && matchesTot && matchesMin && matchesMax;
+      return matchesSearch && matchesStatus && matchesVan && matchesTot;
     });
 
     return sortRequests(result, sort);
-  }, [rows, search, statusFilter, sort, vanDatum, totDatum, minBedrag, maxBedrag]);
+  }, [rows, search, statusFilter, sort, vanDatum, totDatum]);
 
   return (
     <div className="page">
@@ -148,30 +142,6 @@ function AanvragenListPage() {
             className="input"
             value={totDatum}
             onChange={(e) => setTotDatum(e.target.value)}
-          />
-        </label>
-        <label className="field-inline">
-          Min. gevraagd
-          <input
-            type="text"
-            inputMode="decimal"
-            className="input"
-            style={{ maxWidth: 120 }}
-            placeholder="0"
-            value={minBedrag}
-            onChange={(e) => setMinBedrag(e.target.value)}
-          />
-        </label>
-        <label className="field-inline">
-          Max. gevraagd
-          <input
-            type="text"
-            inputMode="decimal"
-            className="input"
-            style={{ maxWidth: 120 }}
-            placeholder="—"
-            value={maxBedrag}
-            onChange={(e) => setMaxBedrag(e.target.value)}
           />
         </label>
       </div>

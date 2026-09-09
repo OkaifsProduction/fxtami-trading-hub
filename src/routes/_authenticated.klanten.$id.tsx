@@ -111,9 +111,8 @@ function KlantDetailPage() {
           <div className="detail-section">
             <div className="detail-section-label">Contactgegevens</div>
             <div className="detail-section-body">
-              {klant.email || "—"}
-              <br />
-              {klant.adres || "—"}
+              {klant.email && <div>{klant.email}</div>}
+              {klant.adres && <div>{klant.adres}</div>}
             </div>
           </div>
 
@@ -146,13 +145,10 @@ function KlantDetailPage() {
           <div className="card card-padded">
             <div className="detail-section-label">Identificatie</div>
             <div className="detail-section-body">
-              Rolnr {klant.rolnummer || "—"}
-              <br />
-              Geboren {klant.geboortedatum ? formatDate(klant.geboortedatum) : "—"}
-              <br />
-              {klant.telefoon || "—"}
-              <br />
-              {klant.identificatienummer || "—"}
+              {klant.rolnummer && <div>Rolnr {klant.rolnummer}</div>}
+              {klant.geboortedatum && <div>Geboren {formatDate(klant.geboortedatum)}</div>}
+              {klant.telefoon && <div>{klant.telefoon}</div>}
+              {klant.identificatienummer && <div>{klant.identificatienummer}</div>}
             </div>
           </div>
 

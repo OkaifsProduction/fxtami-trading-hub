@@ -112,9 +112,9 @@ function KlantenListPage() {
                 {k.gearchiveerd && <span className="badge badge-gearchiveerd">Gearchiveerd</span>}
               </div>
               <div className="list-row-secondary">
-                {k.bewind_type ? BEWIND_TYPE_LABELS[k.bewind_type] : "—"}
+                {k.bewind_type ? BEWIND_TYPE_LABELS[k.bewind_type] : ""}
               </div>
-              <div className="list-row-secondary">{k.email || k.telefoon || "—"}</div>
+              <div className="list-row-secondary">{k.email || k.telefoon || ""}</div>
               <div className="list-row-secondary">
                 {k.dossierCount} {k.dossierCount === 1 ? "dossier" : "dossiers"}
               </div>

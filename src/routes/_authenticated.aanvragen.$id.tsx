@@ -9,6 +9,7 @@ import {
   useDossier,
   useKlant,
   useDossierOptions,
+  useAanvragenByKlant,
 } from "@/lib/queries";
 import { RequestForm } from "@/components/RequestForm";
 import { StatusBadge } from "@/components/StatusBadge";
@@ -40,6 +41,8 @@ function AanvraagDetailPage() {
   const { data: dossier } = useDossier(request?.dossier_id ?? "");
   const { data: klant } = useKlant(dossier?.klant_id ?? "");
   const { data: dossierOptions } = useDossierOptions();
+  const { data: klantAanvragen } = useAanvragenByKlant(klant?.id ?? "");
+  const overigeAanvragen = (klantAanvragen ?? []).filter((r) => r.id !== id);
   const updateRequest = useUpdateRequest(id);
   const setRequestStatus = useSetRequestStatus(id);
   const deleteRequest = useDeleteRequest();
@@ -245,6 +248,34 @@ function AanvraagDetailPage() {
           )}
         </div>
       </div>
+
+      {overigeAanvragen.length > 0 && (
+        <div className="card mt-24">
+          <div className="card-padded">
+            <h2 style={{ fontSize: 16, fontWeight: 700 }}>Overige aanvragen van {displayName}</h2>
+          </div>
+          {overigeAanvragen.map((r) => (
+            <Link
+              key={r.id}
+              to="/aanvragen/$id"
+              params={{ id: r.id }}
+              className="request-row card-interactive"
+              style={{ gridTemplateColumns: "1fr 1fr 1fr auto" }}
+            >
+              <div className="list-row-secondary">{formatDate(r.created_at)}</div>
+              <div className="amount">
+                <span className="amount-label">Gevraagd</span>
+                {formatAmount(r.requested_amount)}
+              </div>
+              <div className="amount">
+                <span className="amount-label">Toegekend</span>
+                {formatAmount(r.granted_amount)}
+              </div>
+              <StatusBadge status={r.status} />
+            </Link>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
