@@ -105,13 +105,13 @@ function KlantenListPage() {
               to="/klanten/$id"
               params={{ id: k.id }}
               className="list-row card-interactive"
-              style={{ gridTemplateColumns: "0.8fr 1.8fr 1fr 1.3fr 0.8fr" }}
+              style={{ gridTemplateColumns: "1.8fr 0.8fr 1fr 1.3fr 0.8fr" }}
             >
-              <div className="list-row-secondary">{k.rolnummer}</div>
               <div className="list-row-primary">
                 {k.naam}
                 {k.gearchiveerd && <span className="badge badge-gearchiveerd">Gearchiveerd</span>}
               </div>
+              <div className="list-row-secondary">{k.rolnummer}</div>
               <div className="list-row-secondary">
                 {k.bewind_type ? BEWIND_TYPE_LABELS[k.bewind_type] : ""}
               </div>
