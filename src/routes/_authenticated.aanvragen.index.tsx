@@ -9,17 +9,30 @@ import { formatAmount, formatDate } from "@/lib/format";
 import { usePageTitle } from "@/lib/usePageTitle";
 import type { AanvraagStatus } from "@/lib/database.types";
 
+type StatusFilter = "alle" | "actief" | AanvraagStatus | "nvt";
+
 export const aanvragenListRoute = createRoute({
   getParentRoute: () => authenticatedRoute,
   path: "/aanvragen",
+  validateSearch: (search: Record<string, unknown>): { status?: StatusFilter } => ({
+    status:
+      typeof search.status === "string" && search.status in STATUS_FILTER_LABELS
+        ? (search.status as StatusFilter)
+        : undefined,
+  }),
   component: AanvragenListPage,
 });
 
-type StatusFilter = "alle" | AanvraagStatus | "nvt";
 type SortOption = "nieuwste" | "oudste" | "klant" | "gevraagd" | "toegekend";
+
+// "actief" = nog niet afgerond (open of in behandeling) — dezelfde groep als
+// de "Open aanvragen"-tegel op het dashboard, vandaar rechtstreeks vanuit
+// die tegel naar deze lijst met dit filter voorgeselecteerd.
+const ACTIEVE_STATUSSEN: AanvraagStatus[] = ["open", "in_behandeling"];
 
 const STATUS_FILTER_LABELS: Record<StatusFilter, string> = {
   alle: "Alle statussen",
+  actief: "Open (incl. in behandeling)",
   open: "Open",
   in_behandeling: "In behandeling",
   goedgekeurd: "Goedgekeurd",
@@ -47,9 +60,10 @@ function sortRequests(rows: KlantAanvraagRow[], sort: SortOption) {
 
 function AanvragenListPage() {
   usePageTitle("Aanvragen");
+  const routeSearch = aanvragenListRoute.useSearch();
   const { data: rows, isLoading } = useKlantenMetAanvragen();
   const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState<StatusFilter>("alle");
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>(routeSearch.status ?? "alle");
   const [sort, setSort] = useState<SortOption>("nieuwste");
   const [vanDatum, setVanDatum] = useState("");
   const [totDatum, setTotDatum] = useState("");
@@ -60,7 +74,11 @@ function AanvragenListPage() {
     const result = (rows ?? []).filter((r) => {
       const haystack = `${r.klantNaam} ${r.dossierTitel ?? ""}`.toLowerCase();
       const matchesSearch = term === "" || haystack.includes(term);
-      const matchesStatus = statusFilter === "alle" || r.status === statusFilter;
+      const matchesStatus =
+        statusFilter === "alle" ||
+        (statusFilter === "actief"
+          ? ACTIEVE_STATUSSEN.includes(r.status as AanvraagStatus)
+          : r.status === statusFilter);
       const datum = r.createdAt.slice(0, 10);
       const matchesVan = vanDatum === "" || datum >= vanDatum;
       const matchesTot = totDatum === "" || datum <= totDatum;

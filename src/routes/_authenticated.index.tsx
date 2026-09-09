@@ -32,7 +32,13 @@ function DashboardPage() {
       </div>
 
       <div className="stat-grid">
-        <StatTile label="Open aanvragen" value={String(stats.openCount)} accent />
+        <StatTile
+          label="Open aanvragen"
+          value={String(stats.openCount)}
+          accent
+          to="/aanvragen"
+          search={{ status: "actief" }}
+        />
         <StatTile label="Afgehandeld" value={String(stats.handledCount)} />
       </div>
 
