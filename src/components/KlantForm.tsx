@@ -14,7 +14,7 @@ interface KlantFormProps {
 
 export function KlantForm({ initial, submitLabel, submitting, onSubmit, onCancel }: KlantFormProps) {
   const [naam, setNaam] = useState(initial?.naam ?? "");
-  const [klantType, setKlantType] = useState(initial?.klant_type ?? "");
+  const [bewindType, setBewindType] = useState(initial?.bewind_type ?? "");
   const [identificatienummer, setIdentificatienummer] = useState(
     initial?.identificatienummer ?? "",
   );
@@ -29,7 +29,7 @@ export function KlantForm({ initial, submitLabel, submitting, onSubmit, onCancel
 
     const result = klantFormSchema.safeParse({
       naam,
-      klantType,
+      bewindType,
       identificatienummer,
       email,
       telefoon,
@@ -69,20 +69,21 @@ export function KlantForm({ initial, submitLabel, submitting, onSubmit, onCancel
 
       <div className="field-row">
         <div className="field">
-          <label className="field-label" htmlFor="klantType">
-            Type klant
+          <label className="field-label" htmlFor="bewindType">
+            Type bewind
           </label>
           <select
-            id="klantType"
+            id="bewindType"
             className="select"
-            value={klantType}
-            onChange={(e) => setKlantType(e.target.value)}
+            value={bewindType}
+            onChange={(e) => setBewindType(e.target.value)}
           >
             <option value="">Onbekend</option>
-            <option value="natuurlijk_persoon">Natuurlijk persoon</option>
-            <option value="rechtspersoon">Rechtspersoon</option>
+            <option value="goederen">Goederen</option>
+            <option value="persoon">Persoon</option>
+            <option value="beide">Goederen &amp; Persoon</option>
           </select>
-          {errors.klantType && <span className="field-error">{errors.klantType}</span>}
+          {errors.bewindType && <span className="field-error">{errors.bewindType}</span>}
         </div>
 
         <div className="field">
@@ -94,7 +95,7 @@ export function KlantForm({ initial, submitLabel, submitting, onSubmit, onCancel
             className="input"
             value={identificatienummer}
             onChange={(e) => setIdentificatienummer(e.target.value)}
-            placeholder="Rijksregister- of ondernemingsnummer"
+            placeholder="Rijksregisternummer"
           />
           {errors.identificatienummer && (
             <span className="field-error">{errors.identificatienummer}</span>

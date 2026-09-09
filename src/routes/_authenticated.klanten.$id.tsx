@@ -79,7 +79,7 @@ function KlantDetailPage() {
             {klant.naam}
             {klant.gearchiveerd && <span className="badge badge-gearchiveerd">Gearchiveerd</span>}
           </h1>
-          <p className="page-subtitle">Klant sinds {formatDate(klant.created_at)}</p>
+          <p className="page-subtitle">In bewind sinds {formatDate(klant.created_at)}</p>
         </div>
         <div className="flex-between" style={{ gap: 12 }}>
           <button
@@ -99,11 +99,13 @@ function KlantDetailPage() {
         <div className="card card-padded">
           <div className="detail-section-label">Klantgegevens</div>
           <div className="detail-section-body">
-            {klant.klant_type === "rechtspersoon"
-              ? "Rechtspersoon"
-              : klant.klant_type === "natuurlijk_persoon"
-                ? "Natuurlijk persoon"
-                : "Type onbekend"}
+            {klant.bewind_type === "beide"
+              ? "Goederen & Persoon"
+              : klant.bewind_type === "goederen"
+                ? "Goederen"
+                : klant.bewind_type === "persoon"
+                  ? "Persoon"
+                  : "Type bewind onbekend"}
             {klant.identificatienummer && ` · ${klant.identificatienummer}`}
           </div>
 

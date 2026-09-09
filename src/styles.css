@@ -109,6 +109,7 @@ p {
   color: var(--color-text);
   padding: 0 8px 20px;
   white-space: nowrap;
+  text-decoration: none;
 }
 
 .brand-mark {

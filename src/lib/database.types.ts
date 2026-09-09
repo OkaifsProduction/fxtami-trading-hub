@@ -1,7 +1,7 @@
 export type AanvraagStatus = "open" | "in_behandeling" | "goedgekeurd" | "geweigerd" | "afgehandeld";
 export type DossierStatus = "open" | "gesloten";
 
-export type KlantType = "natuurlijk_persoon" | "rechtspersoon";
+export type BewindType = "goederen" | "persoon" | "beide";
 
 export type KlantRow = {
   id: string;
@@ -11,7 +11,7 @@ export type KlantRow = {
   telefoon: string | null;
   adres: string | null;
   extra_info: string | null;
-  klant_type: KlantType | null;
+  bewind_type: BewindType | null;
   identificatienummer: string | null;
   gearchiveerd: boolean;
   created_at: string;

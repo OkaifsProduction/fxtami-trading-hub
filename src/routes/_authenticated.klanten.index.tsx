@@ -13,9 +13,10 @@ export const klantenListRoute = createRoute({
 
 type SortOption = "naam" | "dossiers" | "nieuwste";
 
-const KLANT_TYPE_LABELS: Record<string, string> = {
-  natuurlijk_persoon: "Natuurlijk persoon",
-  rechtspersoon: "Rechtspersoon",
+const BEWIND_TYPE_LABELS: Record<string, string> = {
+  goederen: "Goederen",
+  persoon: "Persoon",
+  beide: "Goederen & Persoon",
 };
 
 function sortKlanten(klanten: KlantWithDossierCount[], sort: SortOption) {
@@ -111,7 +112,7 @@ function KlantenListPage() {
                 {k.gearchiveerd && <span className="badge badge-gearchiveerd">Gearchiveerd</span>}
               </div>
               <div className="list-row-secondary">
-                {k.klant_type ? KLANT_TYPE_LABELS[k.klant_type] : "—"}
+                {k.bewind_type ? BEWIND_TYPE_LABELS[k.bewind_type] : "—"}
               </div>
               <div className="list-row-secondary">{k.email || k.telefoon || "—"}</div>
               <div className="list-row-secondary">

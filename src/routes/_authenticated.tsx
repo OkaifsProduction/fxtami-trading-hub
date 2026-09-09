@@ -36,10 +36,10 @@ function AuthenticatedLayout() {
   return (
     <div className="app-shell">
       <aside className="sidebar">
-        <div className="sidebar-brand">
+        <Link to="/" className="sidebar-brand">
           <img src={amiLegalLogoIcon} alt="" className="brand-mark" />
           Ami Legal
-        </div>
+        </Link>
         <nav className="sidebar-nav">
           <Link to="/" activeOptions={{ exact: true }} activeProps={{ className: "active" }}>
             Dashboard

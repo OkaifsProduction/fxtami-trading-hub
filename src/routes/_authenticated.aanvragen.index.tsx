@@ -4,6 +4,7 @@ import { authenticatedRoute } from "./_authenticated";
 import { useKlantenMetAanvragen, type KlantAanvraagRow } from "@/lib/queries";
 import { StatusBadge } from "@/components/StatusBadge";
 import { EmptyState } from "@/components/EmptyState";
+import { PrintIcon } from "@/components/PrintIcon";
 import { formatAmount, formatDate } from "@/lib/format";
 import { usePageTitle } from "@/lib/usePageTitle";
 import type { AanvraagStatus } from "@/lib/database.types";
@@ -88,7 +89,7 @@ function AanvragenListPage() {
         </div>
         <div className="flex-gap-12">
           <button type="button" className="btn btn-secondary" onClick={() => window.print()}>
-            Afdrukken
+            <PrintIcon /> Afdrukken
           </button>
           <Link to="/aanvragen/nieuw" className="btn btn-primary">
             <span className="btn-icon">+</span> Nieuwe aanvraag

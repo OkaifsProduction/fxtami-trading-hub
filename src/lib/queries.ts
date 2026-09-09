@@ -61,7 +61,7 @@ export function useKlant(id: string) {
 function toKlantPayload(values: KlantFormValues) {
   return {
     naam: values.naam,
-    klant_type: values.klantType || null,
+    bewind_type: values.bewindType || null,
     identificatienummer: values.identificatienummer || null,
     email: values.email || null,
     telefoon: values.telefoon || null,

@@ -12,6 +12,7 @@ import {
 } from "@/lib/queries";
 import { RequestForm } from "@/components/RequestForm";
 import { StatusBadge } from "@/components/StatusBadge";
+import { PrintIcon } from "@/components/PrintIcon";
 import { formatAmount, formatDate } from "@/lib/format";
 import { usePageTitle } from "@/lib/usePageTitle";
 import type { AanvraagStatus } from "@/lib/database.types";
@@ -139,7 +140,7 @@ function AanvraagDetailPage() {
         </div>
         <div className="flex-gap-12">
           <button type="button" className="btn btn-secondary" onClick={() => window.print()}>
-            Afdrukken
+            <PrintIcon /> Afdrukken
           </button>
           <StatusBadge status={request.status} />
         </div>
