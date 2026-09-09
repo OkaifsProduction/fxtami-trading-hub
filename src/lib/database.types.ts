@@ -13,6 +13,11 @@ export type KlantRow = {
   extra_info: string | null;
   bewind_type: BewindType | null;
   identificatienummer: string | null;
+  rolnummer: string | null;
+  geboortedatum: string | null;
+  vertrouwenspersoon_naam: string | null;
+  vertrouwenspersoon_telefoon: string | null;
+  familieleden: string | null;
   gearchiveerd: boolean;
   created_at: string;
 };

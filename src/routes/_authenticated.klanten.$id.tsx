@@ -106,7 +106,6 @@ function KlantDetailPage() {
                 : klant.bewind_type === "persoon"
                   ? "Persoon"
                   : "Type bewind onbekend"}
-            {klant.identificatienummer && ` · ${klant.identificatienummer}`}
           </div>
 
           <div className="detail-section">
@@ -114,11 +113,26 @@ function KlantDetailPage() {
             <div className="detail-section-body">
               {klant.email || "—"}
               <br />
-              {klant.telefoon || "—"}
-              <br />
               {klant.adres || "—"}
             </div>
           </div>
+
+          {(klant.vertrouwenspersoon_naam || klant.familieleden) && (
+            <div className="detail-section">
+              <div className="detail-section-label">Familie / vertrouwenspersoon</div>
+              <div className="detail-section-body">
+                {klant.vertrouwenspersoon_naam && (
+                  <>
+                    Vertrouwenspersoon: {klant.vertrouwenspersoon_naam}
+                    {klant.vertrouwenspersoon_telefoon &&
+                      ` (${klant.vertrouwenspersoon_telefoon})`}
+                    {klant.familieleden && <br />}
+                  </>
+                )}
+                {klant.familieleden}
+              </div>
+            </div>
+          )}
 
           {klant.extra_info && (
             <div className="detail-section">
@@ -128,11 +142,26 @@ function KlantDetailPage() {
           )}
         </div>
 
-        <div className="card card-padded">
-          <div className="detail-section-label">Dossiers</div>
-          <p className="text-secondary" style={{ fontSize: 13, marginTop: 4 }}>
-            {dossiers?.length ?? 0} dossier{(dossiers?.length ?? 0) === 1 ? "" : "s"}
-          </p>
+        <div className="stack">
+          <div className="card card-padded">
+            <div className="detail-section-label">Identificatie</div>
+            <div className="detail-section-body">
+              Rolnr {klant.rolnummer || "—"}
+              <br />
+              Geboren {klant.geboortedatum ? formatDate(klant.geboortedatum) : "—"}
+              <br />
+              {klant.telefoon || "—"}
+              <br />
+              {klant.identificatienummer || "—"}
+            </div>
+          </div>
+
+          <div className="card card-padded">
+            <div className="detail-section-label">Dossiers</div>
+            <p className="text-secondary" style={{ fontSize: 13, marginTop: 4 }}>
+              {dossiers?.length ?? 0} dossier{(dossiers?.length ?? 0) === 1 ? "" : "s"}
+            </p>
+          </div>
         </div>
       </div>
 

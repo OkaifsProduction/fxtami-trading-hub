@@ -63,9 +63,14 @@ function toKlantPayload(values: KlantFormValues) {
     naam: values.naam,
     bewind_type: values.bewindType || null,
     identificatienummer: values.identificatienummer || null,
+    rolnummer: values.rolnummer || null,
+    geboortedatum: values.geboortedatum || null,
     email: values.email || null,
     telefoon: values.telefoon || null,
     adres: values.adres || null,
+    vertrouwenspersoon_naam: values.vertrouwenspersoonNaam || null,
+    vertrouwenspersoon_telefoon: values.vertrouwenspersoonTelefoon || null,
+    familieleden: values.familieleden || null,
     extra_info: values.extraInfo || null,
   };
 }
