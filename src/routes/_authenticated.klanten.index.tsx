@@ -105,8 +105,9 @@ function KlantenListPage() {
               to="/klanten/$id"
               params={{ id: k.id }}
               className="list-row card-interactive"
-              style={{ gridTemplateColumns: "2fr 1.2fr 1.4fr 1fr" }}
+              style={{ gridTemplateColumns: "0.8fr 1.8fr 1fr 1.3fr 0.8fr" }}
             >
+              <div className="list-row-secondary">{k.rolnummer}</div>
               <div className="list-row-primary">
                 {k.naam}
                 {k.gearchiveerd && <span className="badge badge-gearchiveerd">Gearchiveerd</span>}
