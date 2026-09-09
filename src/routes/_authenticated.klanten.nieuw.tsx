@@ -3,6 +3,7 @@ import { authenticatedRoute } from "./_authenticated";
 import { useCreateKlant } from "@/lib/queries";
 import { KlantForm } from "@/components/KlantForm";
 import { usePageTitle } from "@/lib/usePageTitle";
+import { useLocale } from "@/lib/i18n";
 
 export const klantNieuwRoute = createRoute({
   getParentRoute: () => authenticatedRoute,
@@ -11,7 +12,8 @@ export const klantNieuwRoute = createRoute({
 });
 
 function NieuweKlantPage() {
-  usePageTitle("Nieuwe klant");
+  const { t } = useLocale();
+  usePageTitle(t("klanten.nieuweKlant"));
   const navigate = useNavigate();
   const createKlant = useCreateKlant();
 
@@ -19,14 +21,14 @@ function NieuweKlantPage() {
     <div className="page">
       <div className="page-header">
         <div>
-          <h1 className="page-title">Nieuwe klant</h1>
-          <p className="page-subtitle">Voeg een nieuwe klant toe</p>
+          <h1 className="page-title">{t("klanten.nieuweKlant")}</h1>
+          <p className="page-subtitle">{t("klantNieuw.subtitle")}</p>
         </div>
       </div>
 
       <div className="card card-padded" style={{ maxWidth: 560 }}>
         <KlantForm
-          submitLabel="Klant opslaan"
+          submitLabel={t("klantNieuw.opslaan")}
           submitting={createKlant.isPending}
           onCancel={() => navigate({ to: "/klanten" })}
           onSubmit={(values) => {
@@ -35,7 +37,7 @@ function NieuweKlantPage() {
             });
           }}
         />
-        {createKlant.isError && <div className="form-error mt-24">Opslaan mislukt. Probeer het opnieuw.</div>}
+        {createKlant.isError && <div className="form-error mt-24">{t("common.opslaanMislukt")}</div>}
       </div>
     </div>
   );

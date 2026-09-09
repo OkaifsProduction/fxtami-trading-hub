@@ -16,14 +16,15 @@ import { StatusBadge } from "@/components/StatusBadge";
 import { PrintIcon } from "@/components/PrintIcon";
 import { formatAmount, formatDate } from "@/lib/format";
 import { usePageTitle } from "@/lib/usePageTitle";
+import { useLocale, type TranslationKey } from "@/lib/i18n";
 import type { AanvraagStatus } from "@/lib/database.types";
 
-const STATUS_OPTIONS: { value: AanvraagStatus; label: string }[] = [
-  { value: "open", label: "Open" },
-  { value: "in_behandeling", label: "In behandeling" },
-  { value: "goedgekeurd", label: "Goedgekeurd" },
-  { value: "geweigerd", label: "Geweigerd" },
-  { value: "afgehandeld", label: "Afgehandeld" },
+const STATUS_OPTIONS: { value: AanvraagStatus; labelKey: TranslationKey }[] = [
+  { value: "open", labelKey: "status.open" },
+  { value: "in_behandeling", labelKey: "status.inBehandeling" },
+  { value: "goedgekeurd", labelKey: "status.goedgekeurd" },
+  { value: "geweigerd", labelKey: "status.geweigerd" },
+  { value: "afgehandeld", labelKey: "status.afgehandeld" },
 ];
 
 const BEVESTIGING_VEREIST: AanvraagStatus[] = ["geweigerd", "afgehandeld"];
@@ -35,6 +36,7 @@ export const aanvraagDetailRoute = createRoute({
 });
 
 function AanvraagDetailPage() {
+  const { t } = useLocale();
   const { id } = aanvraagDetailRoute.useParams();
   const navigate = useNavigate();
   const { data: request, isLoading } = useRequest(id);
@@ -49,7 +51,7 @@ function AanvraagDetailPage() {
   const [isEditing, setIsEditing] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [pendingStatus, setPendingStatus] = useState<AanvraagStatus | null>(null);
-  usePageTitle(klant?.naam ?? request?.name ?? "Aanvraag");
+  usePageTitle(klant?.naam ?? request?.name ?? t("aanvraagDetail.nietGevondenTitel"));
 
   function handleStatusChange(next: AanvraagStatus) {
     if (!request || next === request.status) return;
@@ -63,7 +65,7 @@ function AanvraagDetailPage() {
   if (isLoading) {
     return (
       <div className="page">
-        <div className="empty-state">Laden…</div>
+        <div className="empty-state">{t("common.laden")}</div>
       </div>
     );
   }
@@ -72,26 +74,26 @@ function AanvraagDetailPage() {
     return (
       <div className="page">
         <div className="empty-state">
-          <div className="empty-state-title">Aanvraag niet gevonden</div>
+          <div className="empty-state-title">{t("aanvraagDetail.nietGevondenTitel")}</div>
         </div>
       </div>
     );
   }
 
-  const displayName = klant?.naam ?? request.name ?? "Onbekende klant";
-  const displayPurpose = dossier?.titel ?? request.purpose ?? "Geen dossier gekoppeld";
+  const displayName = klant?.naam ?? request.name ?? t("aanvraagDetail.onbekendeKlant");
+  const displayPurpose = dossier?.titel ?? request.purpose ?? t("aanvraagDetail.geenDossierGekoppeld");
 
   if (isEditing) {
     return (
       <div className="page">
         <div className="page-header">
-          <h1 className="page-title">Aanvraag bewerken</h1>
+          <h1 className="page-title">{t("aanvraagDetail.wijzigenTitel")}</h1>
         </div>
         <div className="card card-padded" style={{ maxWidth: 560 }}>
           <RequestForm
             initial={request}
             dossierOptions={dossierOptions}
-            submitLabel="Wijzigingen opslaan"
+            submitLabel={t("aanvraagDetail.wijzigingenOpslaan")}
             submitting={updateRequest.isPending}
             onCancel={() => setIsEditing(false)}
             onSubmit={(values) => {
@@ -101,7 +103,7 @@ function AanvraagDetailPage() {
             }}
           />
           {updateRequest.isError && (
-            <div className="form-error mt-24">Opslaan mislukt. Probeer het opnieuw.</div>
+            <div className="form-error mt-24">{t("common.opslaanMislukt")}</div>
           )}
         </div>
       </div>
@@ -111,11 +113,11 @@ function AanvraagDetailPage() {
   return (
     <div className="page">
       <div className="print-header">
-        <strong>Ami Legal</strong> — Aanvraag {displayName} — {formatDate(new Date().toISOString())}
+        <strong>Ami Legal</strong> — {displayName} — {formatDate(new Date().toISOString())}
       </div>
 
       <div className="breadcrumb">
-        <Link to="/klanten">Klanten</Link>
+        <Link to="/klanten">{t("klanten.title")}</Link>
         <span>/</span>
         {klant ? (
           <Link to="/klanten/$id" params={{ id: klant.id }}>
@@ -138,12 +140,12 @@ function AanvraagDetailPage() {
         <div>
           <h1 className="page-title">{displayName}</h1>
           <p className="page-subtitle">
-            Aangemaakt op {formatDate(request.created_at)}
+            {t("aanvraagDetail.aangemaaktOp")} {formatDate(request.created_at)}
           </p>
         </div>
         <div className="flex-gap-12">
           <button type="button" className="btn btn-secondary" onClick={() => window.print()}>
-            <PrintIcon /> Afdrukken
+            <PrintIcon /> {t("common.afdrukken")}
           </button>
           <StatusBadge status={request.status} />
         </div>
@@ -151,23 +153,23 @@ function AanvraagDetailPage() {
 
       <div className="detail-grid">
         <div className="card card-padded">
-          <div className="detail-section-label">Dossier</div>
+          <div className="detail-section-label">{t("aanvraagDetail.dossier")}</div>
           <div className="detail-section-body">{displayPurpose}</div>
 
           <div className="detail-amounts">
             <div>
-              <span className="amount-label">Gevraagd bedrag</span>
+              <span className="amount-label">{t("aanvraagDetail.gevraagdBedrag")}</span>
               <div className="stat-value">{formatAmount(request.requested_amount)}</div>
             </div>
             <div>
-              <span className="amount-label">Toegekend bedrag</span>
+              <span className="amount-label">{t("aanvraagDetail.toegekendBedrag")}</span>
               <div className="stat-value accent">{formatAmount(request.granted_amount)}</div>
             </div>
           </div>
 
           {request.extra_info && (
             <div className="detail-section">
-              <div className="detail-section-label">Extra informatie</div>
+              <div className="detail-section-label">{t("aanvraagDetail.extraInformatie")}</div>
               <div className="detail-section-body">{request.extra_info}</div>
             </div>
           )}
@@ -176,7 +178,7 @@ function AanvraagDetailPage() {
         <div className="card card-padded stack no-print">
           <div>
             <div className="field-label" style={{ marginBottom: 8 }}>
-              Status wijzigen
+              {t("aanvraagDetail.statusWijzigen")}
             </div>
             <select
               className="select"
@@ -185,7 +187,7 @@ function AanvraagDetailPage() {
             >
               {STATUS_OPTIONS.map((option) => (
                 <option key={option.value} value={option.value}>
-                  {option.label}
+                  {t(option.labelKey)}
                 </option>
               ))}
             </select>
@@ -194,8 +196,9 @@ function AanvraagDetailPage() {
           {pendingStatus && (
             <div className="stack">
               <p className="text-secondary" style={{ fontSize: 13 }}>
-                Weet je zeker dat je deze aanvraag als "
-                {STATUS_OPTIONS.find((o) => o.value === pendingStatus)?.label}" wil markeren?
+                {t("aanvraagDetail.bevestigVraag")} "
+                {t(STATUS_OPTIONS.find((o) => o.value === pendingStatus)?.labelKey ?? "status.nvt")}"{" "}
+                {t("aanvraagDetail.wilMarkeren")}
               </p>
               <button
                 className="btn btn-primary btn-block"
@@ -206,25 +209,24 @@ function AanvraagDetailPage() {
                   });
                 }}
               >
-                {setRequestStatus.isPending ? "Bezig met opslaan…" : "Ja, bevestigen"}
+                {setRequestStatus.isPending ? t("common.bezigMetOpslaan") : t("common.jaBevestigen")}
               </button>
               <button className="btn btn-ghost btn-block" onClick={() => setPendingStatus(null)}>
-                Annuleren
+                {t("common.annuleren")}
               </button>
             </div>
           )}
           {setRequestStatus.isError && !pendingStatus && (
-            <div className="form-error">Status wijzigen mislukt. Probeer het opnieuw.</div>
+            <div className="form-error">{t("common.opslaanMislukt")}</div>
           )}
 
           <button className="btn btn-secondary btn-block" onClick={() => setIsEditing(true)}>
-            Bewerken
+            {t("common.bewerken")}
           </button>
           {confirmDelete ? (
             <div className="stack">
               <p className="text-secondary" style={{ fontSize: 13 }}>
-                Weet je zeker dat je deze aanvraag wilt verwijderen? Dit kan niet ongedaan gemaakt
-                worden.
+                {t("aanvraagDetail.bevestigVerwijderen")}
               </p>
               <button
                 className="btn btn-danger btn-block"
@@ -235,15 +237,15 @@ function AanvraagDetailPage() {
                   });
                 }}
               >
-                {deleteRequest.isPending ? "Bezig met verwijderen…" : "Ja, verwijderen"}
+                {deleteRequest.isPending ? t("common.verwijderen") : t("common.jaVerwijderen")}
               </button>
               <button className="btn btn-ghost btn-block" onClick={() => setConfirmDelete(false)}>
-                Annuleren
+                {t("common.annuleren")}
               </button>
             </div>
           ) : (
             <button className="btn btn-ghost btn-block" onClick={() => setConfirmDelete(true)}>
-              Verwijderen
+              {t("aanvraagDetail.verwijderenTitel")}
             </button>
           )}
         </div>
@@ -252,7 +254,9 @@ function AanvraagDetailPage() {
       {overigeAanvragen.length > 0 && (
         <div className="card mt-24">
           <div className="card-padded">
-            <h2 style={{ fontSize: 16, fontWeight: 700 }}>Overige aanvragen van {displayName}</h2>
+            <h2 style={{ fontSize: 16, fontWeight: 700 }}>
+              {t("aanvraagDetail.overigeAanvragenVan")} {displayName}
+            </h2>
           </div>
           {overigeAanvragen.map((r) => (
             <Link
@@ -264,11 +268,11 @@ function AanvraagDetailPage() {
             >
               <div className="list-row-secondary">{formatDate(r.created_at)}</div>
               <div className="amount">
-                <span className="amount-label">Gevraagd</span>
+                <span className="amount-label">{t("aanvragen.gevraagd")}</span>
                 {formatAmount(r.requested_amount)}
               </div>
               <div className="amount">
-                <span className="amount-label">Toegekend</span>
+                <span className="amount-label">{t("aanvragen.toegekend")}</span>
                 {formatAmount(r.granted_amount)}
               </div>
               <StatusBadge status={r.status} />

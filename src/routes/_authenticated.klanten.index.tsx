@@ -4,6 +4,7 @@ import { authenticatedRoute } from "./_authenticated";
 import { useKlantenWithDossierCount, type KlantWithDossierCount } from "@/lib/queries";
 import { EmptyState } from "@/components/EmptyState";
 import { usePageTitle } from "@/lib/usePageTitle";
+import { useLocale, type TranslationKey } from "@/lib/i18n";
 
 export const klantenListRoute = createRoute({
   getParentRoute: () => authenticatedRoute,
@@ -13,10 +14,10 @@ export const klantenListRoute = createRoute({
 
 type SortOption = "naam" | "dossiers" | "nieuwste";
 
-const BEWIND_TYPE_LABELS: Record<string, string> = {
-  goederen: "Goederen",
-  persoon: "Persoon",
-  beide: "Goederen & Persoon",
+const BEWIND_TYPE_LABEL_KEYS: Record<string, TranslationKey> = {
+  goederen: "klantForm.goederen",
+  persoon: "klantForm.persoon",
+  beide: "klantForm.goederenEnPersoon",
 };
 
 function sortKlanten(klanten: KlantWithDossierCount[], sort: SortOption) {
@@ -33,7 +34,8 @@ function sortKlanten(klanten: KlantWithDossierCount[], sort: SortOption) {
 }
 
 function KlantenListPage() {
-  usePageTitle("Klanten");
+  const { t } = useLocale();
+  usePageTitle(t("klanten.title"));
   const { data: klanten, isLoading } = useKlantenWithDossierCount();
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<SortOption>("naam");
@@ -52,13 +54,13 @@ function KlantenListPage() {
     <div className="page">
       <div className="page-header">
         <div>
-          <h1 className="page-title">Klanten</h1>
+          <h1 className="page-title">{t("klanten.title")}</h1>
           <p className="page-subtitle">
-            {filtered.length} van {zichtbaarAantal} klanten
+            {filtered.length} {t("aanvragen.van")} {zichtbaarAantal} {t("klanten.title").toLowerCase()}
           </p>
         </div>
         <Link to="/klanten/nieuw" className="btn btn-primary">
-          <span className="btn-icon">+</span> Nieuwe klant
+          <span className="btn-icon">+</span> {t("klanten.nieuweKlant")}
         </Link>
       </div>
 
@@ -66,7 +68,7 @@ function KlantenListPage() {
         <input
           type="text"
           className="input"
-          placeholder="Zoek op naam…"
+          placeholder={t("klanten.zoekPlaceholder")}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
@@ -76,9 +78,9 @@ function KlantenListPage() {
           value={sort}
           onChange={(e) => setSort(e.target.value as SortOption)}
         >
-          <option value="naam">Sorteer: naam</option>
-          <option value="dossiers">Sorteer: aantal dossiers</option>
-          <option value="nieuwste">Sorteer: nieuwste eerst</option>
+          <option value="naam">{t("klanten.sorteerNaam")}</option>
+          <option value="dossiers">{t("klanten.sorteerDossiers")}</option>
+          <option value="nieuwste">{t("klanten.sorteerNieuwste")}</option>
         </select>
         <label className="toggle-label">
           <input
@@ -86,17 +88,17 @@ function KlantenListPage() {
             checked={toonGearchiveerd}
             onChange={(e) => setToonGearchiveerd(e.target.checked)}
           />
-          Toon gearchiveerde klanten
+          {t("klanten.toonGearchiveerd")}
         </label>
       </div>
 
       <div className="card">
         {isLoading ? (
-          <div className="empty-state">Laden…</div>
+          <div className="empty-state">{t("common.laden")}</div>
         ) : filtered.length === 0 ? (
           <EmptyState
-            title="Geen klanten gevonden"
-            description="Voeg een nieuwe klant toe om te starten."
+            title={t("klanten.geenResultatenTitel")}
+            description={t("klanten.geenResultatenBeschrijving")}
           />
         ) : (
           filtered.map((k) => (
@@ -109,15 +111,17 @@ function KlantenListPage() {
             >
               <div className="list-row-primary">
                 {k.naam}
-                {k.gearchiveerd && <span className="badge badge-gearchiveerd">Gearchiveerd</span>}
+                {k.gearchiveerd && (
+                  <span className="badge badge-gearchiveerd">{t("klantDetail.gearchiveerd")}</span>
+                )}
               </div>
               <div className="list-row-secondary">{k.rolnummer}</div>
               <div className="list-row-secondary">
-                {k.bewind_type ? BEWIND_TYPE_LABELS[k.bewind_type] : ""}
+                {k.bewind_type ? t(BEWIND_TYPE_LABEL_KEYS[k.bewind_type]) : ""}
               </div>
               <div className="list-row-secondary">{k.email || k.telefoon || ""}</div>
               <div className="list-row-secondary">
-                {k.dossierCount} {k.dossierCount === 1 ? "dossier" : "dossiers"}
+                {k.dossierCount} {k.dossierCount === 1 ? t("klanten.dossier") : t("klanten.dossiers")}
               </div>
             </Link>
           ))

@@ -5,6 +5,7 @@ import { StatusBadge } from "@/components/StatusBadge";
 import { EmptyState } from "@/components/EmptyState";
 import { formatAmount, formatDate } from "@/lib/format";
 import { usePageTitle } from "@/lib/usePageTitle";
+import { useLocale } from "@/lib/i18n";
 
 export const begeleiderDossierDetailRoute = createRoute({
   getParentRoute: () => begeleiderRoute,
@@ -13,15 +14,16 @@ export const begeleiderDossierDetailRoute = createRoute({
 });
 
 function BegeleiderDossierDetailPage() {
+  const { t } = useLocale();
   const { id } = begeleiderDossierDetailRoute.useParams();
   const { data: dossier, isLoading } = useBegeleiderDossierDetail(id);
   const { data: aanvragen, isLoading: aanvragenLoading } = useBegeleiderDossierAanvragen(id);
-  usePageTitle(dossier?.dossier_titel ?? "Dossier");
+  usePageTitle(dossier?.dossier_titel ?? t("begeleider.nietGevondenTitel"));
 
   if (isLoading) {
     return (
       <div className="page">
-        <div className="empty-state">Laden…</div>
+        <div className="empty-state">{t("common.laden")}</div>
       </div>
     );
   }
@@ -30,8 +32,8 @@ function BegeleiderDossierDetailPage() {
     return (
       <div className="page">
         <div className="empty-state">
-          <div className="empty-state-title">Dossier niet gevonden</div>
-          <p>Dit dossier bestaat niet (meer), of is niet aan jou toegewezen.</p>
+          <div className="empty-state-title">{t("begeleider.nietGevondenTitel")}</div>
+          <p>{t("begeleider.nietGevondenBeschrijving")}</p>
         </div>
       </div>
     );
@@ -40,7 +42,7 @@ function BegeleiderDossierDetailPage() {
   return (
     <div className="page">
       <div className="breadcrumb">
-        <Link to="/begeleider">Mijn dossiers</Link>
+        <Link to="/begeleider">{t("nav.mijnDossiers")}</Link>
         <span>/</span>
         <span>{dossier.klant_naam}</span>
       </div>
@@ -55,14 +57,14 @@ function BegeleiderDossierDetailPage() {
 
       <div className="card">
         <div className="card-padded">
-          <h2 style={{ fontSize: 16, fontWeight: 700 }}>Aanvragen</h2>
+          <h2 style={{ fontSize: 16, fontWeight: 700 }}>{t("begeleider.aanvragen")}</h2>
         </div>
         {aanvragenLoading ? (
-          <div className="empty-state">Laden…</div>
+          <div className="empty-state">{t("common.laden")}</div>
         ) : (aanvragen ?? []).length === 0 ? (
           <EmptyState
-            title="Nog geen aanvragen"
-            description="Er zijn nog geen aanvragen geregistreerd in dit dossier."
+            title={t("begeleider.geenAanvragenTitel")}
+            description={t("begeleider.geenAanvragenBeschrijving")}
           />
         ) : (
           aanvragen?.map((a) => (
@@ -73,11 +75,11 @@ function BegeleiderDossierDetailPage() {
             >
               <div className="list-row-secondary">{formatDate(a.aangemaakt)}</div>
               <div className="amount">
-                <span className="amount-label">Gevraagd</span>
+                <span className="amount-label">{t("aanvragen.gevraagd")}</span>
                 {formatAmount(a.requested_amount)}
               </div>
               <div className="amount">
-                <span className="amount-label">Toegekend</span>
+                <span className="amount-label">{t("aanvragen.toegekend")}</span>
                 {formatAmount(a.granted_amount)}
               </div>
               <StatusBadge status={a.status} />

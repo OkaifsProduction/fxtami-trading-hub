@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { RouterProvider } from "@tanstack/react-router";
 import { router } from "./router";
 import { AuthProvider } from "./lib/auth";
+import { LocaleProvider } from "./lib/i18n";
 import "./styles.css";
 
 const queryClient = new QueryClient({
@@ -18,9 +19,11 @@ const queryClient = new QueryClient({
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <RouterProvider router={router} />
-      </AuthProvider>
+      <LocaleProvider>
+        <AuthProvider>
+          <RouterProvider router={router} />
+        </AuthProvider>
+      </LocaleProvider>
     </QueryClientProvider>
   </StrictMode>,
 );

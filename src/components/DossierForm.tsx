@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { dossierFormSchema, type DossierFormValues } from "@/lib/schema";
 import type { DossierRow } from "@/lib/database.types";
+import { useLocale } from "@/lib/i18n";
 
 type FieldErrors = Partial<Record<keyof DossierFormValues, string>>;
 
@@ -19,6 +20,7 @@ export function DossierForm({
   onSubmit,
   onCancel,
 }: DossierFormProps) {
+  const { t } = useLocale();
   const [titel, setTitel] = useState(initial?.titel ?? "");
   const [omschrijving, setOmschrijving] = useState(initial?.omschrijving ?? "");
   const [status, setStatus] = useState(initial?.status ?? "open");
@@ -47,36 +49,38 @@ export function DossierForm({
     <form onSubmit={handleSubmit} noValidate>
       <div className="field">
         <label className="field-label" htmlFor="titel">
-          Titel
+          {t("dossierForm.titel")}
         </label>
         <input
           id="titel"
           className="input"
           value={titel}
           onChange={(e) => setTitel(e.target.value)}
-          placeholder="Bv. Terugreis van Marokko"
+          placeholder={t("dossierForm.titelPlaceholder")}
         />
         {errors.titel && <span className="field-error">{errors.titel}</span>}
       </div>
 
       <div className="field">
         <label className="field-label" htmlFor="omschrijving">
-          Omschrijving
+          {t("dossierForm.omschrijving")}
         </label>
         <textarea
           id="omschrijving"
           className="textarea"
           value={omschrijving}
           onChange={(e) => setOmschrijving(e.target.value)}
-          placeholder="Vrij tekstveld"
+          placeholder={t("dossierForm.omschrijvingPlaceholder")}
         />
         {errors.omschrijving && <span className="field-error">{errors.omschrijving}</span>}
-        <span className="field-hint">{omschrijving.length}/4000 tekens</span>
+        <span className="field-hint">
+          {omschrijving.length}/4000 {t("dossierForm.tekens")}
+        </span>
       </div>
 
       <div className="field">
         <label className="field-label" htmlFor="dossierStatus">
-          Status
+          {t("dossierForm.status")}
         </label>
         <select
           id="dossierStatus"
@@ -84,21 +88,21 @@ export function DossierForm({
           value={status}
           onChange={(e) => setStatus(e.target.value as DossierFormValues["status"])}
         >
-          <option value="open">Open</option>
-          <option value="gesloten">Gesloten</option>
+          <option value="open">{t("status.open")}</option>
+          <option value="gesloten">{t("status.gesloten")}</option>
         </select>
       </div>
 
       <div className="flex-between mt-24">
         {onCancel ? (
           <button type="button" className="btn btn-ghost" onClick={onCancel}>
-            Annuleren
+            {t("common.annuleren")}
           </button>
         ) : (
           <span />
         )}
         <button type="submit" className="btn btn-primary" disabled={submitting}>
-          {submitting ? "Bezig met opslaan…" : submitLabel}
+          {submitting ? t("common.bezigMetOpslaan") : submitLabel}
         </button>
       </div>
     </form>

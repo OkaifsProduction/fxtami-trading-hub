@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { klantFormSchema, type KlantFormValues } from "@/lib/schema";
 import type { KlantRow } from "@/lib/database.types";
+import { useLocale } from "@/lib/i18n";
 
 type FieldErrors = Partial<Record<keyof KlantFormValues, string>>;
 
@@ -13,6 +14,7 @@ interface KlantFormProps {
 }
 
 export function KlantForm({ initial, submitLabel, submitting, onSubmit, onCancel }: KlantFormProps) {
+  const { t } = useLocale();
   const [naam, setNaam] = useState(initial?.naam ?? "");
   const [bewindType, setBewindType] = useState(initial?.bewind_type ?? "");
   const [identificatienummer, setIdentificatienummer] = useState(
@@ -69,14 +71,14 @@ export function KlantForm({ initial, submitLabel, submitting, onSubmit, onCancel
     <form onSubmit={handleSubmit} noValidate>
       <div className="field">
         <label className="field-label" htmlFor="naam">
-          Naam
+          {t("klantForm.naam")}
         </label>
         <input
           id="naam"
           className="input"
           value={naam}
           onChange={(e) => setNaam(e.target.value)}
-          placeholder="Naam van de klant"
+          placeholder={t("klantForm.naamPlaceholder")}
         />
         {errors.naam && <span className="field-error">{errors.naam}</span>}
       </div>
@@ -84,7 +86,7 @@ export function KlantForm({ initial, submitLabel, submitting, onSubmit, onCancel
       <div className="field-row">
         <div className="field">
           <label className="field-label" htmlFor="rolnummer">
-            Rolnr
+            {t("klantForm.rolnr")}
           </label>
           <input
             id="rolnummer"
@@ -98,7 +100,7 @@ export function KlantForm({ initial, submitLabel, submitting, onSubmit, onCancel
 
         <div className="field">
           <label className="field-label" htmlFor="geboortedatum">
-            Geboortedatum
+            {t("klantForm.geboortedatum")}
           </label>
           <input
             id="geboortedatum"
@@ -114,7 +116,7 @@ export function KlantForm({ initial, submitLabel, submitting, onSubmit, onCancel
       <div className="field-row">
         <div className="field">
           <label className="field-label" htmlFor="bewindType">
-            Type bewind
+            {t("klantForm.typeBewind")}
           </label>
           <select
             id="bewindType"
@@ -122,24 +124,24 @@ export function KlantForm({ initial, submitLabel, submitting, onSubmit, onCancel
             value={bewindType}
             onChange={(e) => setBewindType(e.target.value)}
           >
-            <option value="">Onbekend</option>
-            <option value="goederen">Goederen</option>
-            <option value="persoon">Persoon</option>
-            <option value="beide">Goederen &amp; Persoon</option>
+            <option value="">{t("klantForm.typeBewindOnbekend")}</option>
+            <option value="goederen">{t("klantForm.goederen")}</option>
+            <option value="persoon">{t("klantForm.persoon")}</option>
+            <option value="beide">{t("klantForm.goederenEnPersoon")}</option>
           </select>
           {errors.bewindType && <span className="field-error">{errors.bewindType}</span>}
         </div>
 
         <div className="field">
           <label className="field-label" htmlFor="identificatienummer">
-            Identificatienummer
+            {t("klantForm.identificatienummer")}
           </label>
           <input
             id="identificatienummer"
             className="input"
             value={identificatienummer}
             onChange={(e) => setIdentificatienummer(e.target.value)}
-            placeholder="Rijksregisternummer"
+            placeholder={t("klantForm.rijksregisternummer")}
           />
           {errors.identificatienummer && (
             <span className="field-error">{errors.identificatienummer}</span>
@@ -150,7 +152,7 @@ export function KlantForm({ initial, submitLabel, submitting, onSubmit, onCancel
       <div className="field-row">
         <div className="field">
           <label className="field-label" htmlFor="email">
-            E-mailadres
+            {t("klantForm.email")}
           </label>
           <input
             id="email"
@@ -165,7 +167,7 @@ export function KlantForm({ initial, submitLabel, submitting, onSubmit, onCancel
 
         <div className="field">
           <label className="field-label" htmlFor="telefoon">
-            Telefoon
+            {t("klantForm.telefoon")}
           </label>
           <input
             id="telefoon"
@@ -180,14 +182,14 @@ export function KlantForm({ initial, submitLabel, submitting, onSubmit, onCancel
 
       <div className="field">
         <label className="field-label" htmlFor="adres">
-          Adres
+          {t("klantForm.adres")}
         </label>
         <input
           id="adres"
           className="input"
           value={adres}
           onChange={(e) => setAdres(e.target.value)}
-          placeholder="Straat, nummer, postcode, gemeente"
+          placeholder={t("klantForm.adresPlaceholder")}
         />
         {errors.adres && <span className="field-error">{errors.adres}</span>}
       </div>
@@ -195,14 +197,14 @@ export function KlantForm({ initial, submitLabel, submitting, onSubmit, onCancel
       <div className="field-row">
         <div className="field">
           <label className="field-label" htmlFor="vertrouwenspersoonNaam">
-            Vertrouwenspersoon — naam
+            {t("klantForm.vertrouwenspersoonNaam")}
           </label>
           <input
             id="vertrouwenspersoonNaam"
             className="input"
             value={vertrouwenspersoonNaam}
             onChange={(e) => setVertrouwenspersoonNaam(e.target.value)}
-            placeholder="Naam vertrouwenspersoon"
+            placeholder={t("klantForm.vertrouwenspersoonNaamPlaceholder")}
           />
           {errors.vertrouwenspersoonNaam && (
             <span className="field-error">{errors.vertrouwenspersoonNaam}</span>
@@ -211,7 +213,7 @@ export function KlantForm({ initial, submitLabel, submitting, onSubmit, onCancel
 
         <div className="field">
           <label className="field-label" htmlFor="vertrouwenspersoonTelefoon">
-            Vertrouwenspersoon — telefoon
+            {t("klantForm.vertrouwenspersoonTelefoon")}
           </label>
           <input
             id="vertrouwenspersoonTelefoon"
@@ -228,44 +230,48 @@ export function KlantForm({ initial, submitLabel, submitting, onSubmit, onCancel
 
       <div className="field">
         <label className="field-label" htmlFor="familieleden">
-          Familieleden
+          {t("klantForm.familieleden")}
         </label>
         <textarea
           id="familieleden"
           className="textarea"
           value={familieleden}
           onChange={(e) => setFamilieleden(e.target.value)}
-          placeholder="Namen en contactgegevens van familieleden"
+          placeholder={t("klantForm.familieledenPlaceholder")}
         />
         {errors.familieleden && <span className="field-error">{errors.familieleden}</span>}
-        <span className="field-hint">{familieleden.length}/2000 tekens</span>
+        <span className="field-hint">
+          {familieleden.length}/2000 {t("klantForm.tekens")}
+        </span>
       </div>
 
       <div className="field">
         <label className="field-label" htmlFor="klantExtraInfo">
-          Extra informatie
+          {t("klantForm.extraInformatie")}
         </label>
         <textarea
           id="klantExtraInfo"
           className="textarea"
           value={extraInfo}
           onChange={(e) => setExtraInfo(e.target.value)}
-          placeholder="Vrij tekstveld"
+          placeholder={t("klantForm.extraInformatiePlaceholder")}
         />
         {errors.extraInfo && <span className="field-error">{errors.extraInfo}</span>}
-        <span className="field-hint">{extraInfo.length}/2000 tekens</span>
+        <span className="field-hint">
+          {extraInfo.length}/2000 {t("klantForm.tekens")}
+        </span>
       </div>
 
       <div className="flex-between mt-24">
         {onCancel ? (
           <button type="button" className="btn btn-ghost" onClick={onCancel}>
-            Annuleren
+            {t("common.annuleren")}
           </button>
         ) : (
           <span />
         )}
         <button type="submit" className="btn btn-primary" disabled={submitting}>
-          {submitting ? "Bezig met opslaan…" : submitLabel}
+          {submitting ? t("common.bezigMetOpslaan") : submitLabel}
         </button>
       </div>
     </form>

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { requestFieldsSchema, requestFormSchema, type RequestFieldsValues, type RequestFormValues } from "@/lib/schema";
 import type { KlantRow, RequestRow } from "@/lib/database.types";
 import type { DossierOption } from "@/lib/queries";
+import { useLocale } from "@/lib/i18n";
 
 type FieldErrors = Partial<Record<keyof RequestFormValues | "klantId", string>>;
 
@@ -46,6 +47,7 @@ export function RequestForm({
   onSubmitMetKlant,
   onCancel,
 }: RequestFormProps) {
+  const { t } = useLocale();
   const klantEerstModus = !initial && !lockedDossier && klantOptions !== undefined;
 
   const [dossierId, setDossierId] = useState(initial?.dossier_id ?? lockedDossier?.id ?? "");
@@ -71,10 +73,10 @@ export function RequestForm({
 
     if (klantEerstModus) {
       const nextErrors: FieldErrors = {};
-      if (!klantId) nextErrors.klantId = "Klant is verplicht";
-      if (!dossierId) nextErrors.dossierId = "Dossier is verplicht";
+      if (!klantId) nextErrors.klantId = t("aanvraagForm.klantVerplicht");
+      if (!dossierId) nextErrors.dossierId = t("aanvraagForm.dossierVerplicht");
       if (dossierId === NIEUW_DOSSIER && !nieuweDossierTitel.trim()) {
-        nextErrors.dossierId = "Titel voor het nieuwe dossier is verplicht";
+        nextErrors.dossierId = t("aanvraagForm.titelNieuwDossierVerplicht");
       }
 
       const fieldsResult = requestFieldsSchema.safeParse({
@@ -131,14 +133,14 @@ export function RequestForm({
     <form onSubmit={handleSubmit} noValidate>
       {lockedDossier ? (
         <div className="field">
-          <span className="field-label">Dossier</span>
+          <span className="field-label">{t("aanvraagNieuw.dossier")}</span>
           <div className="dossier-context-pill">{lockedDossier.label}</div>
         </div>
       ) : klantEerstModus ? (
         <>
           <div className="field">
             <label className="field-label" htmlFor="klantId">
-              Klant
+              {t("aanvraagNieuw.klant")}
             </label>
             <select
               id="klantId"
@@ -150,7 +152,7 @@ export function RequestForm({
                 setNieuweDossierTitel("");
               }}
             >
-              <option value="">Kies een klant…</option>
+              <option value="">{t("aanvraagNieuw.kiesKlant")}</option>
               {(klantOptions ?? []).map((k) => (
                 <option key={k.id} value={k.id}>
                   {k.naam}
@@ -158,7 +160,7 @@ export function RequestForm({
               ))}
             </select>
             {(klantOptions ?? []).length === 0 && (
-              <span className="field-hint">Nog geen klanten. Maak eerst een klant aan.</span>
+              <span className="field-hint">{t("aanvraagNieuw.geenKlantenKort")}</span>
             )}
             {errors.klantId && <span className="field-error">{errors.klantId}</span>}
           </div>
@@ -166,7 +168,7 @@ export function RequestForm({
           {klantId && (
             <div className="field">
               <label className="field-label" htmlFor="dossierId">
-                Dossier
+                {t("aanvraagNieuw.dossier")}
               </label>
               <select
                 id="dossierId"
@@ -177,13 +179,13 @@ export function RequestForm({
                   if (e.target.value !== NIEUW_DOSSIER) setNieuweDossierTitel("");
                 }}
               >
-                <option value="">Kies een dossier…</option>
+                <option value="">{t("aanvraagNieuw.kiesDossier")}</option>
                 {klantDossiers.map((d) => (
                   <option key={d.id} value={d.id}>
                     {d.titel}
                   </option>
                 ))}
-                <option value={NIEUW_DOSSIER}>+ Nieuw dossier aanmaken</option>
+                <option value={NIEUW_DOSSIER}>{t("aanvraagNieuw.nieuwDossierAanmaken")}</option>
               </select>
               {errors.dossierId && <span className="field-error">{errors.dossierId}</span>}
             </div>
@@ -192,28 +194,28 @@ export function RequestForm({
           {dossierId === NIEUW_DOSSIER && (
             <div className="field">
               <label className="field-label" htmlFor="nieuweDossierTitel">
-                Titel nieuw dossier
+                {t("aanvraagNieuw.titelNieuwDossier")}
               </label>
               <input
                 id="nieuweDossierTitel"
                 className="input"
                 value={nieuweDossierTitel}
                 onChange={(e) => setNieuweDossierTitel(e.target.value)}
-                placeholder="Bv. Schuldbemiddeling 2026"
+                placeholder={t("aanvraagNieuw.titelNieuwDossierPlaceholder")}
               />
             </div>
           )}
         </>
       ) : (
         <div className="field">
-          <span className="field-label">Dossier</span>
+          <span className="field-label">{t("aanvraagNieuw.dossier")}</span>
           <select
             id="dossierId"
             className="select"
             value={dossierId}
             onChange={(e) => setDossierId(e.target.value)}
           >
-            <option value="">Kies een dossier…</option>
+            <option value="">{t("aanvraagNieuw.kiesDossier")}</option>
             {(dossierOptions ?? []).map((d) => (
               <option key={d.id} value={d.id}>
                 {d.klantNaam} — {d.titel}
@@ -221,9 +223,7 @@ export function RequestForm({
             ))}
           </select>
           {(dossierOptions ?? []).length === 0 && (
-            <span className="field-hint">
-              Nog geen dossiers. Maak eerst een klant en dossier aan.
-            </span>
+            <span className="field-hint">{t("aanvraagNieuw.geenDossiers")}</span>
           )}
           {errors.dossierId && <span className="field-error">{errors.dossierId}</span>}
         </div>
@@ -232,7 +232,7 @@ export function RequestForm({
       <div className="field-row">
         <div className="field">
           <label className="field-label" htmlFor="requestedAmount">
-            Gevraagd bedrag
+            {t("aanvraagForm.gevraagdBedrag")}
           </label>
           <input
             id="requestedAmount"
@@ -249,7 +249,7 @@ export function RequestForm({
 
         <div className="field">
           <label className="field-label" htmlFor="grantedAmount">
-            Toegekend bedrag
+            {t("aanvraagForm.toegekendBedrag")}
           </label>
           <input
             id="grantedAmount"
@@ -265,7 +265,7 @@ export function RequestForm({
 
       <div className="field">
         <label className="field-label" htmlFor="status">
-          Status
+          {t("aanvraagForm.status")}
         </label>
         <select
           id="status"
@@ -273,39 +273,39 @@ export function RequestForm({
           value={status}
           onChange={(e) => setStatus(e.target.value as RequestFormValues["status"])}
         >
-          <option value="open">Open</option>
-          <option value="in_behandeling">In behandeling</option>
-          <option value="goedgekeurd">Goedgekeurd</option>
-          <option value="geweigerd">Geweigerd</option>
-          <option value="afgehandeld">Afgehandeld</option>
+          <option value="open">{t("status.open")}</option>
+          <option value="in_behandeling">{t("status.inBehandeling")}</option>
+          <option value="goedgekeurd">{t("status.goedgekeurd")}</option>
+          <option value="geweigerd">{t("status.geweigerd")}</option>
+          <option value="afgehandeld">{t("status.afgehandeld")}</option>
         </select>
       </div>
 
       <div className="field">
         <label className="field-label" htmlFor="extraInfo">
-          Extra informatie
+          {t("aanvraagForm.extraInformatie")}
         </label>
         <textarea
           id="extraInfo"
           className="textarea"
           value={extraInfo}
           onChange={(e) => setExtraInfo(e.target.value)}
-          placeholder="Alleen zichtbaar in het detailscherm"
+          placeholder={t("aanvraagForm.extraInformatieHint")}
         />
         {errors.extraInfo && <span className="field-error">{errors.extraInfo}</span>}
-        <span className="field-hint">{extraInfo.length}/4000 tekens</span>
+        <span className="field-hint">{extraInfo.length}/4000</span>
       </div>
 
       <div className="flex-between mt-24">
         {onCancel ? (
           <button type="button" className="btn btn-ghost" onClick={onCancel}>
-            Annuleren
+            {t("common.annuleren")}
           </button>
         ) : (
           <span />
         )}
         <button type="submit" className="btn btn-primary" disabled={submitting}>
-          {submitting ? "Bezig met opslaan…" : submitLabel}
+          {submitting ? t("common.bezigMetOpslaan") : submitLabel}
         </button>
       </div>
     </form>

@@ -7,6 +7,7 @@ import { EmptyState } from "@/components/EmptyState";
 import { PrintIcon } from "@/components/PrintIcon";
 import { formatAmount, formatDate } from "@/lib/format";
 import { usePageTitle } from "@/lib/usePageTitle";
+import { useLocale, type TranslationKey } from "@/lib/i18n";
 import type { AanvraagStatus } from "@/lib/database.types";
 
 type StatusFilter = "alle" | "actief" | AanvraagStatus | "nvt";
@@ -16,7 +17,7 @@ export const aanvragenListRoute = createRoute({
   path: "/aanvragen",
   validateSearch: (search: Record<string, unknown>): { status?: StatusFilter } => ({
     status:
-      typeof search.status === "string" && search.status in STATUS_FILTER_LABELS
+      typeof search.status === "string" && search.status in STATUS_FILTER_LABEL_KEYS
         ? (search.status as StatusFilter)
         : undefined,
   }),
@@ -30,15 +31,15 @@ type SortOption = "nieuwste" | "oudste" | "klant" | "gevraagd" | "toegekend";
 // die tegel naar deze lijst met dit filter voorgeselecteerd.
 const ACTIEVE_STATUSSEN: AanvraagStatus[] = ["open", "in_behandeling"];
 
-const STATUS_FILTER_LABELS: Record<StatusFilter, string> = {
-  alle: "Alle statussen",
-  actief: "Open (incl. in behandeling)",
-  open: "Open",
-  in_behandeling: "In behandeling",
-  goedgekeurd: "Goedgekeurd",
-  geweigerd: "Geweigerd",
-  afgehandeld: "Afgehandeld",
-  nvt: "N.v.t.",
+const STATUS_FILTER_LABEL_KEYS: Record<StatusFilter, TranslationKey> = {
+  alle: "aanvragen.alleStatussen",
+  actief: "aanvragen.statusActief",
+  open: "status.open",
+  in_behandeling: "status.inBehandeling",
+  goedgekeurd: "status.goedgekeurd",
+  geweigerd: "status.geweigerd",
+  afgehandeld: "status.afgehandeld",
+  nvt: "status.nvt",
 };
 
 function sortRequests(rows: KlantAanvraagRow[], sort: SortOption) {
@@ -46,25 +47,26 @@ function sortRequests(rows: KlantAanvraagRow[], sort: SortOption) {
   switch (sort) {
     case "oudste":
       return sorted.sort((a, b) => a.createdAt.localeCompare(b.createdAt));
-    case "klant":
-      return sorted.sort((a, b) => a.klantNaam.localeCompare(b.klantNaam));
+    case "nieuwste":
+      return sorted.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
     case "gevraagd":
       return sorted.sort((a, b) => (b.requestedAmount ?? -1) - (a.requestedAmount ?? -1));
     case "toegekend":
       return sorted.sort((a, b) => (b.grantedAmount ?? -1) - (a.grantedAmount ?? -1));
-    case "nieuwste":
+    case "klant":
     default:
-      return sorted.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+      return sorted.sort((a, b) => a.klantNaam.localeCompare(b.klantNaam));
   }
 }
 
 function AanvragenListPage() {
-  usePageTitle("Aanvragen");
+  const { t } = useLocale();
+  usePageTitle(t("aanvragen.title"));
   const routeSearch = aanvragenListRoute.useSearch();
   const { data: rows, isLoading } = useKlantenMetAanvragen();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>(routeSearch.status ?? "alle");
-  const [sort, setSort] = useState<SortOption>("nieuwste");
+  const [sort, setSort] = useState<SortOption>("klant");
   const [vanDatum, setVanDatum] = useState("");
   const [totDatum, setTotDatum] = useState("");
 
@@ -91,20 +93,22 @@ function AanvragenListPage() {
   return (
     <div className="page">
       <div className="print-header">
-        <strong>Ami Legal</strong> — Aanvragenoverzicht — {formatDate(new Date().toISOString())}
+        <strong>Ami Legal</strong> — {t("aanvragen.aanvragenoverzicht")} — {formatDate(new Date().toISOString())}
       </div>
 
       <div className="page-header">
         <div>
-          <h1 className="page-title">Aanvragen</h1>
-          <p className="page-subtitle">{filtered.length} van {rows?.length ?? 0} klanten</p>
+          <h1 className="page-title">{t("aanvragen.title")}</h1>
+          <p className="page-subtitle">
+            {filtered.length} {t("aanvragen.van")} {rows?.length ?? 0} {t("aanvragen.klanten")}
+          </p>
         </div>
         <div className="flex-gap-12">
           <button type="button" className="btn btn-secondary" onClick={() => window.print()}>
-            <PrintIcon /> Afdrukken
+            <PrintIcon /> {t("common.afdrukken")}
           </button>
           <Link to="/aanvragen/nieuw" className="btn btn-primary">
-            <span className="btn-icon">+</span> Nieuwe aanvraag
+            <span className="btn-icon">+</span> {t("common.nieuweAanvraag")}
           </Link>
         </div>
       </div>
@@ -113,7 +117,7 @@ function AanvragenListPage() {
         <input
           type="text"
           className="input"
-          placeholder="Zoek op klant of dossier…"
+          placeholder={t("aanvragen.zoekPlaceholder")}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
@@ -123,9 +127,9 @@ function AanvragenListPage() {
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
         >
-          {(Object.keys(STATUS_FILTER_LABELS) as StatusFilter[]).map((option) => (
+          {(Object.keys(STATUS_FILTER_LABEL_KEYS) as StatusFilter[]).map((option) => (
             <option key={option} value={option}>
-              {STATUS_FILTER_LABELS[option]}
+              {t(STATUS_FILTER_LABEL_KEYS[option])}
             </option>
           ))}
         </select>
@@ -135,17 +139,17 @@ function AanvragenListPage() {
           value={sort}
           onChange={(e) => setSort(e.target.value as SortOption)}
         >
-          <option value="nieuwste">Sorteer: nieuwste eerst</option>
-          <option value="oudste">Sorteer: oudste eerst</option>
-          <option value="klant">Sorteer: klant</option>
-          <option value="gevraagd">Sorteer: gevraagd bedrag</option>
-          <option value="toegekend">Sorteer: toegekend bedrag</option>
+          <option value="klant">{t("aanvragen.sorteerKlant")}</option>
+          <option value="nieuwste">{t("aanvragen.sorteerNieuwste")}</option>
+          <option value="oudste">{t("aanvragen.sorteerOudste")}</option>
+          <option value="gevraagd">{t("aanvragen.sorteerGevraagd")}</option>
+          <option value="toegekend">{t("aanvragen.sorteerToegekend")}</option>
         </select>
       </div>
 
       <div className="list-toolbar">
         <label className="field-inline">
-          Van
+          {t("aanvragen.vanDatum")}
           <input
             type="date"
             className="input"
@@ -154,7 +158,7 @@ function AanvragenListPage() {
           />
         </label>
         <label className="field-inline">
-          Tot
+          {t("aanvragen.totDatum")}
           <input
             type="date"
             className="input"
@@ -166,11 +170,11 @@ function AanvragenListPage() {
 
       <div className="card">
         {isLoading ? (
-          <div className="empty-state">Laden…</div>
+          <div className="empty-state">{t("common.laden")}</div>
         ) : filtered.length === 0 ? (
           <EmptyState
-            title="Geen aanvragen gevonden"
-            description="Pas je zoekopdracht of filters aan."
+            title={t("aanvragen.geenResultatenTitel")}
+            description={t("aanvragen.geenResultatenBeschrijving")}
           />
         ) : (
           filtered.map((r) =>
@@ -185,11 +189,11 @@ function AanvragenListPage() {
                   <div className="request-name">{r.klantNaam}</div>
                 </div>
                 <div className="amount">
-                  <span className="amount-label">Gevraagd</span>
+                  <span className="amount-label">{t("aanvragen.gevraagd")}</span>
                   {formatAmount(r.requestedAmount)}
                 </div>
                 <div className="amount">
-                  <span className="amount-label">Toegekend</span>
+                  <span className="amount-label">{t("aanvragen.toegekend")}</span>
                   {formatAmount(r.grantedAmount)}
                 </div>
                 <StatusBadge status={r.status} />
@@ -205,11 +209,11 @@ function AanvragenListPage() {
                   <div className="request-name">{r.klantNaam}</div>
                 </div>
                 <div className="amount">
-                  <span className="amount-label">Gevraagd</span>
+                  <span className="amount-label">{t("aanvragen.gevraagd")}</span>
                   {formatAmount(null)}
                 </div>
                 <div className="amount">
-                  <span className="amount-label">Toegekend</span>
+                  <span className="amount-label">{t("aanvragen.toegekend")}</span>
                   {formatAmount(null)}
                 </div>
                 <StatusBadge status={r.status} />
