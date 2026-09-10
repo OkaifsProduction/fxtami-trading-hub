@@ -12,12 +12,17 @@ import { klantDetailRoute } from "./routes/_authenticated.klanten.$id";
 import { dossierNieuwRoute } from "./routes/_authenticated.klanten.$id.dossiers.nieuw";
 import { dossierDetailRoute } from "./routes/_authenticated.dossiers.$id";
 import { dossierAanvraagNieuwRoute } from "./routes/_authenticated.dossiers.$id.aanvragen.nieuw";
+import { begeleidersListRoute } from "./routes/_authenticated.begeleiders.index";
+import { begeleiderNieuwRoute } from "./routes/_authenticated.begeleiders.nieuw";
+import { begeleiderDetailRoute } from "./routes/_authenticated.begeleiders.$id";
+import { geenToegangRoute } from "./routes/geen-toegang";
 import { begeleiderRoute } from "./routes/_begeleider";
 import { begeleiderDossiersListRoute } from "./routes/_begeleider.index";
 import { begeleiderDossierDetailRoute } from "./routes/_begeleider.dossiers.$id";
 
 const routeTree = rootRoute.addChildren([
   authRoute,
+  geenToegangRoute,
   authenticatedRoute.addChildren([
     dashboardRoute,
     klantenListRoute,
@@ -29,6 +34,9 @@ const routeTree = rootRoute.addChildren([
     aanvragenListRoute,
     aanvragenNieuwRoute,
     aanvraagDetailRoute,
+    begeleidersListRoute,
+    begeleiderNieuwRoute,
+    begeleiderDetailRoute,
   ]),
   begeleiderRoute.addChildren([begeleiderDossiersListRoute, begeleiderDossierDetailRoute]),
 ]);

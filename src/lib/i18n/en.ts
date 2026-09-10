@@ -6,6 +6,7 @@ export const en: Record<keyof typeof nl, string> = {
   "nav.klanten": "Clients",
   "nav.aanvragen": "Requests",
   "nav.mijnDossiers": "My cases",
+  "nav.begeleiders": "Support workers",
   "nav.afmelden": "Sign out",
 
   // Common
@@ -200,6 +201,56 @@ export const en: Record<keyof typeof nl, string> = {
   "status.afgehandeld": "Handled",
   "status.gesloten": "Closed",
   "status.nvt": "N/A",
+
+  // Support-worker management — list
+  "begeleiders.title": "Support workers",
+  "begeleiders.nieuweBegeleider": "New support worker",
+  "begeleiders.zoekPlaceholder": "Search by organisation or email…",
+  "begeleiders.organisatie": "Organisation",
+  "begeleiders.contactpersoon": "Contact person",
+  "begeleiders.geenResultatenTitel": "No support workers found",
+  "begeleiders.geenResultatenBeschrijving": "Invite a support worker to get started.",
+  "begeleiders.statusActief": "Active",
+  "begeleiders.statusUitgenodigd": "Invited",
+  "begeleiders.statusInactief": "Inactive",
+
+  // Support-worker management — invite
+  "begeleiderNieuw.title": "New support worker",
+  "begeleiderNieuw.subtitle": "Invite an external support worker and grant access to cases",
+  "begeleiderNieuw.organisatiePlaceholder": "E.g. Familiehulp",
+  "begeleiderNieuw.contactpersoonPlaceholder": "Contact person's name",
+  "begeleiderNieuw.emailPlaceholder": "name@organisation.be",
+  "begeleiderNieuw.dossiersToewijzen": "Assign cases",
+  "begeleiderNieuw.dossiersHint": "Access only takes effect once the support worker signs in for the first time.",
+  "begeleiderNieuw.zoekDossier": "Search by client or case…",
+  "begeleiderNieuw.geenDossiers": "There are no cases to assign yet.",
+  "begeleiderNieuw.geselecteerd": "selected",
+  "begeleiderNieuw.uitnodigen": "Invite",
+  "begeleiderNieuw.emailBestaatAl": "There is already a pending invitation for this email address.",
+
+  // Support-worker management — detail
+  "begeleiderDetail.nietGevondenTitel": "Support worker not found",
+  "begeleiderDetail.gegevens": "Details",
+  "begeleiderDetail.toegewezenDossiers": "Assigned cases",
+  "begeleiderDetail.geenToewijzingenTitel": "No cases assigned yet",
+  "begeleiderDetail.geenToewijzingenBeschrijving": "Assign a case so this support worker can view it.",
+  "begeleiderDetail.dossierToewijzen": "Assign case",
+  "begeleiderDetail.intrekken": "Revoke",
+  "begeleiderDetail.ingetrokken": "Revoked",
+  "begeleiderDetail.deactiveren": "Deactivate",
+  "begeleiderDetail.heractiveren": "Reactivate",
+  "begeleiderDetail.bevestigDeactiveren": "Are you sure you want to deactivate this support worker? They will immediately lose access to all their cases.",
+  "begeleiderDetail.bevestigIntrekken": "Are you sure you want to revoke this access?",
+  "begeleiderDetail.uitnodigingTitel": "Pending invitation",
+  "begeleiderDetail.uitnodigingBeschrijving": "This support worker has not signed in yet. The prepared cases will be assigned as soon as they activate their account.",
+  "begeleiderDetail.uitnodigingIntrekken": "Withdraw invitation",
+  "begeleiderDetail.bevestigUitnodigingIntrekken": "Are you sure you want to withdraw this invitation?",
+  "begeleiderDetail.uitgenodigdOp": "Invited on",
+  "begeleiderDetail.klaargezetteDossiers": "Prepared cases",
+
+  // No access
+  "geenToegang.titel": "No access",
+  "geenToegang.beschrijving": "This account does not have access to Ami Legal. Please contact the administrator.",
 
   // Support-worker portal
   "begeleider.mijnDossiersSubtitle": "Cases assigned to you",

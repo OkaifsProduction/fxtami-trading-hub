@@ -7,6 +7,7 @@ export const nl = {
   "nav.klanten": "Klanten",
   "nav.aanvragen": "Aanvragen",
   "nav.mijnDossiers": "Mijn dossiers",
+  "nav.begeleiders": "Begeleiders",
   "nav.afmelden": "Afmelden",
 
   // Algemeen
@@ -201,6 +202,56 @@ export const nl = {
   "status.afgehandeld": "Afgehandeld",
   "status.gesloten": "Gesloten",
   "status.nvt": "N.v.t.",
+
+  // Begeleidersbeheer — lijst
+  "begeleiders.title": "Begeleiders",
+  "begeleiders.nieuweBegeleider": "Nieuwe begeleider",
+  "begeleiders.zoekPlaceholder": "Zoek op organisatie of e-mail…",
+  "begeleiders.organisatie": "Organisatie",
+  "begeleiders.contactpersoon": "Contactpersoon",
+  "begeleiders.geenResultatenTitel": "Geen begeleiders gevonden",
+  "begeleiders.geenResultatenBeschrijving": "Nodig een begeleider uit om te starten.",
+  "begeleiders.statusActief": "Actief",
+  "begeleiders.statusUitgenodigd": "Uitgenodigd",
+  "begeleiders.statusInactief": "Inactief",
+
+  // Begeleidersbeheer — uitnodigen
+  "begeleiderNieuw.title": "Nieuwe begeleider",
+  "begeleiderNieuw.subtitle": "Nodig een externe begeleider uit en geef toegang tot dossiers",
+  "begeleiderNieuw.organisatiePlaceholder": "Bv. Familiehulp",
+  "begeleiderNieuw.contactpersoonPlaceholder": "Naam van de contactpersoon",
+  "begeleiderNieuw.emailPlaceholder": "naam@organisatie.be",
+  "begeleiderNieuw.dossiersToewijzen": "Dossiers toewijzen",
+  "begeleiderNieuw.dossiersHint": "De toegang gaat pas in wanneer de begeleider zelf voor het eerst inlogt.",
+  "begeleiderNieuw.zoekDossier": "Zoek op klant of dossier…",
+  "begeleiderNieuw.geenDossiers": "Er zijn nog geen dossiers om toe te wijzen.",
+  "begeleiderNieuw.geselecteerd": "geselecteerd",
+  "begeleiderNieuw.uitnodigen": "Uitnodigen",
+  "begeleiderNieuw.emailBestaatAl": "Er is al een openstaande uitnodiging voor dit e-mailadres.",
+
+  // Begeleidersbeheer — detail
+  "begeleiderDetail.nietGevondenTitel": "Begeleider niet gevonden",
+  "begeleiderDetail.gegevens": "Gegevens",
+  "begeleiderDetail.toegewezenDossiers": "Toegewezen dossiers",
+  "begeleiderDetail.geenToewijzingenTitel": "Nog geen dossiers toegewezen",
+  "begeleiderDetail.geenToewijzingenBeschrijving": "Wijs een dossier toe zodat deze begeleider het kan inzien.",
+  "begeleiderDetail.dossierToewijzen": "Dossier toewijzen",
+  "begeleiderDetail.intrekken": "Intrekken",
+  "begeleiderDetail.ingetrokken": "Ingetrokken",
+  "begeleiderDetail.deactiveren": "Deactiveren",
+  "begeleiderDetail.heractiveren": "Heractiveren",
+  "begeleiderDetail.bevestigDeactiveren": "Weet je zeker dat je deze begeleider wilt deactiveren? Hij verliest onmiddellijk toegang tot al zijn dossiers.",
+  "begeleiderDetail.bevestigIntrekken": "Weet je zeker dat je deze toegang wilt intrekken?",
+  "begeleiderDetail.uitnodigingTitel": "Openstaande uitnodiging",
+  "begeleiderDetail.uitnodigingBeschrijving": "Deze begeleider heeft nog niet ingelogd. De klaargezette dossiers worden toegewezen zodra hij zijn account activeert.",
+  "begeleiderDetail.uitnodigingIntrekken": "Uitnodiging intrekken",
+  "begeleiderDetail.bevestigUitnodigingIntrekken": "Weet je zeker dat je deze uitnodiging wilt intrekken?",
+  "begeleiderDetail.uitgenodigdOp": "Uitgenodigd op",
+  "begeleiderDetail.klaargezetteDossiers": "Klaargezette dossiers",
+
+  // Geen toegang
+  "geenToegang.titel": "Geen toegang",
+  "geenToegang.beschrijving": "Dit account heeft geen toegang tot Ami Legal. Neem contact op met de beheerder.",
 
   // Begeleider-portal
   "begeleider.mijnDossiersSubtitle": "Dossiers die aan jou zijn toegewezen",

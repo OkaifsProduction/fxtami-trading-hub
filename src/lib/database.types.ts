@@ -50,6 +50,43 @@ export type BegeleiderProfielRow = {
   naam: string;
   organisatie: string | null;
   actief: boolean;
+  email: string | null;
+  uitgenodigd_at: string | null;
+  geactiveerd_at: string | null;
+  created_at: string;
+};
+
+export type UitnodigingStatus = "open" | "geaccepteerd" | "ingetrokken";
+
+/** Afgeleide weergavestatus in het begeleidersoverzicht. */
+export type BegeleiderStatus = "actief" | "uitgenodigd" | "inactief";
+
+export type BegeleiderUitnodigingRow = {
+  id: string;
+  email: string;
+  naam: string;
+  organisatie: string | null;
+  status: UitnodigingStatus;
+  aangemaakt_door: string;
+  begeleider_id: string | null;
+  created_at: string;
+  geaccepteerd_at: string | null;
+};
+
+export type DossierBegeleiderRow = {
+  id: string;
+  dossier_id: string;
+  begeleider_id: string;
+  actief: boolean;
+  toegekend_door: string | null;
+  created_at: string;
+  revoked_at: string | null;
+};
+
+export type UitnodigingDossierRow = {
+  id: string;
+  uitnodiging_id: string;
+  dossier_id: string;
   created_at: string;
 };
 
@@ -106,15 +143,51 @@ export type Database = {
         Update: Partial<Omit<RequestRow, "id" | "user_id" | "created_at" | "name" | "purpose">>;
         Relationships: [];
       };
+      // Profielen ontstaan uitsluitend via begeleider_activeer_mijn_account()
+      // — de app mag ze nooit rechtstreeks aanmaken. Van de update laat de
+      // database (kolom-gebonden grant) enkel deze drie velden toe.
       begeleider_profiles: {
         Row: BegeleiderProfielRow;
         Insert: never;
+        Update: Partial<Pick<BegeleiderProfielRow, "naam" | "organisatie" | "actief">>;
+        Relationships: [];
+      };
+      // toegekend_door en aangemaakt_door worden bewust weggelaten: de database
+      // vult ze met auth.uid() en de policy eist diezelfde waarde, dus de app
+      // kan ze niet vervalsen.
+      dossier_begeleiders: {
+        Row: DossierBegeleiderRow;
+        Insert: Pick<DossierBegeleiderRow, "dossier_id" | "begeleider_id"> & {
+          actief?: boolean;
+        };
+        Update: Partial<Pick<DossierBegeleiderRow, "actief" | "revoked_at">>;
+        Relationships: [];
+      };
+      begeleider_uitnodigingen: {
+        Row: BegeleiderUitnodigingRow;
+        Insert: Pick<BegeleiderUitnodigingRow, "email" | "naam"> & {
+          organisatie?: string | null;
+        };
+        Update: Partial<Pick<BegeleiderUitnodigingRow, "status">>;
+        Relationships: [];
+      };
+      uitnodiging_dossiers: {
+        Row: UitnodigingDossierRow;
+        Insert: Pick<UitnodigingDossierRow, "uitnodiging_id" | "dossier_id">;
         Update: never;
         Relationships: [];
       };
     };
     Views: Record<string, never>;
     Functions: {
+      is_intern: {
+        Args: Record<string, never>;
+        Returns: boolean;
+      };
+      begeleider_activeer_mijn_account: {
+        Args: Record<string, never>;
+        Returns: boolean;
+      };
       begeleider_mijn_dossiers: {
         Args: Record<string, never>;
         Returns: BegeleiderDossierOverzicht[];

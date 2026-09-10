@@ -5,7 +5,7 @@ import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth";
 import { authFormSchema } from "@/lib/schema";
 import { usePageTitle } from "@/lib/usePageTitle";
-import { checkBegeleiderProfiel } from "@/lib/begeleiderQueries";
+import { resolveRol } from "@/lib/rol";
 import { useLocale } from "@/lib/i18n";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { AppFooter } from "@/components/AppFooter";
@@ -58,9 +58,11 @@ function AuthPage() {
     }
     const { data: userData } = await supabase.auth.getUser();
     const userId = userData.user?.id;
-    const isBegeleider = userId ? await checkBegeleiderProfiel(userId) : false;
+    // Een pas uitgenodigde begeleider heeft nog geen profiel; resolveRol
+    // activeert dat hier op basis van zijn geverifieerde e-mailadres.
+    const rol = userId ? await resolveRol(userId) : "geen";
     setSubmitting(false);
-    navigate({ to: isBegeleider ? "/begeleider" : "/" });
+    navigate({ to: rol === "begeleider" ? "/begeleider" : rol === "intern" ? "/" : "/geen-toegang" });
   }
 
   return (
