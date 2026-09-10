@@ -267,6 +267,7 @@ p {
     position: static;
     flex-direction: row;
     align-items: center;
+    flex-wrap: wrap;
     gap: 4px;
     padding: 12px 16px;
     border-right: none;
@@ -278,9 +279,15 @@ p {
     margin-right: 12px;
   }
 
+  /* Eigen rij onder het logo en de accountknoppen. Op één rij samen met de
+     merknaam, de taalkeuze en Afmelden past de navigatie op een telefoon
+     simpelweg niet: dan werd ze platgedrukt en liep de pagina over. */
   .sidebar-nav {
+    order: 3;
+    flex-basis: 100%;
     flex-direction: row;
     gap: 2px;
+    margin-top: 8px;
     overflow-x: auto;
   }
 
@@ -328,34 +335,6 @@ p {
   max-width: 1080px;
   margin: 0 auto;
   padding: 32px;
-}
-
-@media (max-width: 480px) {
-  .page {
-    padding: 18px 16px 48px;
-  }
-
-  .page-title {
-    font-size: 21px;
-  }
-
-  .card-padded {
-    padding: 16px;
-  }
-
-  .stat-grid {
-    grid-template-columns: 1fr;
-    max-width: none;
-  }
-
-  .detail-amounts {
-    grid-template-columns: 1fr;
-  }
-
-  .app-footer {
-    font-size: 10px;
-    right: 8px;
-  }
 }
 
 .page-header {
@@ -749,8 +728,12 @@ p {
 }
 
 @media (max-width: 720px) {
+  /* Ook hier !important: de aanvraag-detailpagina ("Overige aanvragen van …")
+     en het begeleiderportaal zetten de kolommen als inline style, en die won
+     het anders van deze regel — die twee lijsten bleven dus in vier kolommen
+     staan op een telefoon. */
   .request-row {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr !important;
     row-gap: 10px;
   }
 
@@ -764,7 +747,8 @@ p {
 
   /* Vaste kolombreedtes komen als inline style per pagina binnen (klanten,
      dossiers, begeleider-overzicht) — hier overschrijven we die allemaal
-     naar één leesbare kolom i.p.v. uitgeknepen tekst. */
+     naar één leesbare kolom i.p.v. uitgeknepen tekst. Zonder !important wint
+     de inline style, want die weegt zwaarder dan een stylesheet-regel. */
   .list-row {
     grid-template-columns: 1fr !important;
     row-gap: 6px;
@@ -1008,6 +992,77 @@ p {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+/* ============ Mobiel: laatste verfijningen ============ */
+/* Dit blok staat bewust helemaal onderaan. Media queries verhogen de
+   specificiteit niet, dus een mobiele regel die vóór de gewone regel staat,
+   verliest gewoon. Alles wat hieronder een basisregel moet overschrijven,
+   hoort dus na die basisregel te komen. */
+@media (max-width: 860px) {
+  /* Op een telefoon is de zijbalk een bovenbalk, dus "rechtsonder in de hoek"
+     vastzetten zou de voetregel over de inhoud heen laten zweven. Hier loopt
+     ze gewoon mee onderaan de pagina. */
+  .app-footer {
+    position: static;
+    padding: 20px 16px 24px;
+    text-align: right;
+  }
+}
+
+@media (max-width: 480px) {
+  .page {
+    padding: 18px 16px 32px;
+  }
+
+  .page-title {
+    font-size: 21px;
+  }
+
+  .page-header {
+    margin-bottom: 20px;
+  }
+
+  .card-padded {
+    padding: 16px;
+  }
+
+  .stat-grid {
+    grid-template-columns: 1fr;
+    max-width: none;
+    gap: 12px;
+  }
+
+  .detail-amounts {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  /* Zoekvelden mogen hier niet vasthouden aan hun minimumbreedte, anders
+     duwen ze de werkbalk breder dan het scherm. */
+  .list-toolbar .input {
+    min-width: 0;
+  }
+
+  .list-toolbar .select {
+    max-width: none !important;
+  }
+
+  .field-inline {
+    width: 100%;
+  }
+
+  .field-inline .input {
+    flex: 1;
+  }
+
+  .auth-card {
+    padding: 28px 20px;
+  }
+
+  .empty-state {
+    padding: 40px 16px;
+  }
 }
 
 /* ============ Print ============ */
