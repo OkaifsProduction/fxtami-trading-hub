@@ -34,15 +34,15 @@ export function CheckoutStatusBanner() {
       }`}
     >
       {status === "success"
-        ? "Grazie! Your order is confirmed — we'll see you soon."
-        : "Checkout was cancelled. Your cart is still saved whenever you're ready."}
+        ? "Grazie! Uw bestelling is bevestigd — tot binnenkort."
+        : "Checkout werd geannuleerd. Uw winkelwagen blijft bewaard, wanneer u er klaar voor bent."}
       <button
         type="button"
         onClick={() => setStatus(null)}
-        aria-label="Dismiss"
+        aria-label="Sluiten"
         className="ml-4 font-semibold underline underline-offset-2"
       >
-        Dismiss
+        Sluiten
       </button>
     </div>
   );

@@ -41,7 +41,7 @@ export function ContactForm() {
     return (
       <div className="rounded-3xl bg-mist p-8 text-center">
         <p className="text-xl font-semibold tracking-tight text-ink">Grazie!</p>
-        <p className="mt-2 text-[15px] text-stone">Thanks for reaching out — we'll get back to you shortly.</p>
+        <p className="mt-2 text-[15px] text-stone">Bedankt voor uw bericht — we nemen snel contact met u op.</p>
       </div>
     );
   }
@@ -51,7 +51,7 @@ export function ContactForm() {
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
         <div>
           <label htmlFor="name" className="mb-1.5 block text-[13px] font-medium text-stone">
-            Name
+            Naam
           </label>
           <input
             id="name"
@@ -64,7 +64,7 @@ export function ContactForm() {
         </div>
         <div>
           <label htmlFor="email" className="mb-1.5 block text-[13px] font-medium text-stone">
-            Email
+            E-mail
           </label>
           <input
             id="email"
@@ -79,7 +79,7 @@ export function ContactForm() {
 
       <div>
         <label htmlFor="message" className="mb-1.5 block text-[13px] font-medium text-stone">
-          Message
+          Bericht
         </label>
         <textarea
           id="message"
@@ -92,12 +92,12 @@ export function ContactForm() {
 
       {status === "error" && (
         <p className="rounded-xl bg-burgundy-light px-4 py-3 text-[14px] text-burgundy-dark">
-          Something went wrong sending your message. Please try again, or call us directly.
+          Er ging iets mis bij het versturen. Probeer het opnieuw, of bel ons rechtstreeks.
         </p>
       )}
       {!isSupabaseConfigured && (
         <p className="rounded-xl bg-mist px-4 py-3 text-[13px] text-stone">
-          Heads up: this form needs Supabase configured (see DEPLOYMENT.md) before it can save messages.
+          Let op: dit formulier heeft een Supabase-configuratie nodig (zie DEPLOYMENT.md) voordat berichten kunnen worden opgeslagen.
         </p>
       )}
 
@@ -106,7 +106,7 @@ export function ContactForm() {
         disabled={status === "loading"}
         className="inline-flex items-center justify-center rounded-full bg-ink px-7 py-3 text-[15px] font-medium text-paper transition-all hover:bg-graphite hover:-translate-y-0.5 disabled:opacity-60 disabled:hover:translate-y-0"
       >
-        {status === "loading" ? "Sending…" : "Send Message"}
+        {status === "loading" ? "Versturen…" : "Verstuur Bericht"}
       </button>
     </form>
   );

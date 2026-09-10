@@ -40,20 +40,20 @@ export const handler: Handler = async (event) => {
     const r = payload.record as ReservationRecord;
     await sendEmail({
       to: restaurant.email,
-      subject: `New reservation request — ${r.name}, ${r.party_size} guests`,
+      subject: `Nieuwe reservatie-aanvraag — ${r.name}, ${r.party_size} gasten`,
       html: `
-        <h1>New reservation request</h1>
+        <h1>Nieuwe reservatie-aanvraag</h1>
         <p><strong>${r.name}</strong> — ${r.email} — ${r.phone}</p>
-        <p>${r.reservation_date} at ${r.reservation_time} · ${r.party_size} guests</p>
-        ${r.notes ? `<p>Notes: ${r.notes}</p>` : ""}
+        <p>${r.reservation_date} om ${r.reservation_time} · ${r.party_size} gasten</p>
+        ${r.notes ? `<p>Opmerkingen: ${r.notes}</p>` : ""}
       `,
     });
   } else if (payload.type === "contact") {
     const c = payload.record as ContactRecord;
     await sendEmail({
       to: restaurant.email,
-      subject: `New website message from ${c.name}`,
-      html: `<h1>New contact message</h1><p><strong>${c.name}</strong> — ${c.email}</p><p>${c.message}</p>`,
+      subject: `Nieuw bericht via de website van ${c.name}`,
+      html: `<h1>Nieuw contactbericht</h1><p><strong>${c.name}</strong> — ${c.email}</p><p>${c.message}</p>`,
     });
   } else {
     return { statusCode: 400, body: "Unknown notification type" };

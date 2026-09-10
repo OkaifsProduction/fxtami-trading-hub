@@ -7,7 +7,7 @@ export function CartButton() {
     <button
       type="button"
       onClick={open}
-      aria-label={`Open cart${itemCount > 0 ? `, ${itemCount} items` : ""}`}
+      aria-label={`Open winkelwagen${itemCount > 0 ? `, ${itemCount} items` : ""}`}
       className="relative flex h-9 w-9 items-center justify-center rounded-full text-ink transition-colors hover:bg-mist"
     >
       <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">

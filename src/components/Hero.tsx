@@ -16,29 +16,29 @@ export function Hero() {
       <Container className="relative pt-24 md:pt-32">
         <div className="mx-auto max-w-4xl text-center">
           <span className="inline-flex items-center rounded-full border border-ink/10 bg-paper/70 px-4 py-1.5 text-[13px] font-medium text-stone backdrop-blur-sm">
-            {restaurant.tagline} — Downtown
+            {restaurant.tagline} — Beverst, Bilzen
           </span>
 
           <h1 className="mt-7 text-[3.2rem] font-bold leading-[0.98] tracking-tightest text-ink sm:text-7xl md:text-8xl lg:text-[7.5rem]">
-            Authentic
+            Authentieke
             <br />
-            Italian Pizza.
+            Italiaanse Pizza.
           </h1>
           <p className="mt-3 text-[3.2rem] font-bold leading-[0.98] tracking-tightest text-stone-light sm:text-7xl md:text-8xl lg:text-[7.5rem]">
-            Made with passion.
+            Gemaakt met passie.
           </p>
 
           <p className="mx-auto mt-8 max-w-md text-lg leading-relaxed text-stone">
-            Traditional recipes, quality ingredients and the taste of Italy —
-            freshly prepared for you.
+            Traditionele recepten, kwaliteitsingrediënten en de smaak van
+            Italië — vers voor u bereid.
           </p>
 
           <div className="mt-10 flex flex-wrap items-center justify-center gap-5">
             <Button href={restaurant.orderOnlineUrl} variant="primary">
-              Order Online
+              Bestel Online
             </Button>
             <Button href="#menu" variant="link">
-              View Menu
+              Bekijk Menu
             </Button>
           </div>
         </div>
@@ -48,7 +48,7 @@ export function Hero() {
         <div className="relative mx-auto aspect-[16/10] w-full max-w-wide overflow-hidden bg-mist md:rounded-t-[3rem]">
           <img
             src={images.heroPizza}
-            alt="Dramatic close-up of a wood-fired Margherita pizza with bubbling mozzarella and fresh basil"
+            alt="Close-up van een vers gebakken Margarita-pizza met gesmolten mozzarella en verse basilicum"
             className="h-full w-full object-cover"
             fetchPriority="high"
           />

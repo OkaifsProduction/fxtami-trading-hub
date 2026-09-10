@@ -7,12 +7,12 @@ export interface GalleryPhoto {
 }
 
 export const galleryPhotos: GalleryPhoto[] = [
-  { src: images.galleryPizza, alt: "Fresh pizza dough stretched by hand", span: "tall" },
-  { src: images.galleryInterior, alt: "Warm, intimate dining room interior" },
-  { src: images.galleryChef, alt: "Chef preparing a dish in the kitchen" },
-  { src: images.galleryIngredients, alt: "Fresh tomatoes, basil and olive oil" },
-  { src: images.galleryPastaClose, alt: "Close-up of a cheese-laced pizza slice", span: "wide" },
-  { src: images.galleryWine, alt: "A glass of Italian red wine" },
-  { src: images.galleryDough, alt: "Hands kneading fresh dough" },
-  { src: images.gallerySalad, alt: "Fresh Italian salad" },
+  { src: images.galleryPizza, alt: "Vers pizzadeeg met de hand uitgerold", span: "tall" },
+  { src: images.galleryInterior, alt: "Warm, gezellig interieur van het restaurant" },
+  { src: images.galleryChef, alt: "De chef aan het werk in de keuken" },
+  { src: images.galleryIngredients, alt: "Verse tomaten, basilicum en olijfolie" },
+  { src: images.galleryPastaClose, alt: "Close-up van een pizzapunt met gesmolten kaas", span: "wide" },
+  { src: images.galleryWine, alt: "Een glas Italiaanse rode wijn" },
+  { src: images.galleryDough, alt: "Handen die vers deeg kneden" },
+  { src: images.gallerySalad, alt: "Frisse Italiaanse salade" },
 ];

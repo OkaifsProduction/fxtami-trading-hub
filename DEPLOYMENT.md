@@ -19,14 +19,15 @@ Replace the placeholder content with your real business details:
   Google Maps embed URL (Google Maps → Share → Embed a map → copy the `src`
   from the iframe).
 - `src/data/menu.ts` / `src/data/dishes.ts` — your real menu and prices
-  (prices are in **cents**, e.g. `1600` = $16.00).
+  (prices are in **eurocent**, e.g. `1600` = € 16,00). Already filled in with
+  the real Da Vinci (Beverst) menu — double-check every price before launch.
 - `src/data/images.ts` — swap the Unsplash placeholder photos for your own
   (any image URL works, or add files to `src/assets` and import them).
 - `public/privacy.html` and `public/terms.html` — fill in every `[bracketed]`
-  placeholder. These are templates, not legal advice — have a lawyer review
-  them, especially if you'll serve customers in the EU (GDPR applies).
+  placeholder (Dutch templates, GDPR-aware). Not legal advice — have a
+  lawyer review them before launch.
 - Currency: line items are created in `netlify/functions/create-checkout-session.mts`
-  with `currency: "usd"` — change this if you bill in another currency.
+  with `currency: "eur"` — already set correctly for this business.
 
 ---
 

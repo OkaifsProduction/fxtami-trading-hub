@@ -43,7 +43,7 @@ export function DishCard({ dish }: { dish: Dish }) {
           onClick={handleAdd}
           className="mt-5 inline-flex items-center gap-1.5 self-start text-[14px] font-medium text-ink transition-all group-hover:gap-2.5"
         >
-          {added ? "Added ✓" : "Add to order"}
+          {added ? "Toegevoegd ✓" : "Toevoegen"}
           {!added && (
             <svg width="15" height="10" viewBox="0 0 15 10" fill="none" aria-hidden="true">
               <path

@@ -13,7 +13,7 @@ const MAX_QUANTITY_PER_ITEM = 20;
 
 export const handler: Handler = async (event) => {
   if (event.httpMethod !== "POST") {
-    return { statusCode: 405, body: JSON.stringify({ error: "Method not allowed" }) };
+    return { statusCode: 405, body: JSON.stringify({ error: "Methode niet toegestaan." }) };
   }
 
   const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
@@ -22,7 +22,7 @@ export const handler: Handler = async (event) => {
     return {
       statusCode: 503,
       body: JSON.stringify({
-        error: "Online ordering isn't configured yet. Please call the restaurant to place your order.",
+        error: "Online bestellen is nog niet geconfigureerd. Bel het restaurant om te bestellen.",
       }),
     };
   }
@@ -31,7 +31,7 @@ export const handler: Handler = async (event) => {
   if (!supabaseAdmin) {
     return {
       statusCode: 503,
-      body: JSON.stringify({ error: "Order storage isn't configured yet. Please call the restaurant." }),
+      body: JSON.stringify({ error: "Bestelopslag is nog niet geconfigureerd. Bel het restaurant." }),
     };
   }
 
@@ -39,12 +39,12 @@ export const handler: Handler = async (event) => {
   try {
     payload = JSON.parse(event.body || "{}");
   } catch {
-    return { statusCode: 400, body: JSON.stringify({ error: "Invalid request body." }) };
+    return { statusCode: 400, body: JSON.stringify({ error: "Ongeldige aanvraag." }) };
   }
 
   const requestItems = Array.isArray(payload.items) ? payload.items : [];
   if (requestItems.length === 0) {
-    return { statusCode: 400, body: JSON.stringify({ error: "Your cart is empty." }) };
+    return { statusCode: 400, body: JSON.stringify({ error: "Uw winkelwagen is leeg." }) };
   }
 
   const catalog = buildCatalog();
@@ -55,11 +55,11 @@ export const handler: Handler = async (event) => {
   for (const requested of requestItems) {
     const quantity = Math.floor(Number(requested?.quantity));
     if (!requested?.id || !Number.isFinite(quantity) || quantity < 1 || quantity > MAX_QUANTITY_PER_ITEM) {
-      return { statusCode: 400, body: JSON.stringify({ error: "Invalid item quantity in cart." }) };
+      return { statusCode: 400, body: JSON.stringify({ error: "Ongeldig aantal voor een item in de winkelwagen." }) };
     }
     const catalogEntry = catalog.get(requested.id);
     if (!catalogEntry) {
-      return { statusCode: 400, body: JSON.stringify({ error: `Item "${requested.id}" is no longer available.` }) };
+      return { statusCode: 400, body: JSON.stringify({ error: `Item "${requested.id}" is niet meer beschikbaar.` }) };
     }
 
     subtotalCents += catalogEntry.priceCents * quantity;
@@ -72,7 +72,7 @@ export const handler: Handler = async (event) => {
     lineItems.push({
       quantity,
       price_data: {
-        currency: "usd",
+        currency: "eur",
         unit_amount: catalogEntry.priceCents,
         product_data: { name: catalogEntry.name },
       },
@@ -96,7 +96,7 @@ export const handler: Handler = async (event) => {
 
   if (orderError || !order) {
     console.error("Failed to create order", orderError);
-    return { statusCode: 500, body: JSON.stringify({ error: "Could not start checkout. Please try again." }) };
+    return { statusCode: 500, body: JSON.stringify({ error: "Afrekenen kon niet starten. Probeer opnieuw." }) };
   }
 
   const { error: itemsError } = await supabaseAdmin
@@ -105,7 +105,7 @@ export const handler: Handler = async (event) => {
 
   if (itemsError) {
     console.error("Failed to save order items", itemsError);
-    return { statusCode: 500, body: JSON.stringify({ error: "Could not start checkout. Please try again." }) };
+    return { statusCode: 500, body: JSON.stringify({ error: "Afrekenen kon niet starten. Probeer opnieuw." }) };
   }
 
   const stripe = new Stripe(stripeSecretKey);
@@ -128,6 +128,6 @@ export const handler: Handler = async (event) => {
     return { statusCode: 200, body: JSON.stringify({ url: session.url }) };
   } catch (err) {
     console.error("Stripe session creation failed", err);
-    return { statusCode: 500, body: JSON.stringify({ error: "Could not start checkout. Please try again." }) };
+    return { statusCode: 500, body: JSON.stringify({ error: "Afrekenen kon niet starten. Probeer opnieuw." }) };
   }
 };

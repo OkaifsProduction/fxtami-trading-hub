@@ -59,12 +59,12 @@ export function Navbar() {
               href={restaurant.orderOnlineUrl}
               className="hidden md:inline-flex items-center rounded-full bg-ink px-5 py-2 text-[13px] font-medium text-paper transition-all hover:bg-graphite hover:-translate-y-0.5"
             >
-              Order Online
+              Bestel Online
             </a>
 
             <button
               type="button"
-              aria-label={open ? "Close menu" : "Open menu"}
+              aria-label={open ? "Sluit menu" : "Open menu"}
               aria-expanded={open}
               onClick={() => setOpen((v) => !v)}
               className="md:hidden relative z-50 flex h-9 w-9 flex-col items-center justify-center gap-[5px]"
@@ -113,7 +113,7 @@ export function Navbar() {
             onClick={() => setOpen(false)}
             className="inline-flex items-center justify-center rounded-full bg-paper px-8 py-4 text-sm font-semibold text-ink"
           >
-            Order Online
+            Bestel Online
           </a>
         </nav>
       </div>

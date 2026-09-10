@@ -11,21 +11,21 @@ export function ReservationCta() {
 
       <div className="relative mx-auto max-w-2xl px-6 text-center">
         <span className="text-[13px] font-semibold uppercase tracking-[0.14em] text-paper/40">
-          Reserve or Order
+          Reserveer of Bestel
         </span>
         <h2 className="mt-5 text-5xl font-semibold tracking-tightest leading-[1.05] text-paper sm:text-6xl md:text-7xl">
-          Your table is waiting.
+          Uw tafel staat klaar.
         </h2>
         <p className="mx-auto mt-6 max-w-md text-lg leading-relaxed text-paper/50">
-          Join us for an evening of authentic Italian flavors, or have your favorites delivered
-          straight to your door.
+          Kom genieten van een avond authentieke Italiaanse smaken, of bestel uw favorieten
+          online om af te halen.
         </p>
         <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
           <Button href={restaurant.reserveUrl} variant="primary-light">
-            Reserve a Table
+            Reserveer een Tafel
           </Button>
           <Button href={restaurant.orderOnlineUrl} variant="outline-light">
-            Order Online
+            Bestel Online
           </Button>
         </div>
       </div>

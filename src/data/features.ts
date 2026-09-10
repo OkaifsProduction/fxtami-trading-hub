@@ -5,19 +5,19 @@ export interface Feature {
 
 export const features: Feature[] = [
   {
-    title: "Authentic Ingredients",
-    description: "San Marzano tomatoes, 00 flour and cheeses imported directly from Italy.",
+    title: "Authentieke Ingrediënten",
+    description: "San Marzano-tomaten, verse kruiden en kazen — echt Italiaans.",
   },
   {
-    title: "Freshly Prepared",
-    description: "Every dish is made to order, from hand-stretched dough to fresh-cut herbs.",
+    title: "Vers Bereid",
+    description: "Elk gerecht wordt op bestelling klaargemaakt, van deeg tot saus.",
   },
   {
-    title: "Traditional Recipes",
-    description: "Family recipes passed down through generations, honoring the classics.",
+    title: "Traditionele Recepten",
+    description: "Familierecepten die al jaren dezelfde smaak van Italië brengen.",
   },
   {
-    title: "Wood-Fired Oven",
-    description: "Stone-baked at 900°F for a perfectly charred, smoky crust every time.",
+    title: "Steenoven Pizza",
+    description: "Onze pizza's gaan de steenoven in voor een perfect krokante bodem.",
   },
 ];

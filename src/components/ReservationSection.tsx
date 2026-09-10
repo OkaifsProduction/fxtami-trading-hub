@@ -17,7 +17,7 @@ export function ReservationSection() {
 
     if (!supabase) {
       setStatus("error");
-      setErrorMessage("Online reservations aren't connected yet — please call us instead.");
+      setErrorMessage("Online reserveren is nog niet aangesloten — bel ons alstublieft.");
       return;
     }
 
@@ -39,7 +39,7 @@ export function ReservationSection() {
 
     if (error) {
       setStatus("error");
-      setErrorMessage("Something went wrong saving your reservation. Please call us to confirm.");
+      setErrorMessage("Er ging iets mis bij het opslaan van uw reservatie. Bel ons om te bevestigen.");
       return;
     }
 
@@ -59,18 +59,18 @@ export function ReservationSection() {
       <Container>
         <SectionHeading
           align="left"
-          kicker="Reservations"
-          title="Reserve your table"
-          description="Prefer to book online? Fill in your details and we'll confirm shortly."
+          kicker="Reserveren"
+          title="Reserveer uw tafel"
+          description="Liever online boeken? Vul uw gegevens in en we bevestigen binnenkort."
         />
 
         <div className="mt-12 max-w-xl">
           {status === "success" ? (
             <div className="rounded-3xl bg-paper p-8">
-              <p className="text-xl font-semibold tracking-tight text-ink">Grazie — request received!</p>
+              <p className="text-xl font-semibold tracking-tight text-ink">Grazie — aanvraag ontvangen!</p>
               <p className="mt-2 text-[15px] leading-relaxed text-stone">
-                We've saved your reservation request and will confirm by phone or email shortly. For
-                anything urgent, call us at{" "}
+                We hebben uw reservatie-aanvraag ontvangen en bevestigen binnenkort telefonisch of per
+                e-mail. Voor iets dringends belt u ons op{" "}
                 <a href={restaurant.phoneHref} className="underline">
                   {restaurant.phone}
                 </a>
@@ -82,7 +82,7 @@ export function ReservationSection() {
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                 <div>
                   <label htmlFor="res-name" className="mb-1.5 block text-[13px] font-medium text-stone">
-                    Name
+                    Naam
                   </label>
                   <input
                     id="res-name"
@@ -95,7 +95,7 @@ export function ReservationSection() {
                 </div>
                 <div>
                   <label htmlFor="res-party" className="mb-1.5 block text-[13px] font-medium text-stone">
-                    Party size
+                    Aantal personen
                   </label>
                   <select
                     id="res-party"
@@ -106,7 +106,7 @@ export function ReservationSection() {
                   >
                     {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
                       <option key={n} value={n}>
-                        {n} {n === 1 ? "guest" : "guests"}
+                        {n} {n === 1 ? "gast" : "gasten"}
                       </option>
                     ))}
                   </select>
@@ -116,7 +116,7 @@ export function ReservationSection() {
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                 <div>
                   <label htmlFor="res-date" className="mb-1.5 block text-[13px] font-medium text-stone">
-                    Date
+                    Datum
                   </label>
                   <input
                     id="res-date"
@@ -129,7 +129,7 @@ export function ReservationSection() {
                 </div>
                 <div>
                   <label htmlFor="res-time" className="mb-1.5 block text-[13px] font-medium text-stone">
-                    Time
+                    Tijd
                   </label>
                   <input
                     id="res-time"
@@ -144,7 +144,7 @@ export function ReservationSection() {
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                 <div>
                   <label htmlFor="res-email" className="mb-1.5 block text-[13px] font-medium text-stone">
-                    Email
+                    E-mail
                   </label>
                   <input
                     id="res-email"
@@ -157,7 +157,7 @@ export function ReservationSection() {
                 </div>
                 <div>
                   <label htmlFor="res-phone" className="mb-1.5 block text-[13px] font-medium text-stone">
-                    Phone
+                    Telefoon
                   </label>
                   <input
                     id="res-phone"
@@ -172,7 +172,7 @@ export function ReservationSection() {
 
               <div>
                 <label htmlFor="res-notes" className="mb-1.5 block text-[13px] font-medium text-stone">
-                  Special requests (optional)
+                  Speciale verzoeken (optioneel)
                 </label>
                 <textarea
                   id="res-notes"
@@ -190,8 +190,7 @@ export function ReservationSection() {
 
               {!isSupabaseConfigured && (
                 <p className="rounded-xl bg-mist px-4 py-3 text-[13px] text-stone">
-                  Heads up: online reservations need Supabase configured (see DEPLOYMENT.md) before this
-                  form can save requests.
+                  Let op: online reserveren heeft een Supabase-configuratie nodig (zie DEPLOYMENT.md) voordat dit formulier aanvragen kan opslaan.
                 </p>
               )}
 
@@ -200,7 +199,7 @@ export function ReservationSection() {
                 disabled={status === "loading"}
                 className="inline-flex items-center justify-center rounded-full bg-ink px-8 py-3.5 text-[15px] font-medium text-paper transition-all hover:bg-graphite hover:-translate-y-0.5 disabled:opacity-60 disabled:hover:translate-y-0"
               >
-                {status === "loading" ? "Sending…" : "Request Reservation"}
+                {status === "loading" ? "Versturen…" : "Reservatie Aanvragen"}
               </button>
             </form>
           )}

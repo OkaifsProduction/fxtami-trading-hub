@@ -1,6 +1,6 @@
-/** Single source of truth for turning a price in cents into a display string — keeps
- * what's shown on screen and what Stripe actually charges from ever drifting apart. */
+/** Enige plek die centen omzet naar een prijs — zo kunnen het getoonde bedrag en
+ * het bedrag dat Stripe echt afschrijft nooit uit elkaar lopen. */
 export function formatPrice(cents: number): string {
-  const dollars = cents / 100;
-  return Number.isInteger(dollars) ? `$${dollars}` : `$${dollars.toFixed(2)}`;
+  const euros = (cents / 100).toFixed(2).replace(".", ",");
+  return `€ ${euros}`;
 }

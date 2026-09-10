@@ -8,9 +8,9 @@ export function WhyChooseUs() {
       <Container>
         <SectionHeading
           light
-          kicker="Why Choose Us"
-          title="Crafted the Italian way"
-          description="Four simple principles guide everything that leaves our kitchen."
+          kicker="Waarom Wij"
+          title="Op z'n Italiaans bereid"
+          description="Vier eenvoudige principes staan aan de basis van alles wat onze keuken verlaat."
         />
 
         <div className="mt-16 grid grid-cols-1 gap-px overflow-hidden rounded-4xl bg-paper/10 sm:grid-cols-2">

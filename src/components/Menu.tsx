@@ -22,13 +22,13 @@ export function Menu() {
       <Container>
         <SectionHeading
           kicker="La Carta"
-          title="Explore our menu"
-          description="From wood-fired pizza to handmade pasta — browse every category of our kitchen."
+          title="Ontdek onze kaart"
+          description="Van steenoven pizza tot huisgemaakte pasta — blader door elke categorie van onze keuken."
         />
 
         <div
           role="tablist"
-          aria-label="Menu categories"
+          aria-label="Menucategorieën"
           className="mx-auto mt-12 flex max-w-fit gap-1 overflow-x-auto rounded-full border border-ink/10 bg-paper p-1.5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
           {menuCategories.map((category) => {
@@ -74,7 +74,7 @@ export function Menu() {
                 <button
                   type="button"
                   onClick={() => handleAdd(item)}
-                  aria-label={`Add ${item.name} to order`}
+                  aria-label={`Voeg ${item.name} toe aan bestelling`}
                   className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border transition-colors ${
                     justAdded === item.id
                       ? "border-ink bg-ink text-paper"

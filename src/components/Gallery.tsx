@@ -13,9 +13,9 @@ export function Gallery() {
     <section id="gallery" className="bg-paper py-28 md:py-36">
       <Container wide>
         <SectionHeading
-          kicker="The Atmosphere"
-          title="A taste of Italy, captured"
-          description="Pizza, pasta, and the people behind them — a glimpse inside Da Vinci."
+          kicker="De Sfeer"
+          title="Een vleugje Italië, vastgelegd"
+          description="Pizza, pasta, en de mensen erachter — een kijkje binnen bij Da Vinci."
         />
 
         <div className="mt-16 grid grid-cols-2 gap-4 sm:grid-cols-4 sm:auto-rows-[240px]">

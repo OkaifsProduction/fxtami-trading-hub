@@ -7,31 +7,31 @@ export interface Review {
 
 export const reviews: Review[] = [
   {
-    name: "Emily Carter",
+    name: "Emma Peeters",
     detail: "Google Reviews",
     rating: 5,
     quote:
-      "Best pizza I've had outside of Naples. The crust is perfectly charred and the burrata pie is unreal. Already planning our next visit.",
+      "De beste pizza uit de buurt. Krokante bodem, verse ingrediënten en altijd vriendelijke bediening. We komen graag terug.",
   },
   {
-    name: "Marco Ferretti",
-    detail: "OpenTable",
+    name: "Marco Rossi",
+    detail: "TripAdvisor",
     rating: 5,
     quote:
-      "Felt like a family kitchen in Rome. The carbonara was rich and simple, exactly how it should be. Service was warm without being fussy.",
+      "Voelt aan als een familiekeuken in Italië. De carbonara was precies zoals het hoort: romig, simpel en heerlijk.",
   },
   {
-    name: "Sophie Dubois",
+    name: "Sophie Lambrechts",
     detail: "Google Reviews",
     rating: 5,
     quote:
-      "Beautiful space, thoughtful menu, and the tiramisù alone is worth the trip. This is our new go-to for date nights.",
+      "Mooie gemoedelijke zaak met een uitgebreide kaart. De Pizza Da Vinci is ons nieuwe favoriete gerecht.",
   },
   {
-    name: "James Whitfield",
-    detail: "Yelp",
+    name: "Jan Vermeulen",
+    detail: "Google Reviews",
     rating: 4,
     quote:
-      "Consistently excellent. The wood-fired oven gives every pizza that smoky depth you just can't fake. Highly recommend the Diavola.",
+      "Consistent lekker, elke keer opnieuw. De steenoven geeft de pizza's die rokerige smaak die je nergens anders vindt.",
   },
 ];

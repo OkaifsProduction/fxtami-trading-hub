@@ -73,22 +73,22 @@ export const handler: Handler = async (event) => {
 
   const itemsHtml = (order.order_items ?? [])
     .map((item: { item_name: string; quantity: number; unit_price_cents: number }) => {
-      const lineTotal = ((item.unit_price_cents * item.quantity) / 100).toFixed(2);
-      return `<tr><td>${item.quantity} × ${item.item_name}</td><td style="text-align:right">$${lineTotal}</td></tr>`;
+      const lineTotal = ((item.unit_price_cents * item.quantity) / 100).toFixed(2).replace(".", ",");
+      return `<tr><td>${item.quantity} × ${item.item_name}</td><td style="text-align:right">€ ${lineTotal}</td></tr>`;
     })
     .join("");
 
-  const totalFormatted = (order.total_cents / 100).toFixed(2);
+  const totalFormatted = (order.total_cents / 100).toFixed(2).replace(".", ",");
 
   if (customerEmail) {
     await sendEmail({
       to: customerEmail,
-      subject: `Your ${restaurant.name} order is confirmed`,
+      subject: `Uw bestelling bij ${restaurant.name} is bevestigd`,
       html: `
-        <h1>Grazie, ${customerName || "there"}!</h1>
-        <p>Your order has been received and paid. We'll see you soon for pickup.</p>
+        <h1>Grazie, ${customerName || "daar"}!</h1>
+        <p>Uw bestelling is ontvangen en betaald. Tot binnenkort om af te halen.</p>
         <table style="width:100%;border-collapse:collapse">${itemsHtml}</table>
-        <p><strong>Total: $${totalFormatted}</strong></p>
+        <p><strong>Totaal: € ${totalFormatted}</strong></p>
         <p>${restaurant.address.line1}, ${restaurant.address.line2}<br/>${restaurant.phone}</p>
       `,
     });
@@ -96,13 +96,13 @@ export const handler: Handler = async (event) => {
 
   await sendEmail({
     to: restaurant.email,
-    subject: `New paid order — $${totalFormatted}`,
+    subject: `Nieuwe betaalde bestelling — € ${totalFormatted}`,
     html: `
-      <h1>New online order</h1>
-      <p>${customerName || "Guest"} — ${customerEmail} — ${customerPhone}</p>
+      <h1>Nieuwe online bestelling</h1>
+      <p>${customerName || "Gast"} — ${customerEmail} — ${customerPhone}</p>
       <table style="width:100%;border-collapse:collapse">${itemsHtml}</table>
-      <p><strong>Total: $${totalFormatted}</strong></p>
-      ${order.notes ? `<p>Notes: ${order.notes}</p>` : ""}
+      <p><strong>Totaal: € ${totalFormatted}</strong></p>
+      ${order.notes ? `<p>Opmerkingen: ${order.notes}</p>` : ""}
     `,
   });
 

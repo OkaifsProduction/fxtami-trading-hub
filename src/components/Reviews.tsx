@@ -4,7 +4,7 @@ import { reviews } from "../data/reviews";
 
 function Stars({ rating }: { rating: number }) {
   return (
-    <div className="flex gap-0.5 text-ink" aria-label={`${rating} out of 5 stars`}>
+    <div className="flex gap-0.5 text-ink" aria-label={`${rating} van de 5 sterren`}>
       {Array.from({ length: 5 }).map((_, i) => (
         <svg
           key={i}
@@ -27,7 +27,7 @@ export function Reviews() {
   return (
     <section className="bg-mist py-28 md:py-36">
       <Container>
-        <SectionHeading kicker="Testimonials" title="What our guests say" />
+        <SectionHeading kicker="Reviews" title="Wat onze gasten zeggen" />
 
         <div className="mt-16 grid grid-cols-1 gap-4 md:grid-cols-2">
           {reviews.map((review) => (
