@@ -1,12 +1,40 @@
 import { useState, type FormEvent } from "react";
+import { supabase, isSupabaseConfigured } from "../lib/supabase";
+
+type Status = "idle" | "loading" | "sent" | "error";
 
 export function ContactForm() {
-  const [status, setStatus] = useState<"idle" | "sent">("idle");
+  const [status, setStatus] = useState<Status>("idle");
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    // Wire this up to your email/CRM provider of choice (e.g. Formspree, Resend).
+
+    if (!supabase) {
+      setStatus("error");
+      return;
+    }
+
+    const form = new FormData(e.currentTarget);
+    const record = {
+      name: String(form.get("name") || ""),
+      email: String(form.get("email") || ""),
+      message: String(form.get("message") || ""),
+    };
+
+    setStatus("loading");
+    const { error } = await supabase.from("contact_messages").insert(record);
+
+    if (error) {
+      setStatus("error");
+      return;
+    }
+
     setStatus("sent");
+    fetch("/.netlify/functions/notify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ type: "contact", record }),
+    }).catch(() => {});
   }
 
   if (status === "sent") {
@@ -62,11 +90,23 @@ export function ContactForm() {
         />
       </div>
 
+      {status === "error" && (
+        <p className="rounded-xl bg-burgundy-light px-4 py-3 text-[14px] text-burgundy-dark">
+          Something went wrong sending your message. Please try again, or call us directly.
+        </p>
+      )}
+      {!isSupabaseConfigured && (
+        <p className="rounded-xl bg-mist px-4 py-3 text-[13px] text-stone">
+          Heads up: this form needs Supabase configured (see DEPLOYMENT.md) before it can save messages.
+        </p>
+      )}
+
       <button
         type="submit"
-        className="inline-flex items-center justify-center rounded-full bg-ink px-7 py-3 text-[15px] font-medium text-paper transition-all hover:bg-graphite hover:-translate-y-0.5"
+        disabled={status === "loading"}
+        className="inline-flex items-center justify-center rounded-full bg-ink px-7 py-3 text-[15px] font-medium text-paper transition-all hover:bg-graphite hover:-translate-y-0.5 disabled:opacity-60 disabled:hover:translate-y-0"
       >
-        Send Message
+        {status === "loading" ? "Sending…" : "Send Message"}
       </button>
     </form>
   );

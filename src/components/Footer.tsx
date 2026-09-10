@@ -67,9 +67,17 @@ export function Footer() {
           </div>
         </div>
 
-        <p className="mt-10 text-[12px] text-stone-light">
-          © {new Date().getFullYear()} {restaurant.name}. All rights reserved.
-        </p>
+        <div className="mt-10 flex flex-wrap items-center gap-x-5 gap-y-2 text-[12px] text-stone-light">
+          <span>
+            © {new Date().getFullYear()} {restaurant.name}. All rights reserved.
+          </span>
+          <a href="/privacy.html" className="underline decoration-stone-light/40 underline-offset-2 hover:text-ink">
+            Privacy Policy
+          </a>
+          <a href="/terms.html" className="underline decoration-stone-light/40 underline-offset-2 hover:text-ink">
+            Terms of Service
+          </a>
+        </div>
       </Container>
     </footer>
   );

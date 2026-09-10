@@ -1,4 +1,7 @@
+import { CartProvider } from "./lib/cart";
 import { Navbar } from "./components/Navbar";
+import { CartDrawer } from "./components/CartDrawer";
+import { CheckoutStatusBanner } from "./components/CheckoutStatusBanner";
 import { Hero } from "./components/Hero";
 import { OurStory } from "./components/OurStory";
 import { PopularDishes } from "./components/PopularDishes";
@@ -7,12 +10,14 @@ import { WhyChooseUs } from "./components/WhyChooseUs";
 import { Gallery } from "./components/Gallery";
 import { Reviews } from "./components/Reviews";
 import { Location } from "./components/Location";
+import { ReservationSection } from "./components/ReservationSection";
 import { ReservationCta } from "./components/ReservationCta";
 import { Footer } from "./components/Footer";
+import { CookieConsent } from "./components/CookieConsent";
 
 export default function App() {
   return (
-    <>
+    <CartProvider>
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-ink focus:px-5 focus:py-3 focus:text-sm focus:font-semibold focus:text-paper"
@@ -20,6 +25,7 @@ export default function App() {
         Skip to content
       </a>
       <Navbar />
+      <CheckoutStatusBanner />
       <main id="main">
         <Hero />
         <OurStory />
@@ -29,9 +35,12 @@ export default function App() {
         <Gallery />
         <Reviews />
         <Location />
+        <ReservationSection />
         <ReservationCta />
       </main>
       <Footer />
-    </>
+      <CartDrawer />
+      <CookieConsent />
+    </CartProvider>
   );
 }

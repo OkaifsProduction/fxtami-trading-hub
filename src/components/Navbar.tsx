@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Container } from "./Container";
+import { CartButton } from "./CartButton";
 import { navLinks } from "../data/navigation";
 import { restaurant } from "../data/restaurant";
 
@@ -52,34 +53,37 @@ export function Navbar() {
             ))}
           </nav>
 
-          <a
-            href={restaurant.orderOnlineUrl}
-            className="hidden md:inline-flex items-center rounded-full bg-ink px-5 py-2 text-[13px] font-medium text-paper transition-all hover:bg-graphite hover:-translate-y-0.5"
-          >
-            Order Online
-          </a>
+          <div className="flex items-center gap-1">
+            <CartButton />
+            <a
+              href={restaurant.orderOnlineUrl}
+              className="hidden md:inline-flex items-center rounded-full bg-ink px-5 py-2 text-[13px] font-medium text-paper transition-all hover:bg-graphite hover:-translate-y-0.5"
+            >
+              Order Online
+            </a>
 
-          <button
-            type="button"
-            aria-label={open ? "Close menu" : "Open menu"}
-            aria-expanded={open}
-            onClick={() => setOpen((v) => !v)}
-            className="md:hidden relative z-50 flex h-9 w-9 flex-col items-center justify-center gap-[5px]"
-          >
-            <span
-              className={`block h-[1.5px] w-5 bg-ink transition-transform duration-300 ${
-                open ? "translate-y-[6.5px] rotate-45" : ""
-              }`}
-            />
-            <span
-              className={`block h-[1.5px] w-5 bg-ink transition-opacity duration-300 ${open ? "opacity-0" : ""}`}
-            />
-            <span
-              className={`block h-[1.5px] w-5 bg-ink transition-transform duration-300 ${
-                open ? "-translate-y-[6.5px] -rotate-45" : ""
-              }`}
-            />
-          </button>
+            <button
+              type="button"
+              aria-label={open ? "Close menu" : "Open menu"}
+              aria-expanded={open}
+              onClick={() => setOpen((v) => !v)}
+              className="md:hidden relative z-50 flex h-9 w-9 flex-col items-center justify-center gap-[5px]"
+            >
+              <span
+                className={`block h-[1.5px] w-5 bg-ink transition-transform duration-300 ${
+                  open ? "translate-y-[6.5px] rotate-45" : ""
+                }`}
+              />
+              <span
+                className={`block h-[1.5px] w-5 bg-ink transition-opacity duration-300 ${open ? "opacity-0" : ""}`}
+              />
+              <span
+                className={`block h-[1.5px] w-5 bg-ink transition-transform duration-300 ${
+                  open ? "-translate-y-[6.5px] -rotate-45" : ""
+                }`}
+              />
+            </button>
+          </div>
         </Container>
       </div>
 

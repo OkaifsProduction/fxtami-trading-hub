@@ -4,7 +4,7 @@ export interface Dish {
   id: string;
   name: string;
   description: string;
-  price: string;
+  priceCents: number;
   image: string;
   tag?: string;
 }
@@ -14,7 +14,7 @@ export const popularDishes: Dish[] = [
     id: "margherita",
     name: "Margherita",
     description: "San Marzano tomato, fior di latte, fresh basil, extra virgin olive oil.",
-    price: "$16",
+    priceCents: 1600,
     image: images.dishMargherita,
     tag: "Classic",
   },
@@ -22,15 +22,15 @@ export const popularDishes: Dish[] = [
     id: "diavola",
     name: "Diavola",
     description: "Spicy salami, San Marzano tomato, mozzarella, Calabrian chili oil.",
-    price: "$19",
+    priceCents: 1900,
     image: images.dishDiavola,
     tag: "Spicy",
   },
   {
-    id: "burrata",
+    id: "burrata-pizza",
     name: "Burrata Pizza",
     description: "Creamy burrata, cherry tomatoes, basil pesto, aged balsamic.",
-    price: "$21",
+    priceCents: 2100,
     image: images.dishBurrata,
     tag: "Signature",
   },
@@ -38,21 +38,21 @@ export const popularDishes: Dish[] = [
     id: "quattro-formaggi",
     name: "Quattro Formaggi",
     description: "Mozzarella, gorgonzola, fontina and parmesan on a delicate white base.",
-    price: "$20",
+    priceCents: 2000,
     image: images.dishQuattroFormaggi,
   },
   {
     id: "carbonara",
     name: "Pasta Carbonara",
     description: "Guanciale, egg yolk, pecorino romano, cracked black pepper.",
-    price: "$18",
+    priceCents: 1800,
     image: images.dishCarbonara,
   },
   {
     id: "tiramisu",
     name: "Tiramisù",
     description: "Espresso-soaked savoiardi, mascarpone cream, cocoa.",
-    price: "$10",
+    priceCents: 1000,
     image: images.dishTiramisu,
   },
 ];

@@ -21,7 +21,7 @@ export function ReservationCta() {
           straight to your door.
         </p>
         <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-          <Button href={restaurant.phoneHref} variant="primary-light">
+          <Button href={restaurant.reserveUrl} variant="primary-light">
             Reserve a Table
           </Button>
           <Button href={restaurant.orderOnlineUrl} variant="outline-light">
