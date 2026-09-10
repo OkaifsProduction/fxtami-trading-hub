@@ -600,9 +600,52 @@ p {
 
 .badge-afgehandeld,
 .badge-gesloten,
-.badge-nvt {
+.badge-nvt,
+.badge-inactief {
   background: var(--color-neutral-soft);
   color: var(--color-text-secondary);
+}
+
+.badge-actief {
+  background: var(--color-success-soft);
+  color: var(--color-success);
+}
+
+.badge-uitgenodigd {
+  background: var(--color-info-soft);
+  color: var(--color-info);
+}
+
+/* Aanvinklijst voor dossiers bij het uitnodigen van een begeleider. */
+.keuzelijst {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.keuzelijst-optie {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  cursor: pointer;
+}
+
+.keuzelijst-optie + .keuzelijst-optie {
+  border-top: 1px solid var(--color-border);
+}
+
+.keuzelijst-optie:hover {
+  background: var(--color-bg);
+}
+
+.keuzelijst-optie input[type="checkbox"] {
+  accent-color: var(--color-primary);
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  cursor: pointer;
 }
 
 .badge-gearchiveerd {

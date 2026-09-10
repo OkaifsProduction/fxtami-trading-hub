@@ -2,7 +2,7 @@ import { createRoute, Link, Outlet, redirect, useNavigate } from "@tanstack/reac
 import { rootRoute } from "./__root";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth";
-import { checkBegeleiderProfiel } from "@/lib/begeleiderQueries";
+import { resolveRol } from "@/lib/rol";
 import { useLocale } from "@/lib/i18n";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { AppFooter } from "@/components/AppFooter";
@@ -19,9 +19,16 @@ export const authenticatedRoute = createRoute({
     // Begeleiders horen in de externe portal, niet in de interne app —
     // de echte grens ligt in de database (RLS/functies), dit is enkel
     // een consistente doorverwijzing.
-    const isBegeleider = await checkBegeleiderProfiel(data.session.user.id);
-    if (isBegeleider) {
+    //
+    // "Intern" is sinds migratie 0011 een positieve rol (intern_personeel)
+    // in plaats van "iedereen die geen begeleider is". Wie geen van beide is,
+    // krijgt een expliciet scherm in plaats van een lege interne app.
+    const rol = await resolveRol(data.session.user.id);
+    if (rol === "begeleider") {
       throw redirect({ to: "/begeleider" });
+    }
+    if (rol !== "intern") {
+      throw redirect({ to: "/geen-toegang" });
     }
   },
   component: AuthenticatedLayout,
@@ -53,6 +60,9 @@ function AuthenticatedLayout() {
           </Link>
           <Link to="/aanvragen" activeProps={{ className: "active" }}>
             {t("nav.aanvragen")}
+          </Link>
+          <Link to="/begeleiders" activeProps={{ className: "active" }}>
+            {t("nav.begeleiders")}
           </Link>
         </nav>
         <div className="sidebar-footer">

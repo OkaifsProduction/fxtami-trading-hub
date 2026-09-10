@@ -6,6 +6,7 @@ export const fr: Record<keyof typeof nl, string> = {
   "nav.klanten": "Clients",
   "nav.aanvragen": "Demandes",
   "nav.mijnDossiers": "Mes dossiers",
+  "nav.begeleiders": "Accompagnateurs",
   "nav.afmelden": "Se déconnecter",
 
   // Général
@@ -200,6 +201,56 @@ export const fr: Record<keyof typeof nl, string> = {
   "status.afgehandeld": "Traitée",
   "status.gesloten": "Clôturé",
   "status.nvt": "N/A",
+
+  // Gestion des accompagnateurs — liste
+  "begeleiders.title": "Accompagnateurs",
+  "begeleiders.nieuweBegeleider": "Nouvel accompagnateur",
+  "begeleiders.zoekPlaceholder": "Rechercher par organisation ou e-mail…",
+  "begeleiders.organisatie": "Organisation",
+  "begeleiders.contactpersoon": "Personne de contact",
+  "begeleiders.geenResultatenTitel": "Aucun accompagnateur trouvé",
+  "begeleiders.geenResultatenBeschrijving": "Invitez un accompagnateur pour commencer.",
+  "begeleiders.statusActief": "Actif",
+  "begeleiders.statusUitgenodigd": "Invité",
+  "begeleiders.statusInactief": "Inactif",
+
+  // Gestion des accompagnateurs — inviter
+  "begeleiderNieuw.title": "Nouvel accompagnateur",
+  "begeleiderNieuw.subtitle": "Invitez un accompagnateur externe et donnez-lui accès à des dossiers",
+  "begeleiderNieuw.organisatiePlaceholder": "Ex. : Familiehulp",
+  "begeleiderNieuw.contactpersoonPlaceholder": "Nom de la personne de contact",
+  "begeleiderNieuw.emailPlaceholder": "nom@organisation.be",
+  "begeleiderNieuw.dossiersToewijzen": "Attribuer des dossiers",
+  "begeleiderNieuw.dossiersHint": "L'accès ne prend effet qu'à la première connexion de l'accompagnateur.",
+  "begeleiderNieuw.zoekDossier": "Rechercher par client ou dossier…",
+  "begeleiderNieuw.geenDossiers": "Il n'y a pas encore de dossiers à attribuer.",
+  "begeleiderNieuw.geselecteerd": "sélectionné(s)",
+  "begeleiderNieuw.uitnodigen": "Inviter",
+  "begeleiderNieuw.emailBestaatAl": "Une invitation est déjà en cours pour cette adresse e-mail.",
+
+  // Gestion des accompagnateurs — détail
+  "begeleiderDetail.nietGevondenTitel": "Accompagnateur introuvable",
+  "begeleiderDetail.gegevens": "Données",
+  "begeleiderDetail.toegewezenDossiers": "Dossiers attribués",
+  "begeleiderDetail.geenToewijzingenTitel": "Aucun dossier attribué",
+  "begeleiderDetail.geenToewijzingenBeschrijving": "Attribuez un dossier pour que cet accompagnateur puisse le consulter.",
+  "begeleiderDetail.dossierToewijzen": "Attribuer un dossier",
+  "begeleiderDetail.intrekken": "Retirer",
+  "begeleiderDetail.ingetrokken": "Retiré",
+  "begeleiderDetail.deactiveren": "Désactiver",
+  "begeleiderDetail.heractiveren": "Réactiver",
+  "begeleiderDetail.bevestigDeactiveren": "Êtes-vous sûr de vouloir désactiver cet accompagnateur ? Il perdra immédiatement l'accès à tous ses dossiers.",
+  "begeleiderDetail.bevestigIntrekken": "Êtes-vous sûr de vouloir retirer cet accès ?",
+  "begeleiderDetail.uitnodigingTitel": "Invitation en cours",
+  "begeleiderDetail.uitnodigingBeschrijving": "Cet accompagnateur ne s'est pas encore connecté. Les dossiers préparés lui seront attribués dès l'activation de son compte.",
+  "begeleiderDetail.uitnodigingIntrekken": "Retirer l'invitation",
+  "begeleiderDetail.bevestigUitnodigingIntrekken": "Êtes-vous sûr de vouloir retirer cette invitation ?",
+  "begeleiderDetail.uitgenodigdOp": "Invité le",
+  "begeleiderDetail.klaargezetteDossiers": "Dossiers préparés",
+
+  // Accès refusé
+  "geenToegang.titel": "Accès refusé",
+  "geenToegang.beschrijving": "Ce compte n'a pas accès à Ami Legal. Contactez l'administrateur.",
 
   // Portail accompagnateur
   "begeleider.mijnDossiersSubtitle": "Dossiers qui vous sont attribués",

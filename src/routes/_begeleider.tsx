@@ -2,7 +2,7 @@ import { createRoute, Link, Outlet, redirect, useNavigate } from "@tanstack/reac
 import { rootRoute } from "./__root";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth";
-import { checkBegeleiderProfiel } from "@/lib/begeleiderQueries";
+import { resolveRol } from "@/lib/rol";
 import { useLocale } from "@/lib/i18n";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { AppFooter } from "@/components/AppFooter";
@@ -16,9 +16,15 @@ export const begeleiderRoute = createRoute({
     if (!data.session) {
       throw redirect({ to: "/auth" });
     }
-    const isBegeleider = await checkBegeleiderProfiel(data.session.user.id);
-    if (!isBegeleider) {
+    // resolveRol doet hier ook de eenmalige activatie van een openstaande
+    // uitnodiging: een pas uitgenodigde begeleider die rechtstreeks naar
+    // /begeleider navigeert, komt zo meteen op zijn eigen portaal terecht.
+    const rol = await resolveRol(data.session.user.id);
+    if (rol === "intern") {
       throw redirect({ to: "/" });
+    }
+    if (rol !== "begeleider") {
+      throw redirect({ to: "/geen-toegang" });
     }
   },
   component: BegeleiderLayout,

@@ -156,3 +156,31 @@ export const dossierFormSchema = z.object({
 });
 
 export type DossierFormValues = z.infer<typeof dossierFormSchema>;
+
+// Uitnodiging voor een externe begeleider. "naam" is de contactpersoon,
+// "organisatie" de instantie (Familiehulp, CAW, …). Het e-mailadres wordt
+// bewust in kleine letters bewaard: de database dwingt dat af, en de
+// activatie matcht op het adres uit auth.users, dat Supabase eveneens in
+// kleine letters bijhoudt.
+export const begeleiderUitnodigingSchema = z.object({
+  organisatie: z
+    .string()
+    .trim()
+    .max(200, "Organisatie mag maximaal 200 tekens bevatten")
+    .optional()
+    .or(z.literal("")),
+  naam: z
+    .string()
+    .trim()
+    .min(1, "Contactpersoon is verplicht")
+    .max(120, "Naam mag maximaal 120 tekens bevatten"),
+  email: z
+    .string()
+    .trim()
+    .toLowerCase()
+    .email("Vul een geldig e-mailadres in")
+    .max(200, "E-mailadres mag maximaal 200 tekens bevatten"),
+  dossierIds: z.array(z.string().uuid()),
+});
+
+export type BegeleiderUitnodigingValues = z.infer<typeof begeleiderUitnodigingSchema>;

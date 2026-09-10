@@ -8,6 +8,7 @@ export const es: Record<keyof typeof nl, string> = {
   "nav.klanten": "Clientes",
   "nav.aanvragen": "Solicitudes",
   "nav.mijnDossiers": "Mis expedientes",
+  "nav.begeleiders": "Acompañantes",
   "nav.afmelden": "Cerrar sesión",
 
   // General
@@ -202,6 +203,56 @@ export const es: Record<keyof typeof nl, string> = {
   "status.afgehandeld": "Tramitada",
   "status.gesloten": "Cerrado",
   "status.nvt": "N/D",
+
+  // Gestión de acompañantes — lista
+  "begeleiders.title": "Acompañantes",
+  "begeleiders.nieuweBegeleider": "Nuevo acompañante",
+  "begeleiders.zoekPlaceholder": "Buscar por organización o correo…",
+  "begeleiders.organisatie": "Organización",
+  "begeleiders.contactpersoon": "Persona de contacto",
+  "begeleiders.geenResultatenTitel": "No se encontraron acompañantes",
+  "begeleiders.geenResultatenBeschrijving": "Invita a un acompañante para empezar.",
+  "begeleiders.statusActief": "Activo",
+  "begeleiders.statusUitgenodigd": "Invitado",
+  "begeleiders.statusInactief": "Inactivo",
+
+  // Gestión de acompañantes — invitar
+  "begeleiderNieuw.title": "Nuevo acompañante",
+  "begeleiderNieuw.subtitle": "Invita a un acompañante externo y dale acceso a expedientes",
+  "begeleiderNieuw.organisatiePlaceholder": "Ej.: Familiehulp",
+  "begeleiderNieuw.contactpersoonPlaceholder": "Nombre de la persona de contacto",
+  "begeleiderNieuw.emailPlaceholder": "nombre@organizacion.be",
+  "begeleiderNieuw.dossiersToewijzen": "Asignar expedientes",
+  "begeleiderNieuw.dossiersHint": "El acceso solo se activa cuando el acompañante inicia sesión por primera vez.",
+  "begeleiderNieuw.zoekDossier": "Buscar por cliente o expediente…",
+  "begeleiderNieuw.geenDossiers": "Todavía no hay expedientes para asignar.",
+  "begeleiderNieuw.geselecteerd": "seleccionado(s)",
+  "begeleiderNieuw.uitnodigen": "Invitar",
+  "begeleiderNieuw.emailBestaatAl": "Ya existe una invitación pendiente para este correo electrónico.",
+
+  // Gestión de acompañantes — detalle
+  "begeleiderDetail.nietGevondenTitel": "Acompañante no encontrado",
+  "begeleiderDetail.gegevens": "Datos",
+  "begeleiderDetail.toegewezenDossiers": "Expedientes asignados",
+  "begeleiderDetail.geenToewijzingenTitel": "Aún no hay expedientes asignados",
+  "begeleiderDetail.geenToewijzingenBeschrijving": "Asigna un expediente para que este acompañante pueda consultarlo.",
+  "begeleiderDetail.dossierToewijzen": "Asignar expediente",
+  "begeleiderDetail.intrekken": "Revocar",
+  "begeleiderDetail.ingetrokken": "Revocado",
+  "begeleiderDetail.deactiveren": "Desactivar",
+  "begeleiderDetail.heractiveren": "Reactivar",
+  "begeleiderDetail.bevestigDeactiveren": "¿Seguro que deseas desactivar a este acompañante? Perderá de inmediato el acceso a todos sus expedientes.",
+  "begeleiderDetail.bevestigIntrekken": "¿Seguro que deseas revocar este acceso?",
+  "begeleiderDetail.uitnodigingTitel": "Invitación pendiente",
+  "begeleiderDetail.uitnodigingBeschrijving": "Este acompañante aún no ha iniciado sesión. Los expedientes preparados se asignarán en cuanto active su cuenta.",
+  "begeleiderDetail.uitnodigingIntrekken": "Retirar invitación",
+  "begeleiderDetail.bevestigUitnodigingIntrekken": "¿Seguro que deseas retirar esta invitación?",
+  "begeleiderDetail.uitgenodigdOp": "Invitado el",
+  "begeleiderDetail.klaargezetteDossiers": "Expedientes preparados",
+
+  // Sin acceso
+  "geenToegang.titel": "Sin acceso",
+  "geenToegang.beschrijving": "Esta cuenta no tiene acceso a Ami Legal. Ponte en contacto con el administrador.",
 
   // Portal del acompañante
   "begeleider.mijnDossiersSubtitle": "Expedientes que se te han asignado",
