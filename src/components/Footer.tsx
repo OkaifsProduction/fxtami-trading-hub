@@ -1,14 +1,19 @@
 import { Container } from "./Container";
 import { navLinks } from "../data/navigation";
 import { restaurant } from "../data/restaurant";
+import { useReveal } from "../hooks/useReveal";
 
 export function Footer() {
   const hasSocial = restaurant.social.instagram || restaurant.social.facebook || restaurant.social.tiktok;
+  const ref = useReveal<HTMLDivElement>();
 
   return (
     <footer className="bg-paper py-12">
       <Container>
-        <div className="flex flex-col gap-10 border-t border-ink/[0.08] pt-10 md:flex-row md:items-start md:justify-between">
+        <div
+          ref={ref}
+          className="reveal flex flex-col gap-10 border-t border-ink/[0.08] pt-10 md:flex-row md:items-start md:justify-between"
+        >
           <div className="max-w-xs">
             <span className="text-[15px] font-semibold tracking-tight text-ink">{restaurant.name}</span>
             <p className="mt-3 text-[14px] leading-relaxed text-stone-light">
@@ -37,7 +42,7 @@ export function Footer() {
                   target="_blank"
                   rel="noreferrer"
                   aria-label="Instagram"
-                  className="flex h-9 w-9 items-center justify-center rounded-full border border-ink/10 text-stone transition-colors hover:border-ink hover:text-ink"
+                  className="flex h-11 w-11 items-center justify-center rounded-full border border-ink/10 text-stone transition-colors hover:border-ink hover:text-ink"
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
                     <rect x="3" y="3" width="18" height="18" rx="5" />
@@ -52,7 +57,7 @@ export function Footer() {
                   target="_blank"
                   rel="noreferrer"
                   aria-label="Facebook"
-                  className="flex h-9 w-9 items-center justify-center rounded-full border border-ink/10 text-stone transition-colors hover:border-ink hover:text-ink"
+                  className="flex h-11 w-11 items-center justify-center rounded-full border border-ink/10 text-stone transition-colors hover:border-ink hover:text-ink"
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
                     <path d="M15 8h2V4h-2a4 4 0 0 0-4 4v2H9v4h2v6h4v-6h2.5l.5-4H15V8Z" />
@@ -65,7 +70,7 @@ export function Footer() {
                   target="_blank"
                   rel="noreferrer"
                   aria-label="TikTok"
-                  className="flex h-9 w-9 items-center justify-center rounded-full border border-ink/10 text-stone transition-colors hover:border-ink hover:text-ink"
+                  className="flex h-11 w-11 items-center justify-center rounded-full border border-ink/10 text-stone transition-colors hover:border-ink hover:text-ink"
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
                     <path d="M14 4v10.5a3.5 3.5 0 1 1-3.5-3.5" />

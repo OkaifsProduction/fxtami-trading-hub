@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { useReveal } from "../hooks/useReveal";
 
 export function SectionHeading({
   kicker,
@@ -15,8 +16,13 @@ export function SectionHeading({
   light?: boolean;
   size?: "default" | "large";
 }) {
+  const ref = useReveal<HTMLDivElement>();
+
   return (
-    <div className={align === "center" ? "mx-auto max-w-3xl text-center" : "max-w-xl"}>
+    <div
+      ref={ref}
+      className={`reveal ${align === "center" ? "mx-auto max-w-3xl text-center" : "max-w-xl"}`}
+    >
       {kicker && (
         <span
           className={`block text-[13px] font-semibold uppercase tracking-[0.14em] ${
@@ -28,7 +34,9 @@ export function SectionHeading({
       )}
       <h2
         className={`${kicker ? "mt-4" : ""} font-semibold tracking-tightest leading-[1.05] ${
-          size === "large" ? "text-5xl md:text-6xl lg:text-7xl" : "text-4xl md:text-5xl"
+          size === "large"
+            ? "text-[clamp(2.25rem,3vw+1.5rem,4.5rem)]"
+            : "text-[clamp(2rem,1.6vw+1.6rem,3rem)]"
         } ${light ? "text-paper" : "text-ink"}`}
       >
         {title}

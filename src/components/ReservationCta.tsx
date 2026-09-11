@@ -1,7 +1,10 @@
 import { Button } from "./Button";
 import { restaurant } from "../data/restaurant";
+import { useReveal } from "../hooks/useReveal";
 
 export function ReservationCta() {
+  const ref = useReveal<HTMLDivElement>();
+
   return (
     <section id="order" className="relative overflow-hidden bg-ink py-32 md:py-44">
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
@@ -9,11 +12,11 @@ export function ReservationCta() {
         <div className="absolute left-1/3 top-1/3 h-[420px] w-[420px] rounded-full bg-terracotta/20 blur-[120px] animate-drift [animation-delay:-8s]" />
       </div>
 
-      <div className="relative mx-auto max-w-2xl px-6 text-center">
+      <div ref={ref} className="reveal relative mx-auto max-w-2xl px-6 text-center">
         <span className="text-[13px] font-semibold uppercase tracking-[0.14em] text-paper/40">
           Reserveer of Bestel
         </span>
-        <h2 className="mt-5 text-5xl font-semibold tracking-tightest leading-[1.05] text-paper sm:text-6xl md:text-7xl">
+        <h2 className="mt-5 text-[clamp(2.5rem,4vw+1.5rem,4.5rem)] font-semibold tracking-tightest leading-[1.05] text-paper">
           Uw tafel staat klaar.
         </h2>
         <p className="mx-auto mt-6 max-w-md text-lg leading-relaxed text-paper/50">

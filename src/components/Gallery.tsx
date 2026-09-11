@@ -1,6 +1,8 @@
+import type { CSSProperties } from "react";
 import { Container } from "./Container";
 import { SectionHeading } from "./SectionHeading";
 import { galleryPhotos } from "../data/gallery";
+import { useStaggerReveal } from "../hooks/useReveal";
 
 const spanClasses: Record<NonNullable<(typeof galleryPhotos)[number]["span"]>, string> = {
   tall: "sm:row-span-2",
@@ -9,6 +11,8 @@ const spanClasses: Record<NonNullable<(typeof galleryPhotos)[number]["span"]>, s
 };
 
 export function Gallery() {
+  const gridRef = useStaggerReveal<HTMLDivElement>();
+
   return (
     <section id="gallery" className="bg-paper py-28 md:py-36">
       <Container wide>
@@ -18,11 +22,12 @@ export function Gallery() {
           description="Pizza, pasta, en de mensen erachter — een kijkje binnen bij Da Vinci."
         />
 
-        <div className="mt-16 grid grid-cols-2 gap-4 sm:grid-cols-4 sm:auto-rows-[240px]">
-          {galleryPhotos.map((photo) => (
+        <div ref={gridRef} className="mt-16 grid grid-cols-2 gap-4 sm:grid-cols-4 sm:auto-rows-[240px]">
+          {galleryPhotos.map((photo, i) => (
             <div
               key={photo.src}
-              className={`group relative overflow-hidden rounded-3xl bg-mist aspect-square sm:aspect-auto ${
+              style={{ "--stagger": i } as CSSProperties}
+              className={`reveal-stagger-item group relative overflow-hidden rounded-3xl bg-mist aspect-square sm:aspect-auto ${
                 spanClasses[photo.span ?? "normal"]
               }`}
             >

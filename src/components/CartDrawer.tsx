@@ -64,7 +64,7 @@ export function CartDrawer() {
             type="button"
             onClick={close}
             aria-label="Sluit winkelwagen"
-            className="flex h-8 w-8 items-center justify-center rounded-full text-stone hover:bg-mist hover:text-ink"
+            className="flex h-10 w-10 items-center justify-center rounded-full text-stone hover:bg-mist hover:text-ink"
           >
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
               <path d="M1 1l14 14M15 1L1 15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
@@ -90,7 +90,7 @@ export function CartDrawer() {
                         type="button"
                         aria-label={`Verminder aantal van ${item.name}`}
                         onClick={() => setQuantity(item.id, item.quantity - 1)}
-                        className="flex h-6 w-6 items-center justify-center rounded-full text-ink hover:bg-mist"
+                        className="flex h-8 w-8 items-center justify-center rounded-full text-ink hover:bg-mist"
                       >
                         −
                       </button>
@@ -101,7 +101,7 @@ export function CartDrawer() {
                         type="button"
                         aria-label={`Verhoog aantal van ${item.name}`}
                         onClick={() => setQuantity(item.id, item.quantity + 1)}
-                        className="flex h-6 w-6 items-center justify-center rounded-full text-ink hover:bg-mist"
+                        className="flex h-8 w-8 items-center justify-center rounded-full text-ink hover:bg-mist"
                       >
                         +
                       </button>
@@ -133,7 +133,7 @@ export function CartDrawer() {
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="Allergieën, afhaaltijd, extra saus…"
-                className="w-full resize-none rounded-xl border border-ink/15 bg-mist/60 px-3 py-2 text-[14px] text-ink outline-none transition-colors focus:border-ink"
+                className="w-full resize-none rounded-xl border border-ink/15 bg-mist/60 px-3 py-2 text-[16px] text-ink outline-none transition-colors focus:border-ink"
               />
             </div>
           </div>

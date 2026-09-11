@@ -2,6 +2,7 @@ import { CartProvider } from "./lib/cart";
 import { Navbar } from "./components/Navbar";
 import { CartDrawer } from "./components/CartDrawer";
 import { CheckoutStatusBanner } from "./components/CheckoutStatusBanner";
+import { ScrollProgress } from "./components/ScrollProgress";
 import { Hero } from "./components/Hero";
 import { OurStory } from "./components/OurStory";
 import { PopularDishes } from "./components/PopularDishes";
@@ -24,6 +25,7 @@ export default function App() {
       >
         Naar de inhoud
       </a>
+      <ScrollProgress />
       <Navbar />
       <CheckoutStatusBanner />
       <main id="main">

@@ -59,7 +59,7 @@ export function ContactForm() {
             type="text"
             required
             autoComplete="name"
-            className="w-full border-0 border-b border-ink/15 bg-transparent px-0 py-2.5 text-[15px] text-ink outline-none transition-colors focus:border-ink"
+            className="w-full border-0 border-b border-ink/15 bg-transparent px-0 py-2.5 text-[16px] text-ink outline-none transition-colors focus:border-ink"
           />
         </div>
         <div>
@@ -72,7 +72,7 @@ export function ContactForm() {
             type="email"
             required
             autoComplete="email"
-            className="w-full border-0 border-b border-ink/15 bg-transparent px-0 py-2.5 text-[15px] text-ink outline-none transition-colors focus:border-ink"
+            className="w-full border-0 border-b border-ink/15 bg-transparent px-0 py-2.5 text-[16px] text-ink outline-none transition-colors focus:border-ink"
           />
         </div>
       </div>
@@ -86,7 +86,7 @@ export function ContactForm() {
           name="message"
           rows={3}
           required
-          className="w-full resize-none border-0 border-b border-ink/15 bg-transparent px-0 py-2.5 text-[15px] text-ink outline-none transition-colors focus:border-ink"
+          className="w-full resize-none border-0 border-b border-ink/15 bg-transparent px-0 py-2.5 text-[16px] text-ink outline-none transition-colors focus:border-ink"
         />
       </div>
 

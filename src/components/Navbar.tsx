@@ -67,7 +67,7 @@ export function Navbar() {
               aria-label={open ? "Sluit menu" : "Open menu"}
               aria-expanded={open}
               onClick={() => setOpen((v) => !v)}
-              className="md:hidden relative z-50 flex h-9 w-9 flex-col items-center justify-center gap-[5px]"
+              className="md:hidden relative z-50 flex h-11 w-11 flex-col items-center justify-center gap-[5px]"
             >
               <span
                 className={`block h-[1.5px] w-5 bg-ink transition-transform duration-300 ${

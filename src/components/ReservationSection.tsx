@@ -3,6 +3,7 @@ import { Container } from "./Container";
 import { SectionHeading } from "./SectionHeading";
 import { supabase, isSupabaseConfigured } from "../lib/supabase";
 import { restaurant } from "../data/restaurant";
+import { useReveal } from "../hooks/useReveal";
 
 type Status = "idle" | "loading" | "success" | "error";
 
@@ -11,6 +12,7 @@ const today = new Date().toISOString().slice(0, 10);
 export function ReservationSection() {
   const [status, setStatus] = useState<Status>("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const formWrapRef = useReveal<HTMLDivElement>();
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -64,7 +66,7 @@ export function ReservationSection() {
           description="Liever online boeken? Vul uw gegevens in en we bevestigen binnenkort."
         />
 
-        <div className="mt-12 max-w-xl">
+        <div ref={formWrapRef} className="reveal mt-12 max-w-xl">
           {status === "success" ? (
             <div className="rounded-3xl bg-paper p-8">
               <p className="text-xl font-semibold tracking-tight text-ink">Grazie — aanvraag ontvangen!</p>
@@ -90,7 +92,7 @@ export function ReservationSection() {
                     type="text"
                     required
                     autoComplete="name"
-                    className="w-full border-0 border-b border-ink/15 bg-transparent px-0 py-2.5 text-[15px] text-ink outline-none transition-colors focus:border-ink"
+                    className="w-full border-0 border-b border-ink/15 bg-transparent px-0 py-2.5 text-[16px] text-ink outline-none transition-colors focus:border-ink"
                   />
                 </div>
                 <div>
@@ -102,7 +104,7 @@ export function ReservationSection() {
                     name="party_size"
                     required
                     defaultValue="2"
-                    className="w-full border-0 border-b border-ink/15 bg-transparent px-0 py-2.5 text-[15px] text-ink outline-none transition-colors focus:border-ink"
+                    className="w-full border-0 border-b border-ink/15 bg-transparent px-0 py-2.5 text-[16px] text-ink outline-none transition-colors focus:border-ink"
                   >
                     {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
                       <option key={n} value={n}>
@@ -124,7 +126,7 @@ export function ReservationSection() {
                     type="date"
                     required
                     min={today}
-                    className="w-full border-0 border-b border-ink/15 bg-transparent px-0 py-2.5 text-[15px] text-ink outline-none transition-colors focus:border-ink"
+                    className="w-full border-0 border-b border-ink/15 bg-transparent px-0 py-2.5 text-[16px] text-ink outline-none transition-colors focus:border-ink"
                   />
                 </div>
                 <div>
@@ -136,7 +138,7 @@ export function ReservationSection() {
                     name="time"
                     type="time"
                     required
-                    className="w-full border-0 border-b border-ink/15 bg-transparent px-0 py-2.5 text-[15px] text-ink outline-none transition-colors focus:border-ink"
+                    className="w-full border-0 border-b border-ink/15 bg-transparent px-0 py-2.5 text-[16px] text-ink outline-none transition-colors focus:border-ink"
                   />
                 </div>
               </div>
@@ -152,7 +154,7 @@ export function ReservationSection() {
                     type="email"
                     required
                     autoComplete="email"
-                    className="w-full border-0 border-b border-ink/15 bg-transparent px-0 py-2.5 text-[15px] text-ink outline-none transition-colors focus:border-ink"
+                    className="w-full border-0 border-b border-ink/15 bg-transparent px-0 py-2.5 text-[16px] text-ink outline-none transition-colors focus:border-ink"
                   />
                 </div>
                 <div>
@@ -165,7 +167,7 @@ export function ReservationSection() {
                     type="tel"
                     required
                     autoComplete="tel"
-                    className="w-full border-0 border-b border-ink/15 bg-transparent px-0 py-2.5 text-[15px] text-ink outline-none transition-colors focus:border-ink"
+                    className="w-full border-0 border-b border-ink/15 bg-transparent px-0 py-2.5 text-[16px] text-ink outline-none transition-colors focus:border-ink"
                   />
                 </div>
               </div>
@@ -178,7 +180,7 @@ export function ReservationSection() {
                   id="res-notes"
                   name="notes"
                   rows={2}
-                  className="w-full resize-none border-0 border-b border-ink/15 bg-transparent px-0 py-2.5 text-[15px] text-ink outline-none transition-colors focus:border-ink"
+                  className="w-full resize-none border-0 border-b border-ink/15 bg-transparent px-0 py-2.5 text-[16px] text-ink outline-none transition-colors focus:border-ink"
                 />
               </div>
 

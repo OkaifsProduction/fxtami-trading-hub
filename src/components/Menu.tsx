@@ -4,12 +4,14 @@ import { SectionHeading } from "./SectionHeading";
 import { menuCategories } from "../data/menu";
 import { useCart } from "../lib/cart";
 import { formatPrice } from "../lib/format";
+import { useReveal } from "../hooks/useReveal";
 
 export function Menu() {
   const [activeId, setActiveId] = useState(menuCategories[0].id);
   const active = menuCategories.find((c) => c.id === activeId) ?? menuCategories[0];
   const { addItem } = useCart();
   const [justAdded, setJustAdded] = useState<string | null>(null);
+  const tabsRef = useReveal<HTMLDivElement>();
 
   function handleAdd(item: { id: string; name: string; priceCents: number }) {
     addItem({ id: item.id, name: item.name, priceCents: item.priceCents });
@@ -27,9 +29,10 @@ export function Menu() {
         />
 
         <div
+          ref={tabsRef}
           role="tablist"
           aria-label="Menucategorieën"
-          className="mx-auto mt-12 flex max-w-fit gap-1 overflow-x-auto rounded-full border border-ink/10 bg-paper p-1.5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className="reveal mx-auto mt-12 flex max-w-fit gap-1 overflow-x-auto rounded-full border border-ink/10 bg-paper p-1.5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
           {menuCategories.map((category) => {
             const isActive = category.id === activeId;
@@ -51,13 +54,14 @@ export function Menu() {
         </div>
 
         <div role="tabpanel" className="mx-auto mt-14 max-w-4xl">
-          {active.note && (
-            <p className="mb-6 text-center text-[13px] font-semibold uppercase tracking-[0.1em] text-stone-light">
-              {active.note}
-            </p>
-          )}
-          <div className="grid grid-cols-1 gap-x-14 md:grid-cols-2">
-            {active.items.map((item) => (
+          <div key={active.id} className="panel-fade">
+            {active.note && (
+              <p className="mb-6 text-center text-[13px] font-semibold uppercase tracking-[0.1em] text-stone-light">
+                {active.note}
+              </p>
+            )}
+            <div className="grid grid-cols-1 gap-x-14 md:grid-cols-2">
+              {active.items.map((item) => (
               <div
                 key={item.id}
                 className="flex items-center justify-between gap-4 border-b border-ink/[0.08] py-5"
@@ -75,7 +79,7 @@ export function Menu() {
                   type="button"
                   onClick={() => handleAdd(item)}
                   aria-label={`Voeg ${item.name} toe aan bestelling`}
-                  className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border transition-colors ${
+                  className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full border transition-colors ${
                     justAdded === item.id
                       ? "border-ink bg-ink text-paper"
                       : "border-ink/15 text-ink hover:border-ink hover:bg-ink hover:text-paper"
@@ -92,7 +96,8 @@ export function Menu() {
                   )}
                 </button>
               </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </Container>

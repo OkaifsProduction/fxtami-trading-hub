@@ -1,16 +1,20 @@
 import { Container } from "./Container";
 import { SectionHeading } from "./SectionHeading";
 import { ContactForm } from "./ContactForm";
+import { useReveal } from "../hooks/useReveal";
 import { restaurant } from "../data/restaurant";
 
 export function Location() {
+  const infoRef = useReveal<HTMLDivElement>();
+  const mapRef = useReveal<HTMLDivElement>();
+
   return (
     <section id="contact" className="bg-paper py-28 md:py-36">
       <Container>
         <SectionHeading align="left" kicker="Bezoek Ons" title="Vind uw tafel" />
 
         <div className="mt-14 grid grid-cols-1 gap-12 lg:grid-cols-2">
-          <div className="space-y-10">
+          <div ref={infoRef} className="reveal space-y-10">
             <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
               <div>
                 <h3 className="text-[13px] font-semibold uppercase tracking-[0.1em] text-stone-light">
@@ -72,7 +76,11 @@ export function Location() {
             </div>
           </div>
 
-          <div className="min-h-[420px] overflow-hidden rounded-4xl lg:min-h-full">
+          <div
+            ref={mapRef}
+            style={{ transitionDelay: "150ms" }}
+            className="reveal-scale min-h-[420px] overflow-hidden rounded-4xl lg:min-h-full"
+          >
             <iframe
               src={restaurant.mapEmbedUrl}
               title={`Kaart met de locatie van ${restaurant.name}`}

@@ -1,6 +1,8 @@
+import type { CSSProperties } from "react";
 import { Container } from "./Container";
 import { SectionHeading } from "./SectionHeading";
 import { reviews } from "../data/reviews";
+import { useStaggerReveal } from "../hooks/useReveal";
 
 function Stars({ rating }: { rating: number }) {
   return (
@@ -24,14 +26,20 @@ function Stars({ rating }: { rating: number }) {
 }
 
 export function Reviews() {
+  const gridRef = useStaggerReveal<HTMLDivElement>();
+
   return (
     <section className="bg-mist py-28 md:py-36">
       <Container>
         <SectionHeading kicker="Reviews" title="Wat onze gasten zeggen" />
 
-        <div className="mt-16 grid grid-cols-1 gap-4 md:grid-cols-2">
-          {reviews.map((review) => (
-            <figure key={review.name} className="flex flex-col rounded-4xl bg-paper p-9">
+        <div ref={gridRef} className="mt-16 grid grid-cols-1 gap-4 md:grid-cols-2">
+          {reviews.map((review, i) => (
+            <figure
+              key={review.name}
+              style={{ "--stagger": i } as CSSProperties}
+              className="reveal-stagger-item flex flex-col rounded-4xl bg-paper p-9"
+            >
               <Stars rating={review.rating} />
               <blockquote className="mt-5 flex-1 text-[19px] font-medium leading-relaxed tracking-tight text-ink">
                 "{review.quote}"
