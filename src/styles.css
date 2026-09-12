@@ -109,6 +109,7 @@ p {
   color: var(--color-text);
   padding: 0 8px 20px;
   white-space: nowrap;
+  text-decoration: none;
 }
 
 .brand-mark {
@@ -161,6 +162,82 @@ p {
   gap: 10px;
 }
 
+/* ============ Language switcher ============ */
+.language-switcher {
+  position: relative;
+}
+
+.language-switcher-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+
+.language-switcher-trigger:hover {
+  border-color: var(--color-border-strong);
+}
+
+.language-switcher-chevron {
+  margin-left: auto;
+  color: var(--color-text-tertiary);
+}
+
+.language-switcher-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  width: 100%;
+  min-width: 160px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  z-index: 20;
+}
+
+.language-switcher-menu-up {
+  top: auto;
+  bottom: calc(100% + 6px);
+}
+
+.language-switcher-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text);
+  font-size: 13px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+
+.language-switcher-option:hover {
+  background: var(--color-bg);
+}
+
+.language-switcher-option.active {
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+}
+
 .sidebar-footer .btn {
   width: 100%;
 }
@@ -190,8 +267,9 @@ p {
     position: static;
     flex-direction: row;
     align-items: center;
+    flex-wrap: wrap;
     gap: 4px;
-    padding: 14px 20px;
+    padding: 12px 16px;
     border-right: none;
     border-bottom: 1px solid var(--color-border);
   }
@@ -201,10 +279,21 @@ p {
     margin-right: 12px;
   }
 
+  /* Eigen rij onder het logo en de accountknoppen. Op één rij samen met de
+     merknaam, de taalkeuze en Afmelden past de navigatie op een telefoon
+     simpelweg niet: dan werd ze platgedrukt en liep de pagina over. */
   .sidebar-nav {
+    order: 3;
+    flex-basis: 100%;
     flex-direction: row;
     gap: 2px;
+    margin-top: 8px;
     overflow-x: auto;
+  }
+
+  .sidebar-nav a {
+    padding: 8px 10px;
+    white-space: nowrap;
   }
 
   .sidebar-footer {
@@ -222,6 +311,21 @@ p {
 
   .sidebar-user {
     display: none;
+  }
+
+  /* De sidebar is hier een bovenbalk i.p.v. een zijbalk, dus een
+     omhoog-openend menu (direction="up") zou boven het scherm uitvallen. */
+  .language-switcher-trigger {
+    width: auto;
+  }
+
+  .language-switcher-menu,
+  .language-switcher-menu-up {
+    left: auto;
+    right: 0;
+    width: max-content;
+    top: calc(100% + 6px);
+    bottom: auto;
   }
 }
 
@@ -293,6 +397,17 @@ p {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  text-decoration: none;
+}
+
+.stat-tile-interactive {
+  cursor: pointer;
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.stat-tile-interactive:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-border-strong);
 }
 
 .stat-label {
@@ -613,8 +728,12 @@ p {
 }
 
 @media (max-width: 720px) {
+  /* Ook hier !important: de aanvraag-detailpagina ("Overige aanvragen van …")
+     en het begeleiderportaal zetten de kolommen als inline style, en die won
+     het anders van deze regel — die twee lijsten bleven dus in vier kolommen
+     staan op een telefoon. */
   .request-row {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr !important;
     row-gap: 10px;
   }
 
@@ -623,6 +742,19 @@ p {
   }
 
   .request-row > .badge {
+    justify-self: start;
+  }
+
+  /* Vaste kolombreedtes komen als inline style per pagina binnen (klanten,
+     dossiers, begeleider-overzicht) — hier overschrijven we die allemaal
+     naar één leesbare kolom i.p.v. uitgeknepen tekst. Zonder !important wint
+     de inline style, want die weegt zwaarder dan een stylesheet-regel. */
+  .list-row {
+    grid-template-columns: 1fr !important;
+    row-gap: 6px;
+  }
+
+  .list-row > .badge {
     justify-self: start;
   }
 }
@@ -818,6 +950,28 @@ p {
   justify-content: space-between;
 }
 
+.flex-gap-12 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.app-footer {
+  position: fixed;
+  bottom: 6px;
+  right: 12px;
+  font-size: 11px;
+  color: var(--color-text-tertiary);
+  pointer-events: none;
+  z-index: 5;
+  white-space: nowrap;
+}
+
+.print-header {
+  display: none;
+}
+
 .stack {
   display: flex;
   flex-direction: column;
@@ -838,4 +992,138 @@ p {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+/* ============ Mobiel: laatste verfijningen ============ */
+/* Dit blok staat bewust helemaal onderaan. Media queries verhogen de
+   specificiteit niet, dus een mobiele regel die vóór de gewone regel staat,
+   verliest gewoon. Alles wat hieronder een basisregel moet overschrijven,
+   hoort dus na die basisregel te komen. */
+@media (max-width: 860px) {
+  /* Op een telefoon is de zijbalk een bovenbalk, dus "rechtsonder in de hoek"
+     vastzetten zou de voetregel over de inhoud heen laten zweven. Hier loopt
+     ze gewoon mee onderaan de pagina. */
+  .app-footer {
+    position: static;
+    padding: 20px 16px 24px;
+    text-align: right;
+  }
+}
+
+@media (max-width: 480px) {
+  .page {
+    padding: 18px 16px 32px;
+  }
+
+  .page-title {
+    font-size: 21px;
+  }
+
+  .page-header {
+    margin-bottom: 20px;
+  }
+
+  .card-padded {
+    padding: 16px;
+  }
+
+  .stat-grid {
+    grid-template-columns: 1fr;
+    max-width: none;
+    gap: 12px;
+  }
+
+  .detail-amounts {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  /* Zoekvelden mogen hier niet vasthouden aan hun minimumbreedte, anders
+     duwen ze de werkbalk breder dan het scherm. */
+  .list-toolbar .input {
+    min-width: 0;
+  }
+
+  .list-toolbar .select {
+    max-width: none !important;
+  }
+
+  .field-inline {
+    width: 100%;
+  }
+
+  .field-inline .input {
+    flex: 1;
+  }
+
+  .auth-card {
+    padding: 28px 20px;
+  }
+
+  .empty-state {
+    padding: 40px 16px;
+  }
+}
+
+/* ============ Print ============ */
+/* Printen/PDF opslaan gebeurt via de native browser-printdialoog
+   (window.print()) — die geeft zelf al printerkeuze, voorbeeld en
+   "Opslaan als PDF", dus hier enkel de layout opschonen voor papier. */
+@media print {
+  .sidebar,
+  .list-toolbar,
+  .breadcrumb,
+  .btn,
+  .app-footer,
+  .no-print {
+    display: none !important;
+  }
+
+  .app-shell {
+    display: block;
+    background: white;
+  }
+
+  .main-content {
+    width: 100%;
+  }
+
+  .page {
+    max-width: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .card {
+    box-shadow: none;
+    border: none;
+  }
+
+  .request-row,
+  .list-row {
+    break-inside: avoid;
+    border-bottom: 1px solid #ccc;
+  }
+
+  .detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .print-header {
+    display: block;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #7a1f2b;
+    font-size: 13px;
+    color: #444;
+  }
+
+  .print-header strong {
+    color: #7a1f2b;
+    font-size: 15px;
+  }
+
+  body {
+    background: white;
+  }
 }

@@ -3,6 +3,7 @@ import { authenticatedRoute } from "./_authenticated";
 import { useCreateDossier, useCreateRequest, useDossierOptions, useKlanten } from "@/lib/queries";
 import { RequestForm, type NieuweAanvraagMetKlant } from "@/components/RequestForm";
 import { usePageTitle } from "@/lib/usePageTitle";
+import { useLocale } from "@/lib/i18n";
 
 export const aanvragenNieuwRoute = createRoute({
   getParentRoute: () => authenticatedRoute,
@@ -11,7 +12,8 @@ export const aanvragenNieuwRoute = createRoute({
 });
 
 function NieuweAanvraagPage() {
-  usePageTitle("Nieuwe aanvraag");
+  const { t } = useLocale();
+  usePageTitle(t("aanvraagNieuw.title"));
   const navigate = useNavigate();
   const createRequest = useCreateRequest();
   const createDossier = useCreateDossier();
@@ -37,36 +39,31 @@ function NieuweAanvraagPage() {
     <div className="page">
       <div className="page-header">
         <div>
-          <h1 className="page-title">Nieuwe aanvraag</h1>
-          <p className="page-subtitle">Registreer een aanvraag die telefonisch of per mail binnenkwam</p>
+          <h1 className="page-title">{t("aanvraagNieuw.title")}</h1>
+          <p className="page-subtitle">{t("aanvraagNieuw.subtitle")}</p>
         </div>
       </div>
 
       <div className="card card-padded" style={{ maxWidth: 560 }}>
         {!klantenLoading && (klantOptions ?? []).length === 0 ? (
           <div className="stack">
-            <p className="text-secondary">
-              Er zijn nog geen klanten. Maak eerst een klant aan voordat je een aanvraag
-              registreert.
-            </p>
+            <p className="text-secondary">{t("aanvraagNieuw.geenKlanten")}</p>
             <Link to="/klanten/nieuw" className="btn btn-primary">
-              <span className="btn-icon">+</span> Nieuwe klant
+              <span className="btn-icon">+</span> {t("klanten.nieuweKlant")}
             </Link>
           </div>
         ) : (
           <RequestForm
             klantOptions={klantOptions}
             dossierOptions={dossierOptions}
-            submitLabel="Aanvraag opslaan"
+            submitLabel={t("aanvraagNieuw.aanvraagOpslaan")}
             submitting={createRequest.isPending || createDossier.isPending}
             onCancel={() => navigate({ to: "/aanvragen" })}
             onSubmitMetKlant={handleSubmitMetKlant}
           />
         )}
         {(createRequest.isError || createDossier.isError) && (
-          <div className="form-error mt-24">
-            Opslaan mislukt. Probeer het opnieuw.
-          </div>
+          <div className="form-error mt-24">{t("common.opslaanMislukt")}</div>
         )}
       </div>
     </div>

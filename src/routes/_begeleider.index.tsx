@@ -4,6 +4,7 @@ import { useBegeleiderMijnDossiers } from "@/lib/begeleiderQueries";
 import { StatusBadge } from "@/components/StatusBadge";
 import { EmptyState } from "@/components/EmptyState";
 import { usePageTitle } from "@/lib/usePageTitle";
+import { useLocale } from "@/lib/i18n";
 
 export const begeleiderDossiersListRoute = createRoute({
   getParentRoute: () => begeleiderRoute,
@@ -12,25 +13,26 @@ export const begeleiderDossiersListRoute = createRoute({
 });
 
 function BegeleiderDossiersListPage() {
-  usePageTitle("Mijn dossiers");
+  const { t } = useLocale();
+  usePageTitle(t("nav.mijnDossiers"));
   const { data: dossiers, isLoading } = useBegeleiderMijnDossiers();
 
   return (
     <div className="page">
       <div className="page-header">
         <div>
-          <h1 className="page-title">Mijn dossiers</h1>
-          <p className="page-subtitle">Dossiers die aan jou zijn toegewezen</p>
+          <h1 className="page-title">{t("nav.mijnDossiers")}</h1>
+          <p className="page-subtitle">{t("begeleider.mijnDossiersSubtitle")}</p>
         </div>
       </div>
 
       <div className="card">
         {isLoading ? (
-          <div className="empty-state">Laden…</div>
+          <div className="empty-state">{t("common.laden")}</div>
         ) : (dossiers ?? []).length === 0 ? (
           <EmptyState
-            title="Geen dossiers toegewezen"
-            description="Zodra een dossier aan jou wordt toegewezen, verschijnt het hier."
+            title={t("begeleider.geenDossiersTitel")}
+            description={t("begeleider.geenDossiersBeschrijving")}
           />
         ) : (
           dossiers?.map((d) => (

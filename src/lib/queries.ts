@@ -61,11 +61,16 @@ export function useKlant(id: string) {
 function toKlantPayload(values: KlantFormValues) {
   return {
     naam: values.naam,
-    klant_type: values.klantType || null,
+    bewind_type: values.bewindType || null,
     identificatienummer: values.identificatienummer || null,
+    rolnummer: values.rolnummer || null,
+    geboortedatum: values.geboortedatum || null,
     email: values.email || null,
     telefoon: values.telefoon || null,
     adres: values.adres || null,
+    vertrouwenspersoon_naam: values.vertrouwenspersoonNaam || null,
+    vertrouwenspersoon_telefoon: values.vertrouwenspersoonTelefoon || null,
+    familieleden: values.familieleden || null,
     extra_info: values.extraInfo || null,
   };
 }
@@ -397,21 +402,24 @@ export function useKlantenMetAanvragen() {
             createdAt: k.created_at,
           });
         } else {
-          for (const r of klantRequests) {
-            const dossier = r.dossier_id ? dossierById.get(r.dossier_id) : undefined;
-            rows.push({
-              key: r.id,
-              klantId: k.id,
-              klantNaam: k.naam,
-              dossierId: dossier?.id ?? null,
-              dossierTitel: dossier?.titel ?? null,
-              requestId: r.id,
-              requestedAmount: r.requested_amount,
-              grantedAmount: r.granted_amount,
-              status: r.status,
-              createdAt: r.created_at,
-            });
-          }
+          // Eén rij per klant: de meest recente aanvraag (klantRequests is al
+          // gesorteerd op created_at desc via de requests-query hierboven).
+          // Overige aanvragen van deze klant zijn te vinden op de
+          // detailpagina van die meest recente aanvraag.
+          const r = klantRequests[0];
+          const dossier = r.dossier_id ? dossierById.get(r.dossier_id) : undefined;
+          rows.push({
+            key: r.id,
+            klantId: k.id,
+            klantNaam: k.naam,
+            dossierId: dossier?.id ?? null,
+            dossierTitel: dossier?.titel ?? null,
+            requestId: r.id,
+            requestedAmount: r.requested_amount,
+            grantedAmount: r.granted_amount,
+            status: r.status,
+            createdAt: r.created_at,
+          });
         }
       }
       return rows;
@@ -444,6 +452,32 @@ export function useRequest(id: string) {
       return data;
     },
     enabled: Boolean(id),
+  });
+}
+
+/** Alle aanvragen van een klant, over al hun dossiers heen, nieuwste eerst. */
+export function useAanvragenByKlant(klantId: string) {
+  return useQuery({
+    queryKey: [...requestKeys.all, "byKlant", klantId],
+    queryFn: async (): Promise<RequestRow[]> => {
+      const { data: dossiers, error: dossiersError } = await supabase
+        .from("dossiers")
+        .select("id")
+        .eq("klant_id", klantId);
+      if (dossiersError) throw dossiersError;
+
+      const dossierIds = (dossiers ?? []).map((d) => d.id);
+      if (dossierIds.length === 0) return [];
+
+      const { data, error } = await supabase
+        .from("requests")
+        .select("*")
+        .in("dossier_id", dossierIds)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data ?? [];
+    },
+    enabled: Boolean(klantId),
   });
 }
 

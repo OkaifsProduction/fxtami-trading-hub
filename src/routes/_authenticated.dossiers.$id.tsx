@@ -13,6 +13,7 @@ import { StatusBadge } from "@/components/StatusBadge";
 import { EmptyState } from "@/components/EmptyState";
 import { formatAmount, formatDate } from "@/lib/format";
 import { usePageTitle } from "@/lib/usePageTitle";
+import { useLocale } from "@/lib/i18n";
 
 export const dossierDetailRoute = createRoute({
   getParentRoute: () => authenticatedRoute,
@@ -21,6 +22,7 @@ export const dossierDetailRoute = createRoute({
 });
 
 function DossierDetailPage() {
+  const { t } = useLocale();
   const { id } = dossierDetailRoute.useParams();
   const { data: dossier, isLoading } = useDossier(id);
   const { data: klant } = useKlant(dossier?.klant_id ?? "");
@@ -28,12 +30,12 @@ function DossierDetailPage() {
   const updateDossier = useUpdateDossier(id);
   const setDossierStatus = useSetDossierStatus(id);
   const [isEditing, setIsEditing] = useState(false);
-  usePageTitle(dossier?.titel ?? "Dossier");
+  usePageTitle(dossier?.titel ?? t("dossierDetail.nietGevondenTitel"));
 
   if (isLoading) {
     return (
       <div className="page">
-        <div className="empty-state">Laden…</div>
+        <div className="empty-state">{t("common.laden")}</div>
       </div>
     );
   }
@@ -42,7 +44,7 @@ function DossierDetailPage() {
     return (
       <div className="page">
         <div className="empty-state">
-          <div className="empty-state-title">Dossier niet gevonden</div>
+          <div className="empty-state-title">{t("dossierDetail.nietGevondenTitel")}</div>
         </div>
       </div>
     );
@@ -52,12 +54,12 @@ function DossierDetailPage() {
     return (
       <div className="page">
         <div className="page-header">
-          <h1 className="page-title">Dossier bewerken</h1>
+          <h1 className="page-title">{t("dossierDetail.wijzigenTitel")}</h1>
         </div>
         <div className="card card-padded" style={{ maxWidth: 560 }}>
           <DossierForm
             initial={dossier}
-            submitLabel="Wijzigingen opslaan"
+            submitLabel={t("aanvraagDetail.wijzigingenOpslaan")}
             submitting={updateDossier.isPending}
             onCancel={() => setIsEditing(false)}
             onSubmit={(values) => {
@@ -65,7 +67,7 @@ function DossierDetailPage() {
             }}
           />
           {updateDossier.isError && (
-            <div className="form-error mt-24">Opslaan mislukt. Probeer het opnieuw.</div>
+            <div className="form-error mt-24">{t("common.opslaanMislukt")}</div>
           )}
         </div>
       </div>
@@ -75,7 +77,7 @@ function DossierDetailPage() {
   return (
     <div className="page">
       <div className="breadcrumb">
-        <Link to="/klanten">Klanten</Link>
+        <Link to="/klanten">{t("klanten.title")}</Link>
         <span>/</span>
         {klant ? (
           <Link to="/klanten/$id" params={{ id: klant.id }}>
@@ -91,7 +93,9 @@ function DossierDetailPage() {
       <div className="page-header">
         <div>
           <h1 className="page-title">{dossier.titel}</h1>
-          <p className="page-subtitle">Aangemaakt op {formatDate(dossier.created_at)}</p>
+          <p className="page-subtitle">
+            {t("dossierDetail.aangemaaktOp")} {formatDate(dossier.created_at)}
+          </p>
         </div>
         <div className="flex-between" style={{ gap: 12 }}>
           <StatusBadge status={dossier.status} />
@@ -102,38 +106,38 @@ function DossierDetailPage() {
               setDossierStatus.mutate(dossier.status === "open" ? "gesloten" : "open")
             }
           >
-            {dossier.status === "open" ? "Sluiten" : "Heropenen"}
+            {dossier.status === "open" ? t("dossierDetail.sluiten") : t("dossierDetail.heropenen")}
           </button>
           <button className="btn btn-secondary" onClick={() => setIsEditing(true)}>
-            Bewerken
+            {t("common.bewerken")}
           </button>
         </div>
       </div>
 
       {dossier.omschrijving && (
         <div className="card card-padded" style={{ marginBottom: 24 }}>
-          <div className="detail-section-label">Omschrijving</div>
+          <div className="detail-section-label">{t("dossierDetail.omschrijving")}</div>
           <div className="detail-section-body">{dossier.omschrijving}</div>
         </div>
       )}
 
       <div className="card">
         <div className="card-padded flex-between">
-          <h2 style={{ fontSize: 16, fontWeight: 700 }}>Aanvragen</h2>
+          <h2 style={{ fontSize: 16, fontWeight: 700 }}>{t("dossierDetail.aanvragen")}</h2>
           <Link
             to="/dossiers/$id/aanvragen/nieuw"
             params={{ id: dossier.id }}
             className="btn btn-primary btn-sm"
           >
-            <span className="btn-icon">+</span> Nieuwe aanvraag
+            <span className="btn-icon">+</span> {t("dossierDetail.nieuweAanvraag")}
           </Link>
         </div>
         {requestsLoading ? (
-          <div className="empty-state">Laden…</div>
+          <div className="empty-state">{t("common.laden")}</div>
         ) : (requests ?? []).length === 0 ? (
           <EmptyState
-            title="Nog geen aanvragen"
-            description="Registreer een aanvraag voor dit dossier."
+            title={t("dossierDetail.geenAanvragenTitel")}
+            description={t("dossierDetail.geenAanvragenBeschrijving")}
           />
         ) : (
           requests?.map((r) => (
@@ -146,11 +150,11 @@ function DossierDetailPage() {
             >
               <div className="list-row-secondary">{formatDate(r.created_at)}</div>
               <div className="amount">
-                <span className="amount-label">Gevraagd</span>
+                <span className="amount-label">{t("aanvragen.gevraagd")}</span>
                 {formatAmount(r.requested_amount)}
               </div>
               <div className="amount">
-                <span className="amount-label">Toegekend</span>
+                <span className="amount-label">{t("aanvragen.toegekend")}</span>
                 {formatAmount(r.granted_amount)}
               </div>
               <StatusBadge status={r.status} />

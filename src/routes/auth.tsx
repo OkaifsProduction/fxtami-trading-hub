@@ -6,6 +6,9 @@ import { useAuth } from "@/lib/auth";
 import { authFormSchema } from "@/lib/schema";
 import { usePageTitle } from "@/lib/usePageTitle";
 import { checkBegeleiderProfiel } from "@/lib/begeleiderQueries";
+import { useLocale } from "@/lib/i18n";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { AppFooter } from "@/components/AppFooter";
 import amiLegalLogoFull from "@/assets/ami-legal-logo-full.png";
 
 export const authRoute = createRoute({
@@ -21,8 +24,9 @@ export const authRoute = createRoute({
 });
 
 function AuthPage() {
-  usePageTitle("Aanmelden");
   const { signIn } = useAuth();
+  const { t } = useLocale();
+  usePageTitle(t("auth.aanmelden"));
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -49,7 +53,7 @@ function AuthPage() {
     const { error } = await signIn(result.data.email, result.data.password);
     if (error) {
       setSubmitting(false);
-      setFormError("Aanmelden mislukt. Controleer e-mail en wachtwoord.");
+      setFormError(t("auth.foutmelding"));
       return;
     }
     const { data: userData } = await supabase.auth.getUser();
@@ -61,11 +65,14 @@ function AuthPage() {
 
   return (
     <div className="auth-shell">
+      <div style={{ width: 220, marginBottom: 16 }}>
+        <LanguageSwitcher />
+      </div>
       <div className="card auth-card">
         <div className="auth-header">
           <img src={amiLegalLogoFull} alt="Ami Legal" className="brand-mark auth-brand-mark" />
           <h1 className="sr-only">Ami Legal</h1>
-          <p className="auth-subtitle">Meld je aan om aanvragen te beheren</p>
+          <p className="auth-subtitle">{t("auth.subtitle")}</p>
         </div>
 
         <form onSubmit={handleSubmit} noValidate>
@@ -73,7 +80,7 @@ function AuthPage() {
 
           <div className="field">
             <label className="field-label" htmlFor="email">
-              E-mailadres
+              {t("auth.email")}
             </label>
             <input
               id="email"
@@ -89,7 +96,7 @@ function AuthPage() {
 
           <div className="field">
             <label className="field-label" htmlFor="password">
-              Wachtwoord
+              {t("auth.wachtwoord")}
             </label>
             <input
               id="password"
@@ -104,10 +111,11 @@ function AuthPage() {
           </div>
 
           <button type="submit" className="btn btn-primary btn-block" disabled={submitting}>
-            {submitting ? "Bezig met aanmelden…" : "Aanmelden"}
+            {submitting ? t("auth.bezigMetAanmelden") : t("auth.aanmelden")}
           </button>
         </form>
       </div>
+      <AppFooter />
     </div>
   );
 }

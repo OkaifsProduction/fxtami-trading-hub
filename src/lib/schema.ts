@@ -67,7 +67,7 @@ export const authFormSchema = z.object({
 
 export type AuthFormValues = z.infer<typeof authFormSchema>;
 
-export const klantTypeSchema = z.enum(["natuurlijk_persoon", "rechtspersoon"]);
+export const bewindTypeSchema = z.enum(["goederen", "persoon", "beide"]);
 
 export const klantFormSchema = z.object({
   naam: z
@@ -75,11 +75,22 @@ export const klantFormSchema = z.object({
     .trim()
     .min(1, "Naam is verplicht")
     .max(120, "Naam mag maximaal 120 tekens bevatten"),
-  klantType: klantTypeSchema.optional().or(z.literal("")),
+  bewindType: bewindTypeSchema.optional().or(z.literal("")),
   identificatienummer: z
     .string()
     .trim()
     .max(50, "Identificatienummer mag maximaal 50 tekens bevatten")
+    .optional()
+    .or(z.literal("")),
+  rolnummer: z
+    .string()
+    .trim()
+    .max(50, "Rolnr mag maximaal 50 tekens bevatten")
+    .optional()
+    .or(z.literal("")),
+  geboortedatum: z
+    .string()
+    .trim()
     .optional()
     .or(z.literal("")),
   email: z
@@ -99,6 +110,24 @@ export const klantFormSchema = z.object({
     .string()
     .trim()
     .max(300, "Adres mag maximaal 300 tekens bevatten")
+    .optional()
+    .or(z.literal("")),
+  vertrouwenspersoonNaam: z
+    .string()
+    .trim()
+    .max(120, "Naam mag maximaal 120 tekens bevatten")
+    .optional()
+    .or(z.literal("")),
+  vertrouwenspersoonTelefoon: z
+    .string()
+    .trim()
+    .max(50, "Telefoonnummer mag maximaal 50 tekens bevatten")
+    .optional()
+    .or(z.literal("")),
+  familieleden: z
+    .string()
+    .trim()
+    .max(2000, "Familieleden mag maximaal 2000 tekens bevatten")
     .optional()
     .or(z.literal("")),
   extraInfo: z

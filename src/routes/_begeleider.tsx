@@ -3,6 +3,9 @@ import { rootRoute } from "./__root";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/lib/auth";
 import { checkBegeleiderProfiel } from "@/lib/begeleiderQueries";
+import { useLocale } from "@/lib/i18n";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { AppFooter } from "@/components/AppFooter";
 import amiLegalLogoIcon from "@/assets/ami-legal-logo-icon.png";
 
 export const begeleiderRoute = createRoute({
@@ -23,6 +26,7 @@ export const begeleiderRoute = createRoute({
 
 function BegeleiderLayout() {
   const { user, signOut } = useAuth();
+  const { t } = useLocale();
   const navigate = useNavigate();
 
   async function handleSignOut() {
@@ -33,25 +37,27 @@ function BegeleiderLayout() {
   return (
     <div className="app-shell">
       <aside className="sidebar">
-        <div className="sidebar-brand">
+        <Link to="/begeleider" className="sidebar-brand">
           <img src={amiLegalLogoIcon} alt="" className="brand-mark" />
           Ami Legal
-        </div>
+        </Link>
         <nav className="sidebar-nav">
           <Link to="/begeleider" activeOptions={{ exact: true }} activeProps={{ className: "active" }}>
-            Mijn dossiers
+            {t("nav.mijnDossiers")}
           </Link>
         </nav>
         <div className="sidebar-footer">
+          <LanguageSwitcher direction="up" />
           {user?.email && <span className="sidebar-user">{user.email}</span>}
           <button className="btn btn-ghost btn-sm" onClick={handleSignOut}>
-            Afmelden
+            {t("nav.afmelden")}
           </button>
         </div>
       </aside>
       <main className="main-content">
         <Outlet />
       </main>
+      <AppFooter />
     </div>
   );
 }
