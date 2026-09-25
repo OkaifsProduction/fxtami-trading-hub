@@ -113,6 +113,7 @@ export const handler: Handler = async (event) => {
   try {
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
+      locale: "nl",
       line_items: lineItems,
       phone_number_collection: { enabled: true },
       success_url: `${siteUrl}/?checkout=success&order_id=${order.id}`,

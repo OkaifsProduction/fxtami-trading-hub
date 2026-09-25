@@ -4,6 +4,7 @@ import { CartDrawer } from "./components/CartDrawer";
 import { CheckoutStatusBanner } from "./components/CheckoutStatusBanner";
 import { ScrollProgress } from "./components/ScrollProgress";
 import { Hero } from "./components/Hero";
+import { Marquee } from "./components/Marquee";
 import { OurStory } from "./components/OurStory";
 import { PopularDishes } from "./components/PopularDishes";
 import { Menu } from "./components/Menu";
@@ -30,6 +31,7 @@ export default function App() {
       <CheckoutStatusBanner />
       <main id="main">
         <Hero />
+        <Marquee />
         <OurStory />
         <PopularDishes />
         <Menu />

@@ -34,6 +34,7 @@ export default {
           "system-ui",
           "sans-serif",
         ],
+        serif: ["Instrument Serif", "Iowan Old Style", "Palatino", "Georgia", "serif"],
       },
       maxWidth: {
         content: "1180px",
@@ -45,6 +46,10 @@ export default {
       },
       letterSpacing: {
         tightest: "-0.045em",
+        display: "-0.02em",
+      },
+      transitionTimingFunction: {
+        expo: "cubic-bezier(0.16, 1, 0.3, 1)",
       },
       keyframes: {
         fadeUp: {
@@ -55,10 +60,19 @@ export default {
           "0%, 100%": { transform: "translate(0, 0) scale(1)" },
           "50%": { transform: "translate(3%, -4%) scale(1.05)" },
         },
+        marquee: {
+          from: { transform: "translate3d(0, 0, 0)" },
+          to: { transform: "translate3d(-50%, 0, 0)" },
+        },
+        ping: {
+          "75%, 100%": { transform: "scale(2.4)", opacity: "0" },
+        },
       },
       animation: {
         fadeUp: "fadeUp 1s cubic-bezier(0.16,1,0.3,1) both",
         drift: "drift 18s ease-in-out infinite",
+        marquee: "marquee 45s linear infinite",
+        ping: "ping 2s cubic-bezier(0,0,0.2,1) infinite",
       },
     },
   },

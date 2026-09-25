@@ -29,20 +29,31 @@ export function CheckoutStatusBanner() {
   return (
     <div
       role="status"
-      className={`fixed inset-x-0 top-14 z-40 border-b px-6 py-3 text-center text-[14px] font-medium ${
-        status === "success" ? "border-ink/10 bg-mist text-ink" : "border-ink/10 bg-mist text-stone"
-      }`}
+      className="fixed inset-x-3 top-20 z-40 mx-auto flex max-w-lg items-start gap-4 rounded-3xl border border-ink/[0.06] bg-paper/95 p-5 shadow-[0_20px_60px_-20px_rgba(10,10,10,0.35)] backdrop-blur-xl animate-fadeUp"
     >
-      {status === "success"
-        ? "Grazie! Uw bestelling is bevestigd — tot binnenkort."
-        : "Checkout werd geannuleerd. Uw winkelwagen blijft bewaard, wanneer u er klaar voor bent."}
+      <span
+        aria-hidden="true"
+        className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${status === "success" ? "bg-gold" : "bg-stone-light"}`}
+      />
+      <p className="flex-1 text-[14px] leading-relaxed text-ink">
+        {status === "success" ? (
+          <>
+            <span className="font-serif text-[20px] italic text-burgundy">Grazie!</span> Uw bestelling is betaald en
+            bevestigd — tot straks.
+          </>
+        ) : (
+          "Betaling geannuleerd. Uw winkelwagen blijft bewaard voor wanneer u er klaar voor bent."
+        )}
+      </p>
       <button
         type="button"
         onClick={() => setStatus(null)}
-        aria-label="Sluiten"
-        className="ml-4 font-semibold underline underline-offset-2"
+        aria-label="Melding sluiten"
+        className="-m-2 flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-stone hover:bg-mist hover:text-ink"
       >
-        Sluiten
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M1 1l14 14M15 1L1 15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+        </svg>
       </button>
     </div>
   );

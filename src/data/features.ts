@@ -1,23 +1,30 @@
+import { menuCategories } from "./menu";
+
 export interface Feature {
   title: string;
   description: string;
 }
 
+const pizzaCount = menuCategories.find((c) => c.id === "pizza")?.items.length ?? 0;
+
+// Alleen uitspraken die aantoonbaar kloppen (afgeleid uit de echte kaart en
+// openingsuren). Specifieke claims — "steenoven", "48 uur gerezen deeg",
+// "San Marzano" — pas toevoegen als het restaurant ze bevestigt.
 export const features: Feature[] = [
   {
-    title: "Authentieke Ingrediënten",
-    description: "San Marzano-tomaten, verse kruiden en kazen — echt Italiaans.",
+    title: "Italiaanse klassiekers",
+    description: "Van Margarita en Quattro Formaggio tot Spaghetti Carbonara en Lasagne.",
   },
   {
-    title: "Vers Bereid",
-    description: "Elk gerecht wordt op bestelling klaargemaakt, van deeg tot saus.",
+    title: "Vers bereid",
+    description: "Elk gerecht wordt op bestelling klaargemaakt in onze eigen keuken.",
   },
   {
-    title: "Traditionele Recepten",
-    description: "Familierecepten die al jaren dezelfde smaak van Italië brengen.",
+    title: `${pizzaCount} pizza's op de kaart`,
+    description: "In Ø26 cm of Ø30 cm — aangevuld met pasta, vlees, vis en salades.",
   },
   {
-    title: "Steenoven Pizza",
-    description: "Onze pizza's gaan de steenoven in voor een perfect krokante bodem.",
+    title: "Tafelen of afhalen",
+    description: "Reserveer een tafel voor een avond uit, of bestel online en haal af.",
   },
 ];

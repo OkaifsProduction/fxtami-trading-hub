@@ -4,35 +4,82 @@
 
 html {
   scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   @apply bg-paper text-ink font-sans antialiased;
-  font-feature-settings: "ss01" 1, "cv01" 1;
+  font-feature-settings: "ss01" 1, "cv01" 1, "cv11" 1;
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
-/* The navbar is fixed at h-14 (3.5rem). Without this, jumping to any
-   in-page anchor (nav links, "Bekijk Menu", footer links, …) lands the
-   section right under the fixed bar and clips its heading. */
+/* The navbar is fixed at h-16 (4rem). Without this, jumping to any in-page
+   anchor lands the section right under the fixed bar and clips its heading. */
 [id] {
   scroll-margin-top: 5rem;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
+::selection {
+  background: #8c2038;
+  color: #ffffff;
+}
+
+:focus-visible {
+  outline: 2px solid #c9a567;
+  outline-offset: 3px;
+}
+
+@layer components {
+  /* Serif display type. Instrument Serif ships a single weight, so hierarchy
+     comes from size and the italic, never from font-weight. */
+  .display {
+    @apply font-serif font-normal leading-[0.95] tracking-display;
+    text-wrap: balance;
   }
-  * {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+
+  /* Hairline + small caps label that sits above every section title. */
+  .kicker {
+    @apply inline-flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.22em];
+  }
+  .kicker::before {
+    content: "";
+    @apply block h-px w-8 bg-gold;
+  }
+
+  /* Underline that draws in from the left on hover. */
+  .link-draw {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .link-draw:hover,
+  .link-draw:focus-visible {
+    background-size: 100% 1px;
+  }
+
+  /* Dotted leader between a menu item's name and its price. */
+  .leader {
+    @apply mx-3 mb-[0.35em] min-w-6 flex-1 border-b border-dotted border-ink/25;
   }
 }
 
-::selection {
-  background: #0a0a0a;
-  color: #ffffff;
+/* Film-grain overlay for dark sections: adds tactile depth to flat fills.
+   The element must be positioned (relative/fixed/…) — deliberately not set
+   here, since this rule would otherwise override Tailwind's `fixed`. */
+.grain {
+  isolation: isolate;
+}
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 /* ============ Scroll reveal ============ */
@@ -59,9 +106,18 @@ body {
   transform: none;
 }
 
-/* Staggered children: apply .reveal-stagger to the container and
-   .reveal-stagger-item to each child. Each item's transition-delay is
-   set via the inline --stagger custom property (index * step). */
+/* Image unveil: a clip-path wipe from the bottom, used on large photos. */
+.reveal-clip {
+  clip-path: inset(18% 6% 0 6% round 2rem);
+  transition: clip-path 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal-clip.is-visible {
+  clip-path: inset(0 0 0 0 round 2rem);
+}
+
+/* Staggered children: each item's transition-delay comes from the inline
+   --stagger custom property (index * step). */
 .reveal-stagger-item {
   opacity: 0;
   transform: translateY(24px);
@@ -78,11 +134,11 @@ body {
 .word-reveal {
   display: inline-block;
   opacity: 0;
-  transform: translateY(0.4em);
-  filter: blur(6px);
-  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-    filter 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-  transition-delay: calc(var(--word, 0) * 70ms);
+  transform: translateY(0.35em);
+  filter: blur(8px);
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: calc(var(--word, 0) * 65ms);
 }
 
 .word-reveal.is-visible {
@@ -91,22 +147,11 @@ body {
   filter: blur(0);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .reveal,
-  .reveal-scale,
-  .reveal-stagger-item,
-  .word-reveal {
-    opacity: 1;
-    transform: none;
-    filter: none;
-  }
-}
-
 /* Quick fade/slide used when switching the menu's category tab. */
 @keyframes panelFade {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
@@ -115,25 +160,60 @@ body {
 }
 
 .panel-fade {
-  animation: panelFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .panel-fade {
-    animation: none;
-  }
+  animation: panelFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 /* ============ Scroll progress bar ============ */
 
 .scroll-progress {
   position: fixed;
-  top: 0;
-  left: 0;
+  inset: 0 0 auto 0;
   height: 2px;
-  width: var(--scroll-progress, 0%);
-  background: linear-gradient(90deg, #8c2038, #d97b4f, #c9a567);
   z-index: 60;
   pointer-events: none;
-  transition: width 0.1s linear;
+  transform-origin: 0 50%;
+  transform: scaleX(var(--scroll-progress, 0));
+  background: linear-gradient(90deg, #8c2038, #d97b4f, #c9a567);
+}
+
+/* ============ Marquee ============ */
+
+.marquee-mask {
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .reveal,
+  .reveal-scale,
+  .reveal-stagger-item,
+  .word-reveal {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+  .reveal-clip {
+    clip-path: none;
+  }
+  .panel-fade {
+    animation: none;
+  }
 }

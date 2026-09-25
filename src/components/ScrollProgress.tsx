@@ -4,12 +4,13 @@ import { useEffect } from "react";
 export function ScrollProgress() {
   useEffect(() => {
     let ticking = false;
+    const root = document.documentElement;
 
     function update() {
       ticking = false;
-      const scrollable = document.documentElement.scrollHeight - window.innerHeight;
-      const pct = scrollable > 0 ? (window.scrollY / scrollable) * 100 : 0;
-      document.documentElement.style.setProperty("--scroll-progress", `${pct}%`);
+      const scrollable = root.scrollHeight - window.innerHeight;
+      const fraction = scrollable > 0 ? Math.min(1, window.scrollY / scrollable) : 0;
+      root.style.setProperty("--scroll-progress", fraction.toFixed(4));
     }
 
     function onScroll() {

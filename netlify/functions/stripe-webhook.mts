@@ -2,6 +2,7 @@ import type { Handler } from "@netlify/functions";
 import Stripe from "stripe";
 import { getSupabaseAdmin } from "./_lib/supabaseAdmin";
 import { sendEmail } from "./_lib/email";
+import { escapeHtml } from "./_lib/html";
 import { restaurant } from "../../src/data/restaurant";
 
 export const handler: Handler = async (event) => {
@@ -63,18 +64,24 @@ export const handler: Handler = async (event) => {
       customer_phone: customerPhone,
     })
     .eq("id", orderId)
+    // Stripe retries webhooks; only the first pending -> paid transition
+    // should update the order and send the confirmation emails.
+    .eq("status", "pending")
     .select("*, order_items(*)")
-    .single();
+    .maybeSingle();
 
-  if (error || !order) {
+  if (error) {
     console.error("stripe-webhook: failed to update order", error);
     return { statusCode: 500, body: "Failed to update order" };
+  }
+  if (!order) {
+    return { statusCode: 200, body: "Already processed" };
   }
 
   const itemsHtml = (order.order_items ?? [])
     .map((item: { item_name: string; quantity: number; unit_price_cents: number }) => {
       const lineTotal = ((item.unit_price_cents * item.quantity) / 100).toFixed(2).replace(".", ",");
-      return `<tr><td>${item.quantity} × ${item.item_name}</td><td style="text-align:right">€ ${lineTotal}</td></tr>`;
+      return `<tr><td>${item.quantity} × ${escapeHtml(item.item_name)}</td><td style="text-align:right">€ ${lineTotal}</td></tr>`;
     })
     .join("");
 
@@ -85,7 +92,7 @@ export const handler: Handler = async (event) => {
       to: customerEmail,
       subject: `Uw bestelling bij ${restaurant.name} is bevestigd`,
       html: `
-        <h1>Grazie, ${customerName || "daar"}!</h1>
+        <h1>Grazie, ${escapeHtml(customerName) || "daar"}!</h1>
         <p>Uw bestelling is ontvangen en betaald. Tot binnenkort om af te halen.</p>
         <table style="width:100%;border-collapse:collapse">${itemsHtml}</table>
         <p><strong>Totaal: € ${totalFormatted}</strong></p>
@@ -99,10 +106,10 @@ export const handler: Handler = async (event) => {
     subject: `Nieuwe betaalde bestelling — € ${totalFormatted}`,
     html: `
       <h1>Nieuwe online bestelling</h1>
-      <p>${customerName || "Gast"} — ${customerEmail} — ${customerPhone}</p>
+      <p>${escapeHtml(customerName) || "Gast"} — ${escapeHtml(customerEmail)} — ${escapeHtml(customerPhone)}</p>
       <table style="width:100%;border-collapse:collapse">${itemsHtml}</table>
       <p><strong>Totaal: € ${totalFormatted}</strong></p>
-      ${order.notes ? `<p>Opmerkingen: ${order.notes}</p>` : ""}
+      ${order.notes ? `<p>Opmerkingen: ${escapeHtml(order.notes)}</p>` : ""}
     `,
   });
 

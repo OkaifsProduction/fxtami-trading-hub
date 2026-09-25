@@ -1,37 +1,17 @@
 export interface Review {
   name: string;
-  detail: string;
+  source: string;
   rating: number;
   quote: string;
 }
 
-export const reviews: Review[] = [
-  {
-    name: "Emma Peeters",
-    detail: "Google Reviews",
-    rating: 5,
-    quote:
-      "De beste pizza uit de buurt. Krokante bodem, verse ingrediënten en altijd vriendelijke bediening. We komen graag terug.",
-  },
-  {
-    name: "Marco Rossi",
-    detail: "TripAdvisor",
-    rating: 5,
-    quote:
-      "Voelt aan als een familiekeuken in Italië. De carbonara was precies zoals het hoort: romig, simpel en heerlijk.",
-  },
-  {
-    name: "Sophie Lambrechts",
-    detail: "Google Reviews",
-    rating: 5,
-    quote:
-      "Mooie gemoedelijke zaak met een uitgebreide kaart. De Pizza Da Vinci is ons nieuwe favoriete gerecht.",
-  },
-  {
-    name: "Jan Vermeulen",
-    detail: "Google Reviews",
-    rating: 4,
-    quote:
-      "Consistent lekker, elke keer opnieuw. De steenoven geeft de pizza's die rokerige smaak die je nergens anders vindt.",
-  },
-];
+/**
+ * Alleen ECHTE reviews toevoegen (bv. overgenomen van Google, met vermelding
+ * van de bron). Verzonnen of niet-verifieerbare reviews publiceren is in de EU
+ * verboden (Richtlijn 2019/2161). Zolang deze lijst leeg is, wordt de
+ * review-sectie automatisch niet getoond.
+ *
+ * Voorbeeld:
+ * { name: "Voornaam N.", source: "Google", rating: 5, quote: "…" },
+ */
+export const reviews: Review[] = [];

@@ -26,24 +26,25 @@ export function CookieConsent() {
   if (!visible) return null;
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-[70] border-t border-ink/10 bg-paper/95 px-6 py-4 backdrop-blur-xl">
-      <div className="mx-auto flex max-w-content flex-col items-center gap-3 sm:flex-row sm:justify-between">
-        <p className="text-[13px] leading-relaxed text-stone">
-          We gebruiken enkel essentiële cookies om deze site te laten werken, plus een ingesloten
-          Google Maps-kaart. Zie ons{" "}
-          <a href="/privacy.html" className="underline hover:text-ink">
-            Privacybeleid
-          </a>{" "}
-          voor meer details.
-        </p>
-        <button
-          type="button"
-          onClick={accept}
-          className="shrink-0 rounded-full bg-ink px-5 py-2 text-[13px] font-medium text-paper hover:bg-graphite"
-        >
-          Begrepen
-        </button>
-      </div>
+    <div
+      role="region"
+      aria-label="Cookiemelding"
+      className="fixed inset-x-3 bottom-3 z-[70] mx-auto flex max-w-md flex-col gap-4 rounded-3xl border border-ink/[0.06] bg-paper/95 p-5 shadow-[0_20px_60px_-20px_rgba(10,10,10,0.35)] backdrop-blur-xl animate-fadeUp sm:inset-x-auto sm:left-5 sm:bottom-5 sm:flex-row sm:items-center"
+    >
+      <p className="text-[13px] leading-relaxed text-stone">
+        We gebruiken enkel essentiële cookies. De Google Maps-kaart laadt pas als u erom vraagt. Meer in ons{" "}
+        <a href="/privacy.html" className="font-medium text-ink underline decoration-ink/20 underline-offset-2">
+          privacybeleid
+        </a>
+        .
+      </p>
+      <button
+        type="button"
+        onClick={accept}
+        className="min-h-11 shrink-0 rounded-full bg-ink px-6 text-[13px] font-medium text-paper transition-colors hover:bg-burgundy"
+      >
+        Begrepen
+      </button>
     </div>
   );
 }

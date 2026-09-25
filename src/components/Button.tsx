@@ -5,37 +5,61 @@ type Variant = "primary" | "primary-light" | "outline" | "outline-light" | "link
 interface ButtonProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
   children: ReactNode;
   variant?: Variant;
+  arrow?: boolean;
 }
 
 const pill =
-  "inline-flex items-center justify-center gap-2 rounded-full px-7 py-3 text-[15px] font-medium transition-all duration-300 ease-out hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink";
+  "group/btn inline-flex min-h-12 items-center justify-center gap-3 rounded-full py-3 pl-7 text-[15px] font-medium tracking-tight transition-all duration-500 ease-expo";
 
 const variantClasses: Record<Variant, string> = {
-  primary: `${pill} bg-ink text-paper hover:bg-graphite`,
-  "primary-light": `${pill} bg-paper text-ink hover:bg-mist`,
-  outline: `${pill} bg-transparent text-ink border border-ink/25 hover:border-ink`,
-  "outline-light": `${pill} bg-transparent text-paper border border-paper/35 hover:border-paper`,
-  link: "inline-flex items-center gap-1.5 text-[15px] font-medium text-ink transition-all hover:gap-2.5",
-  "link-light": "inline-flex items-center gap-1.5 text-[15px] font-medium text-paper transition-all hover:gap-2.5",
+  primary: `${pill} bg-ink text-paper hover:bg-burgundy`,
+  "primary-light": `${pill} bg-paper text-ink hover:bg-gold`,
+  outline: `${pill} border border-ink/20 text-ink hover:border-ink hover:bg-ink hover:text-paper`,
+  "outline-light": `${pill} border border-paper/30 text-paper hover:border-paper hover:bg-paper hover:text-ink`,
+  link: "group/btn inline-flex min-h-12 items-center gap-2 text-[15px] font-medium tracking-tight text-ink",
+  "link-light": "group/btn inline-flex min-h-12 items-center gap-2 text-[15px] font-medium tracking-tight text-paper",
 };
 
-const isLink = (v: Variant) => v === "link" || v === "link-light";
+const circleClasses: Record<Variant, string> = {
+  primary: "bg-paper/10 text-paper",
+  "primary-light": "bg-ink/[0.06] text-ink",
+  outline: "bg-ink/[0.05]",
+  "outline-light": "bg-paper/10",
+  link: "",
+  "link-light": "",
+};
 
-export function Button({ children, variant = "primary", className = "", ...props }: ButtonProps) {
+function Arrow() {
   return (
-    <a {...props} className={`${variantClasses[variant]} ${className}`}>
-      {children}
-      {isLink(variant) && (
-        <svg width="15" height="10" viewBox="0 0 15 10" fill="none" aria-hidden="true">
-          <path
-            d="M1 5h12M8 1l5 4-5 4"
-            stroke="currentColor"
-            strokeWidth="1.4"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      )}
+    <svg
+      width="14"
+      height="10"
+      viewBox="0 0 15 10"
+      fill="none"
+      aria-hidden="true"
+      className="transition-transform duration-500 ease-expo group-hover/btn:translate-x-1"
+    >
+      <path d="M1 5h12M8 1l5 4-5 4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+export function Button({ children, variant = "primary", arrow, className = "", ...props }: ButtonProps) {
+  const isLink = variant === "link" || variant === "link-light";
+  const showArrow = arrow ?? isLink;
+  const padRight = isLink ? "" : showArrow ? "pr-2" : "pr-7";
+
+  return (
+    <a {...props} className={`${variantClasses[variant]} ${padRight} ${className}`}>
+      {isLink ? <span className="link-draw pb-0.5">{children}</span> : children}
+      {showArrow &&
+        (isLink ? (
+          <Arrow />
+        ) : (
+          <span className={`flex h-8 w-8 items-center justify-center rounded-full ${circleClasses[variant]}`}>
+            <Arrow />
+          </span>
+        ))}
     </a>
   );
 }

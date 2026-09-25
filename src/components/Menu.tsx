@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent } from "react";
 import { Container } from "./Container";
 import { SectionHeading } from "./SectionHeading";
 import { menuCategories } from "../data/menu";
@@ -11,40 +11,99 @@ export function Menu() {
   const active = menuCategories.find((c) => c.id === activeId) ?? menuCategories[0];
   const { addItem } = useCart();
   const [justAdded, setJustAdded] = useState<string | null>(null);
-  const tabsRef = useReveal<HTMLDivElement>();
+  const addedTimer = useRef<number>();
+  const tabsWrapRef = useReveal<HTMLDivElement>();
+  const tabListRef = useRef<HTMLDivElement>(null);
+  const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const [indicator, setIndicator] = useState({ left: 0, width: 0 });
+
+  useLayoutEffect(() => {
+    function measure() {
+      const tab = tabRefs.current[activeId];
+      if (tab) setIndicator({ left: tab.offsetLeft, width: tab.offsetWidth });
+    }
+    measure();
+    window.addEventListener("resize", measure);
+    // Web fonts can change tab widths after first paint.
+    document.fonts?.ready.then(measure).catch(() => {});
+    return () => window.removeEventListener("resize", measure);
+  }, [activeId]);
+
+  useEffect(() => () => window.clearTimeout(addedTimer.current), []);
+
+  function select(id: string) {
+    setActiveId(id);
+    const list = tabListRef.current;
+    const tab = tabRefs.current[id];
+    // Keep the chosen tab in view on narrow screens without scrolling the page.
+    if (list && tab) {
+      list.scrollTo({ left: tab.offsetLeft - list.clientWidth / 2 + tab.offsetWidth / 2, behavior: "smooth" });
+    }
+  }
+
+  function onTabKeyDown(e: KeyboardEvent<HTMLButtonElement>) {
+    const index = menuCategories.findIndex((c) => c.id === activeId);
+    const delta = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+    if (!delta) return;
+    e.preventDefault();
+    const next = menuCategories[(index + delta + menuCategories.length) % menuCategories.length];
+    select(next.id);
+    tabRefs.current[next.id]?.focus();
+  }
 
   function handleAdd(item: { id: string; name: string; priceCents: number }) {
     addItem({ id: item.id, name: item.name, priceCents: item.priceCents });
     setJustAdded(item.id);
-    window.setTimeout(() => setJustAdded((cur) => (cur === item.id ? null : cur)), 1200);
+    window.clearTimeout(addedTimer.current);
+    addedTimer.current = window.setTimeout(() => setJustAdded(null), 1200);
   }
 
   return (
-    <section id="menu" className="bg-mist py-28 md:py-36">
+    <section id="menu" className="bg-mist py-28 md:py-40">
       <Container>
         <SectionHeading
           kicker="La Carta"
-          title="Ontdek onze kaart"
-          description="Van steenoven pizza tot huisgemaakte pasta — blader door elke categorie van onze keuken."
+          title={
+            <>
+              Ontdek onze <em>kaart</em>
+            </>
+          }
+          description="Pizza, pasta, vlees, vis en salades — kies een categorie en stel uw bestelling samen om af te halen."
         />
+      </Container>
 
+      <div ref={tabsWrapRef} className="reveal mt-12 md:mt-16">
         <div
-          ref={tabsRef}
+          ref={tabListRef}
           role="tablist"
           aria-label="Menucategorieën"
-          className="reveal mx-auto mt-12 flex max-w-fit gap-1 overflow-x-auto rounded-full border border-ink/10 bg-paper p-1.5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          className="no-scrollbar relative mx-auto flex max-w-full gap-1 overflow-x-auto px-6 md:w-fit md:rounded-full md:border md:border-ink/[0.08] md:bg-paper md:p-1.5"
         >
+          <span
+            aria-hidden="true"
+            className="absolute bottom-1.5 top-1.5 hidden rounded-full bg-ink transition-all duration-500 ease-expo md:block"
+            style={{ left: indicator.left, width: indicator.width }}
+          />
           {menuCategories.map((category) => {
             const isActive = category.id === activeId;
             return (
               <button
                 key={category.id}
+                ref={(el) => {
+                  tabRefs.current[category.id] = el;
+                }}
+                id={`tab-${category.id}`}
                 role="tab"
                 type="button"
                 aria-selected={isActive}
-                onClick={() => setActiveId(category.id)}
-                className={`shrink-0 rounded-full px-5 py-2.5 text-[13px] font-semibold transition-colors duration-300 ${
-                  isActive ? "bg-ink text-paper" : "text-stone hover:text-ink"
+                aria-controls="menu-panel"
+                tabIndex={isActive ? 0 : -1}
+                onClick={() => select(category.id)}
+                onKeyDown={onTabKeyDown}
+                className={`relative min-h-11 shrink-0 rounded-full px-5 text-[13px] font-semibold transition-colors duration-500 ${
+                  isActive
+                    ? "bg-ink text-paper md:bg-transparent"
+                    : "bg-paper text-stone hover:text-ink md:bg-transparent"
                 }`}
               >
                 {category.label}
@@ -52,52 +111,52 @@ export function Menu() {
             );
           })}
         </div>
+      </div>
 
-        <div role="tabpanel" className="mx-auto mt-14 max-w-4xl">
+      <Container>
+        <div id="menu-panel" role="tabpanel" aria-labelledby={`tab-${active.id}`} className="mx-auto mt-12 max-w-5xl md:mt-16">
           <div key={active.id} className="panel-fade">
             {active.note && (
-              <p className="mb-6 text-center text-[13px] font-semibold uppercase tracking-[0.1em] text-stone-light">
-                {active.note}
-              </p>
+              <p className="mb-8 text-center font-serif text-xl italic text-stone">{active.note}</p>
             )}
-            <div className="grid grid-cols-1 gap-x-14 md:grid-cols-2">
+            <ul className="grid grid-cols-1 gap-x-16 md:grid-cols-2">
               {active.items.map((item) => (
-              <div
-                key={item.id}
-                className="flex items-center justify-between gap-4 border-b border-ink/[0.08] py-5"
-              >
-                <div className="min-w-0 flex-1">
-                  <h3 className="text-[17px] font-semibold text-ink">{item.name}</h3>
-                  {item.description && (
-                    <p className="mt-1 text-[14px] leading-relaxed text-stone">{item.description}</p>
-                  )}
-                </div>
-                <span className="shrink-0 text-[15px] font-semibold text-ink">
-                  {formatPrice(item.priceCents)}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => handleAdd(item)}
-                  aria-label={`Voeg ${item.name} toe aan bestelling`}
-                  className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full border transition-colors ${
-                    justAdded === item.id
-                      ? "border-ink bg-ink text-paper"
-                      : "border-ink/15 text-ink hover:border-ink hover:bg-ink hover:text-paper"
-                  }`}
-                >
-                  {justAdded === item.id ? (
-                    <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                      <path d="M2 8.5 6 12l8-8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  ) : (
-                    <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                      <path d="M8 1v14M1 8h14" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-                    </svg>
-                  )}
-                </button>
-              </div>
+                <li key={item.id} className="flex items-start gap-4 border-b border-ink/[0.07] py-6">
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-baseline">
+                      <h3 className="font-serif text-[24px] leading-tight text-ink">{item.name}</h3>
+                      <span className="leader" aria-hidden="true" />
+                      <span className="shrink-0 text-[15px] font-semibold tabular-nums text-ink">
+                        {formatPrice(item.priceCents)}
+                      </span>
+                    </div>
+                    {item.description && (
+                      <p className="mt-1.5 text-[14px] leading-relaxed text-stone">{item.description}</p>
+                    )}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => handleAdd(item)}
+                    aria-label={`Voeg ${item.name} toe aan bestelling`}
+                    className={`mt-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-full transition-all duration-500 ease-expo ${
+                      justAdded === item.id
+                        ? "bg-gold text-ink"
+                        : "bg-paper text-ink shadow-[0_1px_2px_rgba(0,0,0,0.06)] hover:bg-ink hover:text-paper"
+                    }`}
+                  >
+                    {justAdded === item.id ? (
+                      <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                        <path d="M2 8.5 6 12l8-8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    ) : (
+                      <svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                        <path d="M8 1v14M1 8h14" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                      </svg>
+                    )}
+                  </button>
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
         </div>
       </Container>

@@ -6,29 +6,27 @@ export function ReservationCta() {
   const ref = useReveal<HTMLDivElement>();
 
   return (
-    <section id="order" className="relative overflow-hidden bg-ink py-32 md:py-44">
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute left-1/2 top-1/2 h-[600px] w-[900px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-burgundy/30 blur-[140px] animate-drift" />
-        <div className="absolute left-1/3 top-1/3 h-[420px] w-[420px] rounded-full bg-terracotta/20 blur-[120px] animate-drift [animation-delay:-8s]" />
+    <section id="order" className="grain relative overflow-hidden bg-ink py-32 md:py-48">
+      <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+        <div className="absolute left-1/2 top-1/2 h-[600px] w-[900px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-burgundy/35 blur-[140px] animate-drift" />
+        <div className="absolute left-1/4 top-1/4 h-[420px] w-[420px] rounded-full bg-terracotta/20 blur-[120px] animate-drift [animation-delay:-8s]" />
+        <div className="absolute bottom-0 right-1/4 h-[360px] w-[360px] rounded-full bg-gold/15 blur-[120px] animate-drift [animation-delay:-13s]" />
       </div>
 
-      <div ref={ref} className="reveal relative mx-auto max-w-2xl px-6 text-center">
-        <span className="text-[13px] font-semibold uppercase tracking-[0.14em] text-paper/40">
-          Reserveer of Bestel
-        </span>
-        <h2 className="mt-5 text-[clamp(2.5rem,4vw+1.5rem,4.5rem)] font-semibold tracking-tightest leading-[1.05] text-paper">
-          Uw tafel staat klaar.
+      <div ref={ref} className="reveal relative mx-auto max-w-4xl px-6 text-center">
+        <span className="kicker text-paper/60">Reserveer of bestel</span>
+        <h2 className="display mt-8 text-[clamp(3.25rem,6vw+1rem,8rem)] leading-[0.92] text-paper">
+          Uw tafel <em className="italic text-gold">staat klaar.</em>
         </h2>
-        <p className="mx-auto mt-6 max-w-md text-lg leading-relaxed text-paper/50">
-          Kom genieten van een avond authentieke Italiaanse smaken, of bestel uw favorieten
-          online om af te halen.
+        <p className="mx-auto mt-8 max-w-md text-[17px] leading-relaxed text-paper/55 md:text-lg">
+          Kom genieten van een avond Italiaanse smaken, of bestel uw favorieten online om af te halen.
         </p>
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-          <Button href={restaurant.reserveUrl} variant="primary-light">
-            Reserveer een Tafel
+        <div className="mt-12 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
+          <Button href={restaurant.reserveUrl} variant="primary-light" arrow>
+            Reserveer een tafel
           </Button>
           <Button href={restaurant.orderOnlineUrl} variant="outline-light">
-            Bestel Online
+            Bestel online
           </Button>
         </div>
       </div>

@@ -2,12 +2,14 @@ import { useState } from "react";
 import { useCart } from "../lib/cart";
 import { formatPrice } from "../lib/format";
 import { restaurant } from "../data/restaurant";
+import { useDialog } from "../hooks/useDialog";
 
 export function CartDrawer() {
   const { items, isOpen, subtotalCents, close, removeItem, setQuantity } = useCart();
   const [notes, setNotes] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const panelRef = useDialog<HTMLDivElement>(isOpen, close);
 
   async function handleCheckout() {
     setStatus("loading");
@@ -39,82 +41,101 @@ export function CartDrawer() {
   }
 
   return (
-    <div
-      className={`fixed inset-0 z-[60] ${isOpen ? "" : "pointer-events-none"}`}
-      aria-hidden={!isOpen}
-    >
+    <div className={`fixed inset-0 z-[60] ${isOpen ? "" : "pointer-events-none"}`}>
       <div
         onClick={close}
-        className={`absolute inset-0 bg-ink/50 transition-opacity duration-300 ${
+        aria-hidden="true"
+        className={`absolute inset-0 bg-ink/40 backdrop-blur-[2px] transition-opacity duration-500 ${
           isOpen ? "opacity-100" : "opacity-0"
         }`}
       />
 
       <div
+        ref={panelRef}
         role="dialog"
         aria-modal="true"
-        aria-label="Uw bestelling"
-        className={`absolute right-0 top-0 flex h-full w-full max-w-md flex-col bg-paper shadow-2xl transition-transform duration-500 ease-out ${
-          isOpen ? "translate-x-0" : "translate-x-full"
+        aria-labelledby="cart-title"
+        tabIndex={-1}
+        className={`absolute inset-y-0 right-0 flex w-full max-w-[440px] flex-col bg-paper shadow-[0_0_80px_rgba(0,0,0,0.18)] outline-none transition-transform duration-700 ease-expo sm:inset-y-2 sm:right-2 sm:rounded-4xl ${
+          isOpen ? "translate-x-0" : "translate-x-[105%]"
         }`}
       >
-        <div className="flex items-center justify-between border-b border-ink/[0.08] px-6 py-5">
-          <h2 className="text-lg font-semibold tracking-tight text-ink">Uw Bestelling</h2>
+        <div className="flex items-center justify-between px-7 pb-5 pt-6">
+          <div>
+            <span className="kicker text-stone">Afhalen</span>
+            <h2 id="cart-title" className="display mt-3 text-[40px] text-ink">
+              Uw <em className="italic text-burgundy">bestelling</em>
+            </h2>
+          </div>
           <button
             type="button"
             onClick={close}
+            data-autofocus
             aria-label="Sluit winkelwagen"
-            className="flex h-10 w-10 items-center justify-center rounded-full text-stone hover:bg-mist hover:text-ink"
+            className="flex h-11 w-11 items-center justify-center self-start rounded-full bg-mist text-ink transition-colors hover:bg-mist-dark"
           >
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
               <path d="M1 1l14 14M15 1L1 15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
             </svg>
           </button>
         </div>
 
         {items.length === 0 ? (
-          <div className="flex flex-1 flex-col items-center justify-center gap-3 px-6 text-center">
-            <p className="text-[15px] text-stone">Uw winkelwagen is leeg.</p>
-            <p className="text-[13px] text-stone-light">Voeg iets toe vanuit het menu om te beginnen.</p>
+          <div className="flex flex-1 flex-col items-center justify-center gap-4 px-7 text-center">
+            <p className="display text-3xl text-ink">Nog leeg.</p>
+            <p className="max-w-[16rem] text-[15px] leading-relaxed text-stone">
+              Kies iets lekkers van de kaart — het verschijnt hier.
+            </p>
+            <a
+              href="#menu"
+              onClick={close}
+              className="mt-2 inline-flex min-h-12 items-center rounded-full bg-ink px-7 text-[15px] font-medium text-paper transition-colors hover:bg-burgundy"
+            >
+              Naar de kaart
+            </a>
           </div>
         ) : (
-          <div className="flex-1 overflow-y-auto px-6 py-5">
-            <ul className="space-y-5">
+          <div className="flex-1 overflow-y-auto overscroll-contain px-7">
+            <ul className="divide-y divide-ink/[0.07] border-y border-ink/[0.07]">
               {items.map((item) => (
-                <li key={item.id} className="flex items-start justify-between gap-4">
+                <li key={item.id} className="flex items-start justify-between gap-4 py-5">
                   <div className="min-w-0 flex-1">
-                    <p className="text-[15px] font-medium text-ink">{item.name}</p>
-                    <p className="mt-0.5 text-[13px] text-stone-light">{formatPrice(item.priceCents)} per stuk</p>
-                    <div className="mt-2 inline-flex items-center gap-3 rounded-full border border-ink/10 px-2 py-1">
+                    <p className="font-serif text-[22px] leading-tight text-ink">{item.name}</p>
+                    <p className="mt-1 text-[13px] text-stone-light">{formatPrice(item.priceCents)} per stuk</p>
+                    <div className="mt-3 inline-flex items-center rounded-full bg-mist p-1">
                       <button
                         type="button"
                         aria-label={`Verminder aantal van ${item.name}`}
                         onClick={() => setQuantity(item.id, item.quantity - 1)}
-                        className="flex h-8 w-8 items-center justify-center rounded-full text-ink hover:bg-mist"
+                        className="flex h-9 w-9 items-center justify-center rounded-full text-ink transition-colors hover:bg-paper"
                       >
-                        −
+                        <svg width="11" height="11" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                          <path d="M2 8h12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                        </svg>
                       </button>
-                      <span className="min-w-4 text-center text-[13px] font-semibold text-ink">
+                      <span className="min-w-7 text-center text-[14px] font-semibold tabular-nums text-ink" aria-live="polite">
                         {item.quantity}
                       </span>
                       <button
                         type="button"
                         aria-label={`Verhoog aantal van ${item.name}`}
                         onClick={() => setQuantity(item.id, item.quantity + 1)}
-                        className="flex h-8 w-8 items-center justify-center rounded-full text-ink hover:bg-mist"
+                        className="flex h-9 w-9 items-center justify-center rounded-full text-ink transition-colors hover:bg-paper"
                       >
-                        +
+                        <svg width="11" height="11" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                          <path d="M8 2v12M2 8h12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                        </svg>
                       </button>
                     </div>
                   </div>
-                  <div className="flex flex-col items-end gap-2">
-                    <span className="text-[15px] font-semibold text-ink">
+                  <div className="flex flex-col items-end gap-3">
+                    <span className="text-[15px] font-semibold tabular-nums text-ink">
                       {formatPrice(item.priceCents * item.quantity)}
                     </span>
                     <button
                       type="button"
                       onClick={() => removeItem(item.id)}
-                      className="text-[12px] font-medium text-stone-light hover:text-burgundy"
+                      className="link-draw text-[12px] font-medium text-stone-light hover:text-burgundy"
                     >
                       Verwijderen
                     </button>
@@ -123,9 +144,9 @@ export function CartDrawer() {
               ))}
             </ul>
 
-            <div className="mt-6">
-              <label htmlFor="cart-notes" className="mb-1.5 block text-[13px] font-medium text-stone">
-                Opmerkingen voor de keuken (optioneel)
+            <div className="py-6">
+              <label htmlFor="cart-notes" className="mb-2 block text-[13px] font-medium text-stone">
+                Opmerkingen voor de keuken <span className="text-stone-light">(optioneel)</span>
               </label>
               <textarea
                 id="cart-notes"
@@ -133,24 +154,26 @@ export function CartDrawer() {
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="Allergieën, afhaaltijd, extra saus…"
-                className="w-full resize-none rounded-xl border border-ink/15 bg-mist/60 px-3 py-2 text-[16px] text-ink outline-none transition-colors focus:border-ink"
+                className="w-full resize-none rounded-2xl border border-transparent bg-mist px-4 py-3 text-[16px] text-ink outline-none transition-colors placeholder:text-stone-light focus:border-ink/20 focus:bg-paper"
               />
             </div>
           </div>
         )}
 
         {items.length > 0 && (
-          <div className="border-t border-ink/[0.08] px-6 py-5">
-            <div className="flex items-center justify-between text-[15px]">
-              <span className="text-stone">Subtotaal</span>
-              <span className="font-semibold text-ink">{formatPrice(subtotalCents)}</span>
+          <div className="border-t border-ink/[0.07] px-7 pb-7 pt-5">
+            <div className="flex items-baseline justify-between">
+              <span className="text-[15px] text-stone">Subtotaal</span>
+              <span className="font-serif text-[30px] leading-none tabular-nums text-ink">{formatPrice(subtotalCents)}</span>
             </div>
-            <p className="mt-1 text-[12px] text-stone-light">Inclusief btw. Afhaalbestelling.</p>
+            <p className="mt-1.5 text-[12px] text-stone-light">
+              Inclusief btw · Afhalen in {restaurant.address.line1}
+            </p>
 
             {status === "error" && (
-              <p className="mt-3 rounded-xl bg-burgundy-light px-3 py-2 text-[13px] text-burgundy-dark">
+              <p role="alert" className="mt-4 rounded-2xl bg-burgundy-light px-4 py-3 text-[13px] leading-relaxed text-burgundy-dark">
                 {errorMessage} Of bel ons op{" "}
-                <a href={restaurant.phoneHref} className="underline">
+                <a href={restaurant.phoneHref} className="font-semibold underline">
                   {restaurant.phone}
                 </a>
                 .
@@ -161,9 +184,12 @@ export function CartDrawer() {
               type="button"
               onClick={handleCheckout}
               disabled={status === "loading"}
-              className="mt-4 flex w-full items-center justify-center rounded-full bg-ink px-6 py-3.5 text-[15px] font-medium text-paper transition-all hover:bg-graphite hover:-translate-y-0.5 disabled:opacity-60 disabled:hover:translate-y-0"
+              className="mt-5 flex min-h-14 w-full items-center justify-between rounded-full bg-ink pl-7 pr-2 text-[15px] font-medium text-paper transition-colors duration-500 hover:bg-burgundy disabled:opacity-60"
             >
-              {status === "loading" ? "Doorverwijzen naar checkout…" : `Afrekenen — ${formatPrice(subtotalCents)}`}
+              <span>{status === "loading" ? "Doorverwijzen naar betaling…" : "Afrekenen"}</span>
+              <span className="flex h-10 items-center rounded-full bg-paper/10 px-4 tabular-nums">
+                {formatPrice(subtotalCents)}
+              </span>
             </button>
           </div>
         )}

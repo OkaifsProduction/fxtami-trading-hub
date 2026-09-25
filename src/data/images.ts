@@ -1,33 +1,31 @@
 /**
- * Placeholder photography sourced from Unsplash. Swap any entry for a real,
- * licensed photo of the restaurant by replacing the URL — every image is
- * referenced from a single place so real photography is a one-line change.
+ * Sfeerbeelden van Unsplash (vrij te gebruiken). Elke foto is visueel
+ * gecontroleerd op het gerecht dat ze voorstelt. Vervang ze bij voorkeur door
+ * echte foto's van Da Vinci — alles wordt vanaf deze ene plek gebruikt.
  */
 function unsplash(id: string, width: number, quality = 80) {
   return `https://images.unsplash.com/photo-${id}?w=${width}&q=${quality}&auto=format&fit=crop`;
 }
 
 export const images = {
-  heroPizza: unsplash("1513104890138-7c749659a591", 1400),
-  heroPizzaSmall: unsplash("1513104890138-7c749659a591", 800),
-  doughHands: unsplash("1590947132387-155cc02f3212", 1200),
-  woodFiredOven: unsplash("1574071318508-1cdbab80d002", 1200),
+  heroPizza: unsplash("1513104890138-7c749659a591", 1800),
+  cheesePull: unsplash("1542834369-f10ebf06d3e0", 1600),
+  pizzaInOven: unsplash("1579751626657-72bc17010498", 1200),
 
-  dishMargherita: unsplash("1548369937-47519962c11a", 800),
-  dishDiavola: unsplash("1593246049226-ded77bf90326", 800),
-  dishBurrata: unsplash("1595295333158-4742f28fbd85", 800),
-  dishQuattroFormaggi: unsplash("1519676867240-f03562e64548", 800),
-  dishCarbonara: unsplash("1608219992759-8d74ed8d76eb", 800),
-  dishTiramisu: unsplash("1571877227200-a0d98ea607e9", 800),
+  dishDaVinci: unsplash("1593246049226-ded77bf90326", 900),
+  dishMargherita: unsplash("1574071318508-1cdbab80d002", 900),
+  dishCarbonara: unsplash("1612874742237-6526221588e3", 900),
+  dishLasagne: unsplash("1619895092538-128341789043", 900),
+  dishSalad: unsplash("1546793665-c74683f339c1", 900),
+  dishScampi: unsplash("1625943553852-781c6dd46faa", 900),
 
-  galleryPizza: unsplash("1467003909585-2f8a72700288", 900),
-  galleryPastaClose: unsplash("1608897013039-887f21d8c804", 900),
-  galleryInterior: unsplash("1414235077428-338989a2e8c0", 900),
-  galleryChef: unsplash("1544025162-d76694265947", 900),
-  galleryIngredients: unsplash("1592841200221-a6898f307baa", 900),
-  galleryWine: unsplash("1510812431401-41d2bd2722f3", 900),
-  galleryDough: unsplash("1590947132387-155cc02f3212", 900),
-  gallerySalad: unsplash("1512621776951-a57141f2eefd", 900),
-
-  ctaBackground: unsplash("1574071318508-1cdbab80d002", 1600),
+  freshPasta: unsplash("1498579150354-977475b7ea0b", 1200),
+  tiramisu: unsplash("1571877227200-a0d98ea607e9", 900),
+  redWine: unsplash("1510812431401-41d2bd2722f3", 900),
+  tomatoes: unsplash("1592841200221-a6898f307baa", 900),
+  pizzaFloured: unsplash("1595854341625-f33ee10dbf94", 900),
+  spaghettiScampi: unsplash("1563379926898-05f4575a45d8", 900),
+  penne: unsplash("1621996346565-e3dbc646d9a9", 900),
+  pizzaSlices: unsplash("1585238342024-78d387f4a707", 900),
+  pastaBolognese: unsplash("1600803907087-f56d462fd26b", 900),
 };

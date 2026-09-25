@@ -1,95 +1,120 @@
 import { Container } from "./Container";
 import { SectionHeading } from "./SectionHeading";
 import { ContactForm } from "./ContactForm";
+import { MapEmbed } from "./MapEmbed";
 import { useReveal } from "../hooks/useReveal";
 import { restaurant } from "../data/restaurant";
+import { todayWeekday } from "../lib/hours";
+
+function Label({ children }: { children: string }) {
+  return <h3 className="text-[11px] font-semibold uppercase tracking-[0.22em] text-stone-light">{children}</h3>;
+}
 
 export function Location() {
   const infoRef = useReveal<HTMLDivElement>();
   const mapRef = useReveal<HTMLDivElement>();
+  const formRef = useReveal<HTMLDivElement>();
+  const today = todayWeekday();
 
   return (
-    <section id="contact" className="bg-paper py-28 md:py-36">
+    <section id="contact" className="bg-paper pb-28 pt-8 md:pb-40 md:pt-12">
       <Container>
-        <SectionHeading align="left" kicker="Bezoek Ons" title="Vind uw tafel" />
+        <SectionHeading
+          align="left"
+          kicker="Bezoek Ons"
+          title={
+            <>
+              Vind uw <em>tafel</em>
+            </>
+          }
+        />
 
-        <div className="mt-14 grid grid-cols-1 gap-12 lg:grid-cols-2">
-          <div ref={infoRef} className="reveal space-y-10">
-            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
+        <div className="mt-14 grid grid-cols-1 gap-12 md:mt-20 lg:grid-cols-2 lg:gap-16">
+          <div ref={infoRef} className="reveal space-y-12">
+            <div className="grid grid-cols-1 gap-10 sm:grid-cols-2">
               <div>
-                <h3 className="text-[13px] font-semibold uppercase tracking-[0.1em] text-stone-light">
-                  Adres
-                </h3>
-                <p className="mt-2 text-lg font-medium text-ink">
+                <Label>Adres</Label>
+                <p className="mt-4 font-serif text-[26px] leading-tight text-ink">
                   {restaurant.address.line1}
                   <br />
                   {restaurant.address.line2}
                 </p>
-                <a href={restaurant.directionsUrl} target="_blank" rel="noreferrer" className="mt-3 inline-block">
-                  <span className="inline-flex items-center gap-1.5 text-[14px] font-medium text-ink underline decoration-ink/25 underline-offset-4 hover:decoration-ink">
-                    Routebeschrijving
-                  </span>
+                <a
+                  href={restaurant.directionsUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="link-draw mt-4 inline-block pb-0.5 text-[14px] font-medium text-ink"
+                >
+                  Routebeschrijving ↗
                 </a>
               </div>
 
               <div>
-                <h3 className="text-[13px] font-semibold uppercase tracking-[0.1em] text-stone-light">
-                  Contact
-                </h3>
-                <a href={restaurant.phoneHref} className="mt-2 block text-lg font-medium text-ink hover:text-stone">
+                <Label>Contact</Label>
+                <a href={restaurant.phoneHref} className="mt-4 block font-serif text-[26px] leading-tight text-ink hover:text-burgundy">
                   {restaurant.phone}
                 </a>
-                <a href={restaurant.mobileHref} className="mt-1 block text-[15px] text-stone hover:text-ink">
-                  Gsm: {restaurant.mobile}
+                <a href={restaurant.mobileHref} className="mt-2 block text-[15px] text-stone hover:text-ink">
+                  Gsm {restaurant.mobile}
                 </a>
-                <a
-                  href={`mailto:${restaurant.email}`}
-                  className="mt-1 block text-[15px] text-stone hover:text-ink"
-                >
+                <a href={`mailto:${restaurant.email}`} className="mt-1 block break-all text-[15px] text-stone hover:text-ink">
                   {restaurant.email}
                 </a>
               </div>
             </div>
 
             <div>
-              <h3 className="text-[13px] font-semibold uppercase tracking-[0.1em] text-stone-light">
-                Openingsuren
-              </h3>
-              <dl className="mt-3 space-y-2">
-                {restaurant.hours.map((h) => (
-                  <div
-                    key={h.days}
-                    className="flex items-baseline justify-between gap-4 border-b border-ink/[0.08] py-2.5 text-[15px]"
-                  >
-                    <dt className="text-stone">{h.days}</dt>
-                    <dd className="font-semibold text-ink">{h.time}</dd>
-                  </div>
-                ))}
+              <Label>Openingsuren</Label>
+              <dl className="mt-4 border-t border-ink/[0.08]">
+                {restaurant.hours.map((h) => {
+                  const isToday = h.weekdays.includes(today);
+                  return (
+                    <div
+                      key={h.days}
+                      className={`flex items-baseline justify-between gap-4 border-b border-ink/[0.08] py-4 text-[15px] ${
+                        isToday ? "text-ink" : "text-stone"
+                      }`}
+                    >
+                      <dt className="flex items-center gap-2.5">
+                        {h.days}
+                        {isToday && (
+                          <span className="rounded-full bg-burgundy-light px-2.5 py-0.5 text-[11px] font-semibold text-burgundy">
+                            Vandaag
+                          </span>
+                        )}
+                      </dt>
+                      <dd className={`tabular-nums ${isToday ? "font-semibold" : "font-medium text-ink"}`}>{h.time}</dd>
+                    </div>
+                  );
+                })}
               </dl>
-            </div>
-
-            <div>
-              <h3 className="mb-5 text-[13px] font-semibold uppercase tracking-[0.1em] text-stone-light">
-                Stuur een Bericht
-              </h3>
-              <ContactForm />
             </div>
           </div>
 
           <div
             ref={mapRef}
             style={{ transitionDelay: "150ms" }}
-            className="reveal-scale min-h-[420px] overflow-hidden rounded-4xl lg:min-h-full"
+            className="reveal-scale min-h-[420px] overflow-hidden rounded-4xl"
           >
-            <iframe
-              src={restaurant.mapEmbedUrl}
-              title={`Kaart met de locatie van ${restaurant.name}`}
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              allowFullScreen
-              className="h-full min-h-[420px] w-full grayscale contrast-[1.05]"
-            />
+            <MapEmbed />
           </div>
+        </div>
+
+        <div
+          ref={formRef}
+          className="reveal mt-20 grid grid-cols-1 gap-10 border-t border-ink/[0.08] pt-16 md:mt-28 md:pt-20 lg:grid-cols-2 lg:gap-16"
+        >
+          <div>
+            <span className="kicker text-stone">Contact</span>
+            <p className="display mt-5 text-[clamp(2.25rem,2vw+1.25rem,3.25rem)] text-ink">
+              Een vraag of <em className="italic text-burgundy">speciale wens</em>?
+            </p>
+            <p className="mt-5 max-w-md text-[16px] leading-relaxed text-stone">
+              Stuur ons een bericht — voor een groep, een feestje of een allergie. Voor iets dringends belt u ons het
+              best op <a href={restaurant.phoneHref} className="font-medium text-ink underline decoration-ink/20 underline-offset-4">{restaurant.phone}</a>.
+            </p>
+          </div>
+          <ContactForm />
         </div>
       </Container>
     </section>

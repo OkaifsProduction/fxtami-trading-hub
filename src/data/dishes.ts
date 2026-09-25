@@ -19,7 +19,7 @@ export const popularDishes: Dish[] = [
     name: "Pizza Da Vinci",
     description: "Scampi, spek, hesp, gorgonzola, salami, paprika, look.",
     priceCents: 1050,
-    image: images.dishDiavola,
+    image: images.dishDaVinci,
     tag: "Huisspecialiteit",
   },
   {
@@ -42,21 +42,21 @@ export const popularDishes: Dish[] = [
     name: "Lasagne",
     description: "Rundergehakt en hesp in tomatenroomsaus.",
     priceCents: 1100,
-    image: images.dishQuattroFormaggi,
+    image: images.dishLasagne,
   },
   {
     id: "salade-davinci",
     name: "Salade Da Vinci",
     description: "Garnalen, tonijn, hesp, kaas, artisjokken, maïs en ananas.",
     priceCents: 1350,
-    image: images.gallerySalad,
+    image: images.dishSalad,
   },
   {
     id: "vlees-scampi-grilla",
     name: "Scampi alla Grilla",
     description: "Gegrilde gamba's, op z'n Italiaans bereid.",
     priceCents: 2300,
-    image: images.dishBurrata,
+    image: images.dishScampi,
     tag: "Vis",
   },
 ];

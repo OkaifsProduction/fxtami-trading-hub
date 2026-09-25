@@ -28,6 +28,17 @@ Replace the placeholder content with your real business details:
   lawyer review them before launch.
 - Currency: line items are created in `netlify/functions/create-checkout-session.mts`
   with `currency: "eur"` — already set correctly for this business.
+- Opening hours live in **two** places in `src/data/restaurant.ts`: `hours`
+  (what's displayed) and `schedule` (drives the "Nu open" badge and which
+  reservation times can be picked). Keep them in sync.
+- `src/data/reviews.ts` is intentionally empty, so the reviews section is
+  hidden. Only add **real** reviews (e.g. copied from Google, with the source) —
+  publishing invented reviews is illegal in the EU.
+- Only claim what's true: specifics like "stone oven", "dough proofed 48 hours"
+  or "San Marzano tomatoes" were removed until the restaurant confirms them
+  (`src/data/features.ts`, `src/components/OurStory.tsx`).
+- Stripe: enable **Bancontact** under Settings → Payment methods — most Belgian
+  customers expect it, and Checkout shows it automatically once enabled.
 
 ---
 
