@@ -45,14 +45,18 @@ Replace the placeholder content with your real business details:
 ## 1. Supabase (database)
 
 1. Create a free project at [supabase.com](https://supabase.com).
-2. In the SQL Editor, paste and run the contents of
-   `supabase/migrations/0001_init.sql`. This creates the `reservations`,
-   `contact_messages`, `orders`, and `order_items` tables with the right
-   security policies already configured.
+2. In the SQL Editor, run the migrations in `supabase/migrations/` **in
+   order**: first `0001_init.sql` (creates `reservations`, `contact_messages`,
+   `orders` and `order_items`), then `0002_lock_down_public_writes.sql`
+   (removes public write access now that all writes go through the site's own
+   server functions).
 3. Go to **Project Settings → API** and copy:
-   - **Project URL** → used for both `VITE_SUPABASE_URL` and `SUPABASE_URL`
-   - **anon public** key → `VITE_SUPABASE_ANON_KEY`
+   - **Project URL** → `SUPABASE_URL`
    - **service_role** key (keep this secret!) → `SUPABASE_SERVICE_ROLE_KEY`
+
+   There is deliberately no browser-side key: the site never talks to the
+   database from the visitor's browser, so nothing database-related is
+   exposed in the public bundle.
 
 You can browse submitted reservations and messages any time in the Supabase
 Table Editor — there's no admin panel on the site itself for this first
@@ -130,7 +134,8 @@ just won't get emailed about them, so you'd need to check Supabase directly.
   Confirm the order shows `status = paid` in Supabase's `orders` table and
   that both confirmation emails arrive.
 - **Reservations**: submit the form on `#reserve`, confirm a row appears in
-  the `reservations` table and the notification email arrives.
+  the `reservations` table and the notification email arrives. Also try a
+  Monday or a time outside opening hours — it should be refused.
 - **Contact form**: same check against `contact_messages`.
 - Once everything above works, switch `STRIPE_SECRET_KEY` /
   `STRIPE_WEBHOOK_SECRET` to your **live** Stripe keys (new webhook endpoint
@@ -138,10 +143,20 @@ just won't get emailed about them, so you'd need to check Supabase directly.
 
 ## Testing locally
 
-`npm install -g netlify-cli`, then `netlify dev` from the project root runs
-the Vite dev server *and* the functions together at `http://localhost:8888`,
-so cart checkout and the forms work exactly like production. Point
-`SITE_URL` at `http://localhost:8888` in your local `.env` for this.
+Run two terminals from the project root:
+
+```bash
+npm run dev:functions   # the Netlify Functions, on port 9999
+npm run dev             # the site, on http://localhost:5173
+```
+
+The dev server forwards `/.netlify/functions/*` to the functions, so the
+forms and cart checkout behave exactly like production. Point `SITE_URL` at
+`http://localhost:5173` in your local `.env`.
+
+(`netlify dev` bundles both into one port, but it also applies the production
+Content-Security-Policy from `public/_headers`, which blocks Vite's
+development script and leaves the page blank — hence the two commands above.)
 
 ---
 
@@ -156,7 +171,35 @@ so cart checkout and the forms work exactly like production. Point
   confirmed, orders fulfilled, etc.) is a natural next step.
 - **Order status page for customers**: customers currently get a
   confirmation email but no order-tracking link.
-- **Multi-language**: the site is English-only.
+- **Multi-language**: the site is Dutch-only.
+- **Rate limiting**: the forms have a honeypot and full server-side
+  validation, which stops ordinary bot spam. If the site is ever targeted
+  deliberately, add Netlify's rate limiting (Site configuration → Rate
+  limiting) on `/.netlify/functions/submit`.
 
 None of these block a real launch — pickup ordering, reservations, and
 contact are all fully functional today.
+
+---
+
+## Handing the site over to the restaurant
+
+When you transfer ownership, these are the pieces that need to change hands.
+Each one is an account the new owner should control themselves, so the site
+keeps working without you.
+
+1. **Domain** — transfer at the registrar, or let them buy the domain and
+   point it at Netlify.
+2. **Netlify** — Site configuration → Transfer site, or let them create their
+   own site from the repository and move the DNS across.
+3. **GitHub repository** — Settings → Transfer ownership.
+4. **Stripe** — the restaurant creates their own account (payouts go to their
+   bank account), then replaces `STRIPE_SECRET_KEY` and creates a new webhook
+   endpoint for `STRIPE_WEBHOOK_SECRET`.
+5. **Supabase** — transfer the project to their organisation, or let them
+   create a project and run the migrations in `supabase/migrations/`.
+6. **Resend** — their own account and verified sending domain.
+
+After the handover, rotate every key that was ever shared during development,
+and remove your own access from each account.
+

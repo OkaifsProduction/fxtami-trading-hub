@@ -15,5 +15,5 @@
     "noEmit": true,
     "types": ["node"]
   },
-  "include": ["**/*.mts", "../../src/data/**/*.ts"]
+  "include": ["**/*.mts", "_lib/**/*.ts", "../../src/data/**/*.ts", "../../src/lib/hours.ts"]
 }

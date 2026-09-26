@@ -1,43 +1,33 @@
 import { useState, type FormEvent } from "react";
-import { supabase, isSupabaseConfigured } from "../lib/supabase";
-import { restaurant } from "../data/restaurant";
-import { inputClass, labelClass, showSetupHints, submitClass } from "./formStyles";
+import { honeypotProps, submitForm } from "../lib/submit";
+import { inputClass, labelClass, submitClass } from "./formStyles";
 import { SubmitArrow } from "./SubmitArrow";
 
 type Status = "idle" | "loading" | "sent" | "error";
 
 export function ContactForm() {
   const [status, setStatus] = useState<Status>("idle");
+  const [errorMessage, setErrorMessage] = useState("");
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-
-    if (!supabase) {
-      setStatus("error");
-      return;
-    }
-
     const form = new FormData(e.currentTarget);
-    const record = {
-      name: String(form.get("name") || ""),
-      email: String(form.get("email") || ""),
-      message: String(form.get("message") || ""),
-    };
 
     setStatus("loading");
-    const { error } = await supabase.from("contact_messages").insert(record);
+    const error = await submitForm({
+      type: "contact",
+      name: form.get("name"),
+      email: form.get("email"),
+      message: form.get("message"),
+      company: form.get("company"),
+    });
 
     if (error) {
       setStatus("error");
+      setErrorMessage(error);
       return;
     }
-
     setStatus("sent");
-    fetch("/.netlify/functions/notify", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ type: "contact", record }),
-    }).catch(() => {});
   }
 
   if (status === "sent") {
@@ -54,19 +44,21 @@ export function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8">
+    <form onSubmit={handleSubmit} className="relative space-y-8">
+      <input {...honeypotProps} />
+
       <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
         <div>
           <label htmlFor="contact-name" className={labelClass}>
             Naam
           </label>
-          <input id="contact-name" name="name" type="text" required autoComplete="name" className={inputClass} />
+          <input id="contact-name" name="name" type="text" required maxLength={120} autoComplete="name" className={inputClass} />
         </div>
         <div>
           <label htmlFor="contact-email" className={labelClass}>
             E-mail
           </label>
-          <input id="contact-email" name="email" type="email" required autoComplete="email" className={inputClass} />
+          <input id="contact-email" name="email" type="email" required maxLength={200} autoComplete="email" className={inputClass} />
         </div>
       </div>
 
@@ -74,21 +66,19 @@ export function ContactForm() {
         <label htmlFor="contact-message" className={labelClass}>
           Bericht
         </label>
-        <textarea id="contact-message" name="message" rows={4} required className={`${inputClass} resize-none`} />
+        <textarea
+          id="contact-message"
+          name="message"
+          rows={4}
+          required
+          maxLength={4000}
+          className={`${inputClass} resize-none`}
+        />
       </div>
 
       {status === "error" && (
         <p role="alert" className="rounded-2xl bg-burgundy-light px-5 py-4 text-[14px] leading-relaxed text-burgundy-dark">
-          Er ging iets mis bij het versturen. Probeer het opnieuw, of bel ons op{" "}
-          <a href={restaurant.phoneHref} className="font-semibold underline">
-            {restaurant.phone}
-          </a>
-          .
-        </p>
-      )}
-      {showSetupHints && !isSupabaseConfigured && (
-        <p className="rounded-2xl bg-mist px-5 py-4 text-[13px] text-stone">
-          Dev-melding: dit formulier heeft een Supabase-configuratie nodig (zie DEPLOYMENT.md).
+          {errorMessage}
         </p>
       )}
 

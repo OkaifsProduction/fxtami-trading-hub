@@ -6,6 +6,3 @@ export const labelClass = "block text-[12px] font-semibold uppercase tracking-[0
 
 export const submitClass =
   "group inline-flex min-h-14 shrink-0 items-center gap-4 whitespace-nowrap rounded-full bg-ink pl-8 pr-2 text-[15px] font-medium text-paper transition-colors duration-500 ease-expo hover:bg-burgundy disabled:cursor-wait disabled:opacity-60";
-
-/** Shown only in `npm run dev`, never to visitors of the live site. */
-export const showSetupHints = import.meta.env.DEV;

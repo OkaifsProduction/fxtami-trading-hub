@@ -3,8 +3,8 @@ import { Container } from "./Container";
 import { SectionHeading } from "./SectionHeading";
 import { OpenStatusPill } from "./OpenStatusPill";
 import { SubmitArrow } from "./SubmitArrow";
-import { inputClass, labelClass, showSetupHints, submitClass } from "./formStyles";
-import { supabase, isSupabaseConfigured } from "../lib/supabase";
+import { inputClass, labelClass, submitClass } from "./formStyles";
+import { honeypotProps, submitForm } from "../lib/submit";
 import { closedReason, timeSlotsFor, todayIso, validateReservationSlot } from "../lib/hours";
 import { restaurant } from "../data/restaurant";
 import { useReveal } from "../hooks/useReveal";
@@ -40,43 +40,28 @@ export function ReservationSection() {
       return;
     }
 
-    if (!supabase) {
-      setStatus("error");
-      setErrorMessage(`Online reserveren is tijdelijk niet beschikbaar — bel ons op ${restaurant.phone}.`);
-      return;
-    }
-
     const form = new FormData(e.currentTarget);
-    const record = {
-      name: String(form.get("name") || ""),
-      email: String(form.get("email") || ""),
-      phone: String(form.get("phone") || ""),
-      party_size: Number(form.get("party_size")),
-      reservation_date: date,
-      reservation_time: time,
-      notes: String(form.get("notes") || "") || null,
-    };
-
     setStatus("loading");
     setErrorMessage("");
 
-    const { error } = await supabase.from("reservations").insert(record);
+    const error = await submitForm({
+      type: "reservation",
+      name: form.get("name"),
+      email: form.get("email"),
+      phone: form.get("phone"),
+      party_size: form.get("party_size"),
+      reservation_date: date,
+      reservation_time: time,
+      notes: form.get("notes"),
+      company: form.get("company"),
+    });
 
     if (error) {
       setStatus("error");
-      setErrorMessage("Er ging iets mis bij het opslaan van uw reservatie. Bel ons om te bevestigen.");
+      setErrorMessage(error);
       return;
     }
-
     setStatus("success");
-
-    // Best-effort notification email — the reservation is already saved
-    // either way, so a failure here shouldn't change what the guest sees.
-    fetch("/.netlify/functions/notify", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ type: "reservation", record }),
-    }).catch(() => {});
   }
 
   return (
@@ -133,8 +118,10 @@ export function ReservationSection() {
             ) : (
               <form
                 onSubmit={handleSubmit}
-                className="space-y-9 rounded-4xl bg-paper p-7 shadow-[0_30px_80px_-40px_rgba(10,10,10,0.25)] sm:p-10 md:p-14"
+                className="relative space-y-9 rounded-4xl bg-paper p-7 shadow-[0_30px_80px_-40px_rgba(10,10,10,0.25)] sm:p-10 md:p-14"
               >
+                <input {...honeypotProps} />
+
                 <div className="grid grid-cols-1 gap-9 sm:grid-cols-2">
                   <div>
                     <label htmlFor="res-date" className={labelClass}>
@@ -234,12 +221,6 @@ export function ReservationSection() {
                 {status === "error" && (
                   <p role="alert" className="rounded-2xl bg-burgundy-light px-5 py-4 text-[14px] leading-relaxed text-burgundy-dark">
                     {errorMessage}
-                  </p>
-                )}
-
-                {showSetupHints && !isSupabaseConfigured && (
-                  <p className="rounded-2xl bg-mist px-5 py-4 text-[13px] text-stone">
-                    Dev-melding: online reserveren heeft een Supabase-configuratie nodig (zie DEPLOYMENT.md).
                   </p>
                 )}
 

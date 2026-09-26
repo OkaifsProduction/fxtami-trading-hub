@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev",
+    "dev:functions": "netlify functions:serve --port 9999 --offline",
     "build": "vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit && tsc --noEmit -p netlify/functions/tsconfig.json"
@@ -20,11 +21,13 @@
     "@types/node": "^20.16.10",
     "@types/react": "^18.3.11",
     "@types/react-dom": "^18.3.0",
-    "@vitejs/plugin-react": "^4.3.2",
+    "@vitejs/plugin-react": "^6.1.1",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.13",
     "typescript": "^5.6.3",
-    "vite": "^5.4.8"
-  }
+    "vite": "^8.3.1"
+  },
+  "description": "Website voor Da Vinci — Italiaans restaurant & pizzeria in Beverst (Bilzen): menukaart, online bestellen en reserveren.",
+  "license": "UNLICENSED"
 }
