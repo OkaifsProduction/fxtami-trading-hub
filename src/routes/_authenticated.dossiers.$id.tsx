@@ -11,7 +11,8 @@ import {
 import { DossierForm } from "@/components/DossierForm";
 import { StatusBadge } from "@/components/StatusBadge";
 import { EmptyState } from "@/components/EmptyState";
-import { formatAmount, formatDate } from "@/lib/format";
+import { ErrorState } from "@/components/ErrorState";
+import { useFormat } from "@/lib/format";
 import { usePageTitle } from "@/lib/usePageTitle";
 import { useLocale } from "@/lib/i18n";
 
@@ -23,10 +24,16 @@ export const dossierDetailRoute = createRoute({
 
 function DossierDetailPage() {
   const { t } = useLocale();
+  const { formatAmount, formatDate } = useFormat();
   const { id } = dossierDetailRoute.useParams();
   const { data: dossier, isLoading } = useDossier(id);
   const { data: klant } = useKlant(dossier?.klant_id ?? "");
-  const { data: requests, isLoading: requestsLoading } = useRequestsByDossier(id);
+  const {
+    data: requests,
+    isLoading: requestsLoading,
+    isError: requestsError,
+    refetch: refetchRequests,
+  } = useRequestsByDossier(id);
   const updateDossier = useUpdateDossier(id);
   const setDossierStatus = useSetDossierStatus(id);
   const [isEditing, setIsEditing] = useState(false);
@@ -134,6 +141,8 @@ function DossierDetailPage() {
         </div>
         {requestsLoading ? (
           <div className="empty-state">{t("common.laden")}</div>
+        ) : requestsError ? (
+          <ErrorState onRetry={() => refetchRequests()} />
         ) : (requests ?? []).length === 0 ? (
           <EmptyState
             title={t("dossierDetail.geenAanvragenTitel")}

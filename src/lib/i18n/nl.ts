@@ -23,6 +23,9 @@ export const nl = {
   "common.opslaanMislukt": "Opslaan mislukt. Probeer het opnieuw.",
   "common.taal": "Taal",
   "common.alleRechtenVoorbehouden": "Alle rechten voorbehouden.",
+  "common.ladenMisluktTitel": "Laden mislukt",
+  "common.ladenMisluktBeschrijving": "De gegevens konden niet opgehaald worden. Controleer je verbinding en probeer het opnieuw.",
+  "common.opnieuwProberen": "Opnieuw proberen",
 
   // Auth
   "auth.subtitle": "Meld je aan om aanvragen te beheren",

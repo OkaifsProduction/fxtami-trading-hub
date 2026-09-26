@@ -22,6 +22,9 @@ export const fr: Record<keyof typeof nl, string> = {
   "common.opslaanMislukt": "L'enregistrement a échoué. Veuillez réessayer.",
   "common.taal": "Langue",
   "common.alleRechtenVoorbehouden": "Tous droits réservés.",
+  "common.ladenMisluktTitel": "Échec du chargement",
+  "common.ladenMisluktBeschrijving": "Les données n'ont pas pu être récupérées. Vérifiez votre connexion et réessayez.",
+  "common.opnieuwProberen": "Réessayer",
 
   // Authentification
   "auth.subtitle": "Connectez-vous pour gérer les demandes",

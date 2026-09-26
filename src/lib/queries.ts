@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient, type QueryClient } from "@tanstack/react-query";
 import { supabase } from "./supabase";
 import type { AanvraagStatus, DossierRow, DossierStatus, KlantRow, RequestRow } from "./database.types";
 import type { DossierFormValues, KlantFormValues, RequestFormValues } from "./schema";
@@ -75,16 +75,17 @@ function toKlantPayload(values: KlantFormValues) {
   };
 }
 
+// user_id wordt bewust niet meegestuurd bij het aanmaken: de kolom heeft
+// "default auth.uid()" en de RLS-policy eist diezelfde waarde. De database is
+// dus de bron, niet de client — en dat scheelt bij elke create een extra
+// netwerkronde naar auth.getUser(), die de sessie bij de server verifieert.
 export function useCreateKlant() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (values: KlantFormValues) => {
-      const { data: userData } = await supabase.auth.getUser();
-      const userId = userData.user?.id;
-      if (!userId) throw new Error("Niet aangemeld");
       const { data, error } = await supabase
         .from("klanten")
-        .insert({ ...toKlantPayload(values), user_id: userId })
+        .insert(toKlantPayload(values))
         .select()
         .single();
       if (error) throw error;
@@ -224,12 +225,9 @@ export function useCreateDossier() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async ({ klantId, values }: { klantId: string; values: DossierFormValues }) => {
-      const { data: userData } = await supabase.auth.getUser();
-      const userId = userData.user?.id;
-      if (!userId) throw new Error("Niet aangemeld");
       const { data, error } = await supabase
         .from("dossiers")
-        .insert({ ...toDossierPayload(values), klant_id: klantId, user_id: userId })
+        .insert({ ...toDossierPayload(values), klant_id: klantId })
         .select()
         .single();
       if (error) throw error;
@@ -361,6 +359,10 @@ export interface KlantAanvraagRow {
  * altijd in, ook zonder dossier of aanvraag (status "nvt"). Bewust een
  * aparte hook naast useRequestsWithContext — die laatste blijft
  * aanvraag-gedreven en voedt het dashboard, dat ongewijzigd blijft.
+ *
+ * Gearchiveerde klanten vallen hier weg, net zoals in de klantenlijst. Daar
+ * zit een schakelaar voor, hier niet, waardoor een afgesloten bewind anders
+ * voorgoed in het dagelijkse aanvragenoverzicht bleef staan.
  */
 export function useKlantenMetAanvragen() {
   return useQuery({
@@ -387,6 +389,7 @@ export function useKlantenMetAanvragen() {
 
       const rows: KlantAanvraagRow[] = [];
       for (const k of klantenRes.data ?? []) {
+        if (k.gearchiveerd) continue;
         const klantRequests = requestsByKlantId.get(k.id) ?? [];
         if (klantRequests.length === 0) {
           rows.push({
@@ -481,6 +484,21 @@ export function useAanvragenByKlant(klantId: string) {
   });
 }
 
+/**
+ * Alles wat met een aanvraag meeverandert in één keer ongeldig maken.
+ *
+ * requestKeys.all dekt de lijst, de detailweergaves, byDossier en byKlant.
+ * Daarnaast moet ook klantKeys leeg: het aanvragenoverzicht is klant-centrisch
+ * en staat daarom onder klantKeys, terwijl de inhoud ervan net zo goed van de
+ * aanvragen afhangt. Die tak werd eerder niet meegenomen, waardoor /aanvragen
+ * na het aanmaken of verwijderen van een aanvraag tot 30 seconden lang (de
+ * staleTime uit main.tsx) de oude toestand bleef tonen.
+ */
+function invalidateAanvraagViews(queryClient: QueryClient) {
+  queryClient.invalidateQueries({ queryKey: requestKeys.all });
+  queryClient.invalidateQueries({ queryKey: klantKeys.all });
+}
+
 function toRequestPayload(values: RequestFormValues) {
   return {
     dossier_id: values.dossierId,
@@ -495,23 +513,15 @@ export function useCreateRequest() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (values: RequestFormValues) => {
-      const { data: userData } = await supabase.auth.getUser();
-      const userId = userData.user?.id;
-      if (!userId) throw new Error("Niet aangemeld");
       const { data, error } = await supabase
         .from("requests")
-        .insert({ ...toRequestPayload(values), user_id: userId })
+        .insert(toRequestPayload(values))
         .select()
         .single();
       if (error) throw error;
       return data;
     },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: requestKeys.list() });
-      if (data.dossier_id) {
-        queryClient.invalidateQueries({ queryKey: requestKeys.byDossier(data.dossier_id) });
-      }
-    },
+    onSuccess: () => invalidateAanvraagViews(queryClient),
   });
 }
 
@@ -528,13 +538,7 @@ export function useUpdateRequest(id: string) {
       if (error) throw error;
       return data;
     },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: requestKeys.list() });
-      queryClient.invalidateQueries({ queryKey: requestKeys.detail(id) });
-      if (data.dossier_id) {
-        queryClient.invalidateQueries({ queryKey: requestKeys.byDossier(data.dossier_id) });
-      }
-    },
+    onSuccess: () => invalidateAanvraagViews(queryClient),
   });
 }
 
@@ -551,13 +555,7 @@ export function useSetRequestStatus(id: string) {
       if (error) throw error;
       return data;
     },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: requestKeys.list() });
-      queryClient.invalidateQueries({ queryKey: requestKeys.detail(id) });
-      if (data.dossier_id) {
-        queryClient.invalidateQueries({ queryKey: requestKeys.byDossier(data.dossier_id) });
-      }
-    },
+    onSuccess: () => invalidateAanvraagViews(queryClient),
   });
 }
 
@@ -568,17 +566,13 @@ export function useDeleteRequest() {
       const { error } = await supabase.from("requests").delete().eq("id", id);
       if (error) throw error;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: requestKeys.all });
-    },
+    onSuccess: () => invalidateAanvraagViews(queryClient),
   });
 }
 
 export interface DashboardStats {
   openCount: number;
   handledCount: number;
-  totalRequested: number;
-  totalGranted: number;
 }
 
 // "Open" = nog actief (open of in behandeling). "Afgehandeld" = afgerond,
@@ -591,10 +585,8 @@ export function computeStats(requests: RequestRow[]): DashboardStats {
     (acc, r) => {
       if (ACTIEVE_STATUSSEN.includes(r.status)) acc.openCount += 1;
       else acc.handledCount += 1;
-      acc.totalRequested += r.requested_amount;
-      acc.totalGranted += r.granted_amount ?? 0;
       return acc;
     },
-    { openCount: 0, handledCount: 0, totalRequested: 0, totalGranted: 0 },
+    { openCount: 0, handledCount: 0 },
   );
 }

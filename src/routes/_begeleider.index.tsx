@@ -3,6 +3,7 @@ import { begeleiderRoute } from "./_begeleider";
 import { useBegeleiderMijnDossiers } from "@/lib/begeleiderQueries";
 import { StatusBadge } from "@/components/StatusBadge";
 import { EmptyState } from "@/components/EmptyState";
+import { ErrorState } from "@/components/ErrorState";
 import { usePageTitle } from "@/lib/usePageTitle";
 import { useLocale } from "@/lib/i18n";
 
@@ -15,7 +16,7 @@ export const begeleiderDossiersListRoute = createRoute({
 function BegeleiderDossiersListPage() {
   const { t } = useLocale();
   usePageTitle(t("nav.mijnDossiers"));
-  const { data: dossiers, isLoading } = useBegeleiderMijnDossiers();
+  const { data: dossiers, isLoading, isError, refetch } = useBegeleiderMijnDossiers();
 
   return (
     <div className="page">
@@ -29,6 +30,8 @@ function BegeleiderDossiersListPage() {
       <div className="card">
         {isLoading ? (
           <div className="empty-state">{t("common.laden")}</div>
+        ) : isError ? (
+          <ErrorState onRetry={() => refetch()} />
         ) : (dossiers ?? []).length === 0 ? (
           <EmptyState
             title={t("begeleider.geenDossiersTitel")}

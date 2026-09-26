@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { nl, type TranslationKey } from "./nl";
 import { fr } from "./fr";
 import { en } from "./en";
@@ -42,6 +42,13 @@ function getInitialLocale(): Locale {
 
 export function LocaleProvider({ children }: { children: ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>(getInitialLocale);
+
+  // Houdt <html lang> gelijk aan de gekozen taal. Belangrijk voor
+  // schermlezers (uitspraak) en voor de afbreekregels van de browser; in
+  // index.html staat enkel de startwaarde "nl".
+  useEffect(() => {
+    document.documentElement.lang = locale;
+  }, [locale]);
 
   function setLocale(next: Locale) {
     setLocaleState(next);

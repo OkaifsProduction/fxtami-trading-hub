@@ -3,6 +3,7 @@ import { createRoute, Link } from "@tanstack/react-router";
 import { authenticatedRoute } from "./_authenticated";
 import { useKlantenWithDossierCount, type KlantWithDossierCount } from "@/lib/queries";
 import { EmptyState } from "@/components/EmptyState";
+import { ErrorState } from "@/components/ErrorState";
 import { usePageTitle } from "@/lib/usePageTitle";
 import { useLocale, type TranslationKey } from "@/lib/i18n";
 
@@ -36,7 +37,7 @@ function sortKlanten(klanten: KlantWithDossierCount[], sort: SortOption) {
 function KlantenListPage() {
   const { t } = useLocale();
   usePageTitle(t("klanten.title"));
-  const { data: klanten, isLoading } = useKlantenWithDossierCount();
+  const { data: klanten, isLoading, isError, refetch } = useKlantenWithDossierCount();
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<SortOption>("naam");
   const [toonGearchiveerd, setToonGearchiveerd] = useState(false);
@@ -95,6 +96,8 @@ function KlantenListPage() {
       <div className="card">
         {isLoading ? (
           <div className="empty-state">{t("common.laden")}</div>
+        ) : isError ? (
+          <ErrorState onRetry={() => refetch()} />
         ) : filtered.length === 0 ? (
           <EmptyState
             title={t("klanten.geenResultatenTitel")}

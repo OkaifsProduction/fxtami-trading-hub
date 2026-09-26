@@ -24,6 +24,9 @@ export const es: Record<keyof typeof nl, string> = {
   "common.opslaanMislukt": "No se pudo guardar. Inténtalo de nuevo.",
   "common.taal": "Idioma",
   "common.alleRechtenVoorbehouden": "Todos los derechos reservados.",
+  "common.ladenMisluktTitel": "Error al cargar",
+  "common.ladenMisluktBeschrijving": "No se pudieron obtener los datos. Comprueba tu conexión e inténtalo de nuevo.",
+  "common.opnieuwProberen": "Reintentar",
 
   // Autenticación
   "auth.subtitle": "Inicia sesión para gestionar solicitudes",

@@ -4,7 +4,8 @@ import { useRequestsWithContext, computeStats } from "@/lib/queries";
 import { StatTile } from "@/components/StatTile";
 import { StatusBadge } from "@/components/StatusBadge";
 import { EmptyState } from "@/components/EmptyState";
-import { formatAmount, formatDate } from "@/lib/format";
+import { ErrorState } from "@/components/ErrorState";
+import { useFormat } from "@/lib/format";
 import { usePageTitle } from "@/lib/usePageTitle";
 import { useLocale } from "@/lib/i18n";
 
@@ -16,8 +17,9 @@ export const dashboardRoute = createRoute({
 
 function DashboardPage() {
   const { t } = useLocale();
+  const { formatAmount, formatDate } = useFormat();
   usePageTitle(t("dashboard.title"));
-  const { data: requests, isLoading } = useRequestsWithContext();
+  const { data: requests, isLoading, isError, refetch } = useRequestsWithContext();
   const stats = computeStats(requests ?? []);
   const recent = (requests ?? []).slice(0, 6);
 
@@ -53,6 +55,8 @@ function DashboardPage() {
         </div>
         {isLoading ? (
           <div className="empty-state">{t("common.laden")}</div>
+        ) : isError ? (
+          <ErrorState onRetry={() => refetch()} />
         ) : recent.length === 0 ? (
           <EmptyState
             title={t("dashboard.geenAanvragenTitel")}

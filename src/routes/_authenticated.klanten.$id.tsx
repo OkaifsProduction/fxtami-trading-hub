@@ -5,7 +5,7 @@ import { useKlant, useUpdateKlant, useSetKlantArchived, useDossiersByKlant } fro
 import { KlantForm } from "@/components/KlantForm";
 import { StatusBadge } from "@/components/StatusBadge";
 import { EmptyState } from "@/components/EmptyState";
-import { formatDate } from "@/lib/format";
+import { useFormat } from "@/lib/format";
 import { usePageTitle } from "@/lib/usePageTitle";
 import { useLocale } from "@/lib/i18n";
 
@@ -17,6 +17,7 @@ export const klantDetailRoute = createRoute({
 
 function KlantDetailPage() {
   const { t } = useLocale();
+  const { formatDate } = useFormat();
   const { id } = klantDetailRoute.useParams();
   const { data: klant, isLoading } = useKlant(id);
   const { data: dossiers, isLoading: dossiersLoading } = useDossiersByKlant(id);
