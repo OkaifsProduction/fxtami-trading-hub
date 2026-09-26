@@ -4,8 +4,9 @@ import { authenticatedRoute } from "./_authenticated";
 import { useKlantenMetAanvragen, type KlantAanvraagRow } from "@/lib/queries";
 import { StatusBadge } from "@/components/StatusBadge";
 import { EmptyState } from "@/components/EmptyState";
+import { ErrorState } from "@/components/ErrorState";
 import { PrintIcon } from "@/components/PrintIcon";
-import { formatAmount, formatDate } from "@/lib/format";
+import { useFormat } from "@/lib/format";
 import { usePageTitle } from "@/lib/usePageTitle";
 import { useLocale, type TranslationKey } from "@/lib/i18n";
 import type { AanvraagStatus } from "@/lib/database.types";
@@ -61,9 +62,10 @@ function sortRequests(rows: KlantAanvraagRow[], sort: SortOption) {
 
 function AanvragenListPage() {
   const { t } = useLocale();
+  const { formatAmount, formatDate } = useFormat();
   usePageTitle(t("aanvragen.title"));
   const routeSearch = aanvragenListRoute.useSearch();
-  const { data: rows, isLoading } = useKlantenMetAanvragen();
+  const { data: rows, isLoading, isError, refetch } = useKlantenMetAanvragen();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>(routeSearch.status ?? "alle");
   const [sort, setSort] = useState<SortOption>("klant");
@@ -171,6 +173,8 @@ function AanvragenListPage() {
       <div className="card">
         {isLoading ? (
           <div className="empty-state">{t("common.laden")}</div>
+        ) : isError ? (
+          <ErrorState onRetry={() => refetch()} />
         ) : filtered.length === 0 ? (
           <EmptyState
             title={t("aanvragen.geenResultatenTitel")}

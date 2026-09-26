@@ -14,7 +14,7 @@ import {
 import { RequestForm } from "@/components/RequestForm";
 import { StatusBadge } from "@/components/StatusBadge";
 import { PrintIcon } from "@/components/PrintIcon";
-import { formatAmount, formatDate } from "@/lib/format";
+import { useFormat } from "@/lib/format";
 import { usePageTitle } from "@/lib/usePageTitle";
 import { useLocale, type TranslationKey } from "@/lib/i18n";
 import type { AanvraagStatus } from "@/lib/database.types";
@@ -37,6 +37,7 @@ export const aanvraagDetailRoute = createRoute({
 
 function AanvraagDetailPage() {
   const { t } = useLocale();
+  const { formatAmount, formatDate } = useFormat();
   const { id } = aanvraagDetailRoute.useParams();
   const navigate = useNavigate();
   const { data: request, isLoading } = useRequest(id);

@@ -3,7 +3,8 @@ import { begeleiderRoute } from "./_begeleider";
 import { useBegeleiderDossierDetail, useBegeleiderDossierAanvragen } from "@/lib/begeleiderQueries";
 import { StatusBadge } from "@/components/StatusBadge";
 import { EmptyState } from "@/components/EmptyState";
-import { formatAmount, formatDate } from "@/lib/format";
+import { ErrorState } from "@/components/ErrorState";
+import { useFormat } from "@/lib/format";
 import { usePageTitle } from "@/lib/usePageTitle";
 import { useLocale } from "@/lib/i18n";
 
@@ -15,9 +16,15 @@ export const begeleiderDossierDetailRoute = createRoute({
 
 function BegeleiderDossierDetailPage() {
   const { t } = useLocale();
+  const { formatAmount, formatDate } = useFormat();
   const { id } = begeleiderDossierDetailRoute.useParams();
   const { data: dossier, isLoading } = useBegeleiderDossierDetail(id);
-  const { data: aanvragen, isLoading: aanvragenLoading } = useBegeleiderDossierAanvragen(id);
+  const {
+    data: aanvragen,
+    isLoading: aanvragenLoading,
+    isError: aanvragenError,
+    refetch: refetchAanvragen,
+  } = useBegeleiderDossierAanvragen(id);
   usePageTitle(dossier?.dossier_titel ?? t("begeleider.nietGevondenTitel"));
 
   if (isLoading) {
@@ -61,6 +68,8 @@ function BegeleiderDossierDetailPage() {
         </div>
         {aanvragenLoading ? (
           <div className="empty-state">{t("common.laden")}</div>
+        ) : aanvragenError ? (
+          <ErrorState onRetry={() => refetchAanvragen()} />
         ) : (aanvragen ?? []).length === 0 ? (
           <EmptyState
             title={t("begeleider.geenAanvragenTitel")}
