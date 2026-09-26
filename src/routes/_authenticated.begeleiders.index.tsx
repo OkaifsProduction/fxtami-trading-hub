@@ -4,6 +4,7 @@ import { authenticatedRoute } from "./_authenticated";
 import { useBegeleidersOverzicht } from "@/lib/begeleidersBeheerQueries";
 import { BegeleiderStatusBadge } from "@/components/BegeleiderStatusBadge";
 import { EmptyState } from "@/components/EmptyState";
+import { ErrorState } from "@/components/ErrorState";
 import { usePageTitle } from "@/lib/usePageTitle";
 import { useLocale } from "@/lib/i18n";
 
@@ -16,7 +17,7 @@ export const begeleidersListRoute = createRoute({
 function BegeleidersListPage() {
   const { t } = useLocale();
   usePageTitle(t("begeleiders.title"));
-  const { data: rijen, isLoading } = useBegeleidersOverzicht();
+  const { data: rijen, isLoading, isError, refetch } = useBegeleidersOverzicht();
   const [search, setSearch] = useState("");
 
   // De lijst komt al alfabetisch uit de query; hier enkel filteren, zodat de
@@ -56,6 +57,8 @@ function BegeleidersListPage() {
       <div className="card">
         {isLoading ? (
           <div className="empty-state">{t("common.laden")}</div>
+        ) : isError ? (
+          <ErrorState onRetry={() => refetch()} />
         ) : gefilterd.length === 0 ? (
           <EmptyState
             title={t("begeleiders.geenResultatenTitel")}

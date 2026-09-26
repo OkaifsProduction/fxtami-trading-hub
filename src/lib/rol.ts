@@ -40,9 +40,38 @@ export async function activeerBegeleiderAccount(): Promise<boolean> {
  * betaalt de dagelijkse login nooit voor de zeldzame eerste keer, en herstelt
  * een uitgenodigde begeleider zichzelf vanaf elk startpunt in de app.
  */
-export async function resolveRol(userId: string): Promise<Rol> {
+async function bepaalRol(userId: string): Promise<Rol> {
   if (await checkBegeleiderProfiel(userId)) return "begeleider";
   if (await checkIntern()) return "intern";
   if (await activeerBegeleiderAccount()) return "begeleider";
   return "geen";
+}
+
+// De routeguards draaien bij elke navigatie, dus zonder geheugen kost elke
+// klik op Klanten of Aanvragen opnieuw twee tot drie netwerkaanvragen. De rol
+// van een gebruiker verandert niet tijdens het gebruik, dus onthouden we ze
+// voor deze pagina-sessie.
+//
+// Dit is geen versoepeling van de beveiliging: de routing bepaalt alleen wat
+// iemand te zien krijgt, terwijl de RLS-policies en de security
+// definer-functies bij élke databaseaanvraag opnieuw beslissen. Wie tijdens
+// zijn sessie wordt gedeactiveerd, verliest zijn gegevens dus onmiddellijk —
+// alleen het menu blijft tot een herlading staan.
+const rolCache = new Map<string, Rol>();
+
+/** Wordt aangeroepen bij elke wijziging van de aanmeldstatus. */
+export function vergeetRollen() {
+  rolCache.clear();
+}
+
+export async function resolveRol(userId: string): Promise<Rol> {
+  const onthouden = rolCache.get(userId);
+  if (onthouden) return onthouden;
+
+  const rol = await bepaalRol(userId);
+  // "geen" bewust niet onthouden: dat is vaak tijdelijk (een uitnodiging die
+  // nog geactiveerd moet worden, of migratie 0011 die nog niet gedraaid is),
+  // en moet bij een volgende poging opnieuw bekeken worden.
+  if (rol !== "geen") rolCache.set(userId, rol);
+  return rol;
 }

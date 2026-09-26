@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "./supabase";
+import { vergeetRollen } from "./rol";
 
 interface AuthContextValue {
   session: Session | null;
@@ -23,6 +24,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
 
     const { data: subscription } = supabase.auth.onAuthStateChange((_event, newSession) => {
+      // Bij aan- en afmelden de onthouden rollen weggooien, zodat een volgende
+      // gebruiker op hetzelfde toestel nooit de routering van de vorige erft.
+      vergeetRollen();
       setSession(newSession);
     });
 

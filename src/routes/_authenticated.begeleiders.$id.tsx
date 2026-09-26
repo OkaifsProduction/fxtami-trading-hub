@@ -15,7 +15,8 @@ import {
 } from "@/lib/begeleidersBeheerQueries";
 import { BegeleiderStatusBadge } from "@/components/BegeleiderStatusBadge";
 import { EmptyState } from "@/components/EmptyState";
-import { formatDate } from "@/lib/format";
+import { ErrorState } from "@/components/ErrorState";
+import { useFormat } from "@/lib/format";
 import { usePageTitle } from "@/lib/usePageTitle";
 import { useLocale } from "@/lib/i18n";
 
@@ -73,8 +74,9 @@ function Kruimelpad({ naam }: { naam: string }) {
 
 function ProfielWeergave({ profielId }: { profielId: string }) {
   const { t } = useLocale();
+  const { formatDate } = useFormat();
   const { data: profiel } = useBegeleiderProfiel(profielId);
-  const { data: toewijzingen, isLoading } = useBegeleiderToewijzingen(profielId);
+  const { data: toewijzingen, isLoading, isError, refetch } = useBegeleiderToewijzingen(profielId);
   const { data: dossierOptions } = useDossierOptions();
   const setActief = useSetBegeleiderActief(profielId);
   const toewijzen = useToewijzenDossier(profielId);
@@ -206,6 +208,8 @@ function ProfielWeergave({ profielId }: { profielId: string }) {
 
         {isLoading ? (
           <div className="empty-state">{t("common.laden")}</div>
+        ) : isError ? (
+          <ErrorState onRetry={() => refetch()} />
         ) : (toewijzingen ?? []).length === 0 ? (
           <EmptyState
             title={t("begeleiderDetail.geenToewijzingenTitel")}
@@ -241,6 +245,7 @@ function ProfielWeergave({ profielId }: { profielId: string }) {
 
 function UitnodigingWeergave({ uitnodigingId }: { uitnodigingId: string }) {
   const { t } = useLocale();
+  const { formatDate } = useFormat();
   const navigate = useNavigate();
   const { data: uitnodiging } = useUitnodiging(uitnodigingId);
   const { data: klaargezet, isLoading } = useUitnodigingDossiers(uitnodigingId);
