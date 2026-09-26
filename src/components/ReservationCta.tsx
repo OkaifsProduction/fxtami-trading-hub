@@ -22,10 +22,10 @@ export function ReservationCta() {
           Kom genieten van een avond Italiaanse smaken, of bestel uw favorieten online om af te halen.
         </p>
         <div className="mt-12 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
-          <Button href={restaurant.reserveUrl} variant="primary-light" arrow>
+          <Button href={restaurant.reserveUrl} variant="primary-light" arrow magnetic>
             Reserveer een tafel
           </Button>
-          <Button href={restaurant.orderOnlineUrl} variant="outline-light">
+          <Button href={restaurant.orderOnlineUrl} variant="outline-light" magnetic>
             Bestel online
           </Button>
         </div>

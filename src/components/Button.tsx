@@ -1,4 +1,5 @@
 import type { AnchorHTMLAttributes, ReactNode } from "react";
+import { useMagnetic } from "../hooks/usePointerEffect";
 
 type Variant = "primary" | "primary-light" | "outline" | "outline-light" | "link" | "link-light";
 
@@ -6,6 +7,8 @@ interface ButtonProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
   children: ReactNode;
   variant?: Variant;
   arrow?: boolean;
+  /** Drifts toward the cursor on hover (mouse only). For primary calls to action. */
+  magnetic?: boolean;
 }
 
 const pill =
@@ -44,13 +47,14 @@ function Arrow() {
   );
 }
 
-export function Button({ children, variant = "primary", arrow, className = "", ...props }: ButtonProps) {
+export function Button({ children, variant = "primary", arrow, magnetic, className = "", ...props }: ButtonProps) {
+  const magnetRef = useMagnetic<HTMLSpanElement>();
   const isLink = variant === "link" || variant === "link-light";
   const showArrow = arrow ?? isLink;
   const padRight = isLink ? "" : showArrow ? "pr-2" : "pr-7";
 
-  return (
-    <a {...props} className={`${variantClasses[variant]} ${padRight} ${className}`}>
+  const button = (
+    <a {...props} className={`${variantClasses[variant]} ${padRight} ${magnetic ? "w-full" : ""} ${className}`}>
       {isLink ? <span className="link-draw pb-0.5">{children}</span> : children}
       {showArrow &&
         (isLink ? (
@@ -61,5 +65,15 @@ export function Button({ children, variant = "primary", arrow, className = "", .
           </span>
         ))}
     </a>
+  );
+
+  if (!magnetic) return button;
+
+  // The wrapper carries the movement so it can't clash with the button's own
+  // colour transitions on hover.
+  return (
+    <span ref={magnetRef} className="magnetic w-full sm:w-auto">
+      {button}
+    </span>
   );
 }

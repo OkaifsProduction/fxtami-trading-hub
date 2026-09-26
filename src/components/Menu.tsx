@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type KeyboardEvent } from "react";
 import { Container } from "./Container";
 import { SectionHeading } from "./SectionHeading";
 import { menuCategories } from "../data/menu";
@@ -16,6 +16,7 @@ export function Menu() {
   const tabListRef = useRef<HTMLDivElement>(null);
   const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const [indicator, setIndicator] = useState({ left: 0, width: 0 });
+  const [direction, setDirection] = useState(1);
 
   useLayoutEffect(() => {
     function measure() {
@@ -32,6 +33,9 @@ export function Menu() {
   useEffect(() => () => window.clearTimeout(addedTimer.current), []);
 
   function select(id: string) {
+    const from = menuCategories.findIndex((c) => c.id === activeId);
+    const to = menuCategories.findIndex((c) => c.id === id);
+    setDirection(to >= from ? 1 : -1);
     setActiveId(id);
     const list = tabListRef.current;
     const tab = tabRefs.current[id];
@@ -115,13 +119,13 @@ export function Menu() {
 
       <Container>
         <div id="menu-panel" role="tabpanel" aria-labelledby={`tab-${active.id}`} className="mx-auto mt-12 max-w-5xl md:mt-16">
-          <div key={active.id} className="panel-fade">
+          <div key={active.id} className="panel-fade" style={{ "--dir": direction } as CSSProperties}>
             {active.note && (
               <p className="mb-8 text-center font-serif text-xl italic text-stone">{active.note}</p>
             )}
             <ul className="grid grid-cols-1 gap-x-16 md:grid-cols-2">
               {active.items.map((item) => (
-                <li key={item.id} className="flex items-start gap-4 border-b border-ink/[0.07] py-6">
+                <li key={item.id} className="glass-row flex items-start gap-4 border-b border-ink/[0.07] py-6">
                   <div className="min-w-0 flex-1">
                     <div className="flex items-baseline">
                       <h3 className="font-serif text-[24px] leading-tight text-ink">{item.name}</h3>

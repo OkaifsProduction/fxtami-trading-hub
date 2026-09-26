@@ -53,10 +53,10 @@ export function Hero() {
             genieten of af te halen.
           </p>
           <div className="mt-9 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
-            <Button href={restaurant.orderOnlineUrl} variant="primary" arrow>
+            <Button href={restaurant.orderOnlineUrl} variant="primary" arrow magnetic>
               Bestel online
             </Button>
-            <Button href={restaurant.reserveUrl} variant="outline">
+            <Button href={restaurant.reserveUrl} variant="outline" magnetic>
               Reserveer een tafel
             </Button>
           </div>

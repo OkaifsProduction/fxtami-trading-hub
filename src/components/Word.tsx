@@ -1,16 +1,19 @@
 import type { CSSProperties, ReactNode } from "react";
 
 /**
- * One word of a headline animated by useWordReveal — see .word-reveal in
- * styles.css. Renders only the word itself (no trailing space): a trailing
- * space *inside* an inline-block gets trimmed at render time even though
- * it's present in the DOM, so separators must sit *between* <Word>s instead
- * — see splitWords below.
+ * One word of a headline. The outer span is the mask (it clips) and the inner
+ * span is what slides up out of it — see .word-reveal in styles.css.
+ *
+ * Renders only the word itself, never a trailing space: whitespace at the edge
+ * of an inline-block gets trimmed at render time even though it's in the DOM,
+ * so separators must sit *between* <Word>s — see splitWords below.
  */
 export function Word({ index, children }: { index: number; children: ReactNode }) {
   return (
-    <span className="word-reveal" style={{ "--word": index } as CSSProperties}>
-      {children}
+    <span className="word-reveal">
+      <span className="word-reveal-inner" style={{ "--word": index } as CSSProperties}>
+        {children}
+      </span>
     </span>
   );
 }

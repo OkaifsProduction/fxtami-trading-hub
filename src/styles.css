@@ -66,6 +66,60 @@ body {
   }
 }
 
+/* ============ Pointer-driven effects ============ */
+
+/* Wrapper that drifts toward the cursor — see useMagnetic. The transition is
+   what makes it feel elastic rather than glued to the pointer. */
+.magnetic {
+  display: inline-flex;
+  transition: transform 320ms cubic-bezier(0.33, 1, 0.68, 1);
+  will-change: transform;
+}
+
+/* Card that tips toward the cursor in 3D — see useTilt. */
+.tilt {
+  transition: transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+/* Frosted panel that lights up behind the hovered menu row. It sits on ::before
+   at z-index -1, so the row needs its own stacking context — without
+   `isolation`, a negative z-index escapes to the page background and the panel
+   disappears behind the section. */
+.glass-row {
+  position: relative;
+  isolation: isolate;
+}
+
+.glass-row::before {
+  content: "";
+  position: absolute;
+  inset: 0 -1.25rem;
+  z-index: -1;
+  border-radius: 1.25rem;
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 18px 40px -24px rgba(10, 10, 10, 0.4);
+  opacity: 0;
+  transform: scale(0.97);
+  transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+@supports (backdrop-filter: blur(1px)) {
+  .glass-row::before {
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(10px) saturate(1.3);
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .glass-row:hover::before,
+  .glass-row:focus-within::before {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 /* Film-grain overlay for dark sections: adds tactile depth to flat fills.
    The element must be positioned (relative/fixed/…) — deliberately not set
    here, since this rule would otherwise override Tailwind's `fixed`. */
@@ -120,8 +174,10 @@ body {
    --stagger custom property (index * step). */
 .reveal-stagger-item {
   opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateY(26px) scale(0.975);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    /* overshoots a touch before settling, so cards land with some weight */
+    transform 0.85s cubic-bezier(0.34, 1.4, 0.64, 1);
   transition-delay: calc(var(--stagger, 0) * 90ms);
 }
 
@@ -130,37 +186,49 @@ body {
   transform: none;
 }
 
-/* Word-by-word headline reveal: each <span> gets --word for its delay. */
+/* Word-by-word headline reveal: each word rises out of its own mask.
+   The padding enlarges the clipping box so ascenders, descenders and the
+   slant of italics aren't sliced off; the negative margin cancels it again
+   so the text still sits exactly where it would without the effect. */
 .word-reveal {
   display: inline-block;
-  opacity: 0;
-  transform: translateY(0.35em);
-  filter: blur(8px);
-  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1),
-    filter 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+  padding: 0.2em 0.08em 0.24em;
+  margin: -0.2em -0.08em -0.24em;
+  /* Without this the padded box grows the line box and the headline's tight
+     leading opens up by ~14px per line; aligning to the bottom keeps the
+     rendered layout identical to the same text without a mask. */
+  vertical-align: bottom;
+}
+
+.word-reveal-inner {
+  display: inline-block;
+  /* Clears the mask's bottom padding too, so nothing peeks before the reveal. */
+  transform: translateY(200%);
+  transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1);
   transition-delay: calc(var(--word, 0) * 65ms);
 }
 
-.word-reveal.is-visible {
-  opacity: 1;
+.word-reveal.is-visible .word-reveal-inner {
   transform: none;
-  filter: blur(0);
 }
 
-/* Quick fade/slide used when switching the menu's category tab. */
-@keyframes panelFade {
+/* Switching menu categories: the new panel enters from the side the chosen
+   tab sits on, so the movement matches the direction of the click. --dir is
+   -1 (tab to the left) or 1 (tab to the right). */
+@keyframes panelIn {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translate3d(calc(var(--dir, 1) * 3%), 8px, 0);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: none;
   }
 }
 
 .panel-fade {
-  animation: panelFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: panelIn 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 /* ============ Scroll progress bar ============ */
@@ -205,10 +273,19 @@ body {
   .reveal,
   .reveal-scale,
   .reveal-stagger-item,
-  .word-reveal {
+  .word-reveal,
+  .word-reveal-inner,
+  .magnetic,
+  .tilt {
     opacity: 1;
     transform: none;
     filter: none;
+  }
+  .word-reveal {
+    overflow: visible;
+  }
+  .glass-row::before {
+    display: none;
   }
   .reveal-clip {
     clip-path: none;

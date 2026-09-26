@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import type { Dish } from "../data/dishes";
 import { useCart } from "../lib/cart";
+import { useTilt } from "../hooks/usePointerEffect";
 import { formatPrice } from "../lib/format";
 
 export function DishCard({ dish }: { dish: Dish }) {
   const { addItem } = useCart();
   const [added, setAdded] = useState(false);
+  const tiltRef = useTilt<HTMLElement>(5);
   const timer = useRef<number>();
 
   useEffect(() => () => window.clearTimeout(timer.current), []);
@@ -18,7 +20,7 @@ export function DishCard({ dish }: { dish: Dish }) {
   }
 
   return (
-    <article className="group flex h-full flex-col">
+    <article ref={tiltRef} className="tilt group flex h-full flex-col">
       <div className="relative aspect-[4/5] overflow-hidden rounded-3xl bg-mist">
         <img
           src={dish.image}
